@@ -1,0 +1,23 @@
+<?php
+/**
+ * @author Ondřej Doněk <ondrejd@gmail.com>
+ * @link https://github.com/ondrejd/odwp-notices_generator for the canonical source repository
+ * @license https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License 3.0
+ * @package odwp-notices_generator
+ *
+ * @see Notices_Generator_Plugin::render_setting_unknown_users()
+ *
+ * Variables passed:
+ * @var boolean $unknown_users
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+?>
+<label for="odwpng_settings_unknown_users">
+    <input type="checkbox" id="odwpng_settings_unknown_users" name="odwpng_settings[save_notices_from_unknown_users]" <?php checked( $unknown_users ) ?>>
+    <?php _e( 'Ukládat všechna oznámení', NG_SLUG ) ?>
+</label>
+<p class="description"><?php _e( 'Pokud zaškrtnete, tak se budou ukládat všechna vytvořená oznámení - i ta od nepřihlášených uživatelů. Pokud ponecháte odškrtnuté, ukládají se pouze oznámení od registrovaných uživatelů.', NG_SLUG ) ?></p>

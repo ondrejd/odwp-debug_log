@@ -1,4 +1,4 @@
-# Debug Log
+# Debug Log Viewer
 
 Small [WordPress][1] plugin especially for developers that allows better work debug log.
 

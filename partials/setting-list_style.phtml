@@ -1,0 +1,23 @@
+<?php
+/**
+ * @author Ondřej Doněk <ondrejd@gmail.com>
+ * @link https://github.com/ondrejd/odwp-notices_generator for the canonical source repository
+ * @license https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License 3.0
+ * @package odwp-notices_generator
+ *
+ * @see Notices_Generator_Plugin::render_setting_only_logged_users()
+ *
+ * Variables passed:
+ * @var boolean $only_logged_users
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+?>
+<label for="odwpng_settings_only_logged_users">
+    <input type="checkbox" id="odwpng_settings_only_logged_users" name="odwpng_settings[new_notices_only_logged_users]" <?php checked( $only_logged_users ) ?>>
+    <?php _e( 'Povolit vytváření oznámení všem uživatelům', NG_SLUG ) ?>
+</label>
+<p class="description"><?php _e( 'Pokud zaškrtnete, tak bude povoleno vytváření oznámení i nepřihlášeným uživatelům?', NG_SLUG ) ?></p>

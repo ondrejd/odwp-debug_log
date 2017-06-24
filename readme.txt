@@ -1,7 +1,7 @@
-=== Debug Log ===
+=== Debug Log Viewer ===
 Contributors: ondrejd
 Donate link: https://www.paypal.me/ondrejd
-Tags: maintenance,maintenance mode,customize,customizer
+Tags: log,debug,development
 Requires at least: 4.7
 Tested up to: 4.7.3
 Stable tag: 1.0.0
