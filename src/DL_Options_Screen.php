@@ -4,22 +4,29 @@
  * @link https://github.com/ondrejd/odwp-debug_log for the canonical source repository
  * @license https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License 3.0
  * @package odwp-debug_log
+ * @since 1.0.0
  */
 
-if ( ! class_exists( 'DL_Options_Screen' ) ):
+if( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+if( ! class_exists( 'DL_Options_Screen' ) ):
 
 /**
- * @since 0.0.1
+ * Administration screen for plugin's options.
+ * @since 1.0.0
  */
 class DL_Options_Screen extends DL_Screen_Prototype {
     /**
      * Constructor.
      * @param WP_Screen $screen Optional.
      * @return void
+     * @since 1.0.0
      */
     public function __construct( \WP_Screen $screen = null ) {
         // Main properties
-        $this->slug = 'plugin_options';
+        $this->slug = DL_SLUG . '-plugin_options';
         $this->menu_title = __( 'Debug Log Viewer', DL_SLUG );
         $this->page_title = __( 'Nastavení pro plugin <em>Debug Log Viewer</em>', DL_SLUG );
 
@@ -27,7 +34,7 @@ class DL_Options_Screen extends DL_Screen_Prototype {
         $this->help_tabs[] = array(
             'id'      => $this->slug . '-help_tab',
             'title'   => __( 'Tables', DL_SLUG ),
-            'content' => __( '<p style"colof: #f30;"><code>XXX</code> Fill this screen help!<p>', DL_SLUG ),
+            'content' => __( '<p style="color: #f30;"><code>XXX</code> Fill this screen help!<p>', DL_SLUG ),
         );
 
         // Specify help sidebars
@@ -40,11 +47,13 @@ class DL_Options_Screen extends DL_Screen_Prototype {
 
         // Finish screen constuction
         parent::__construct( $screen );
+        odwpdl_write_log( $this );
     }
 
     /**
      * Action for `admin_menu` hook.
      * @return void
+     * @since 1.0.0
      */
     public function admin_menu() {
         $this->hookname = add_options_page(

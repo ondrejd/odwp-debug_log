@@ -4,53 +4,68 @@
  * @link https://github.com/ondrejd/odwp-debug_log for the canonical source repository
  * @license https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License 3.0
  * @package odwp-debug_log
+ * @since 1.0.0
  */
+
+if( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 
 if( ! class_exists( 'DL_Screen_Prototype' ) ):
 
 /**
- * @since 1.0
+ * Prototype class for administration screens.
+ * @since 1.0.0
  */
 class DL_Screen_Prototype {
     /**
      * @var string $slug
+     * @since 1.0.0
      */
     protected $slug;
 
     /**
      * @var string $page_title
+     * @since 1.0.0
      */
     protected $page_title;
 
     /**
      * @var string $menu_title
+     * @since 1.0.0
      */
     protected $menu_title;
 
     /**
      * @var array
+     * @since 1.0.0
      */
     protected $help_tabs = array();
 
     /**
      * @var array
+     * @since 1.0.0
      */
     protected $help_sidebars = array();
 
     /**
      * @internal
      * @var string $hookname Name of the admin menu page hook.
+     * @since 1.0.0
      */
     protected $hookname;
 
     /**
      * @var \WP_Screen $screen
+     * @since 1.0.0
      */
     protected $screen;
 
     /**
+     * Constructor.
      * @param \WP_Screen $screen Optional.
      * @return void
+     * @since 1.0.0
      */
     public function __construct( \WP_Screen $screen = null ) {
         $this->screen = $screen;
@@ -64,28 +79,32 @@ class DL_Screen_Prototype {
     }
 
     /**
-     * @return string
+     * @return string Screen's slug.
+     * @since 1.0.0
      */
     public function get_slug() {
         return $this->slug;
     }
 
     /**
-     * @return string
+     * @return string Returns screen's page title.
+     * @since 1.0.0
      */
     public function get_page_title() {
         return $this->page_title;
     }
 
     /**
-     * @return string
+     * @return string Returns screen's menu title.
+     * @since 1.0.0
      */
     public function get_menu_title() {
         return $this->menu_title;
     }
 
     /**
-     * @return \WP_Screen
+     * @return \WP_Screen Returns screen self.
+     * @since 1.0.0
      */
     public function get_screen() {
         if( ! ( $this->screen instanceof \WP_Screen )) {
@@ -98,6 +117,7 @@ class DL_Screen_Prototype {
     /**
      * Returns current screen options.
      * @return array
+     * @since 1.0.0
      */
     public function get_screen_options() {
         $screen = $this->get_screen();
@@ -122,10 +142,11 @@ class DL_Screen_Prototype {
     }
 
     /**
-     * @internal
-     * @param string $key
-     * @param mixed $value
+     * @internal Updates option with given value.
+     * @param string $key Option's key.
+     * @param mixed $value Option's value.
      * @return void
+     * @since 1.0.0
      */
     protected function update_option( $key, $value ) {
         $options = DL_Plugin::get_options();
@@ -148,6 +169,7 @@ class DL_Screen_Prototype {
     /**
      * Action for `init` hook.
      * @return void
+     * @since 1.0.0
      */
     public function init() {
         add_action( 'admin_init', [$this, 'save_screen_options'] );
@@ -156,6 +178,7 @@ class DL_Screen_Prototype {
     /**
      * Action for `admin_init` hook.
      * @return void
+     * @since 1.0.0
      */
     public function admin_init() {
         // ...
@@ -172,6 +195,7 @@ class DL_Screen_Prototype {
     /**
      * Action for `admin_head` hook.
      * @return void
+     * @since 1.0.0
      */
     public function admin_head() {
         // ...
@@ -180,6 +204,7 @@ class DL_Screen_Prototype {
     /**
      * Action for `admin_menu` hook.
      * @return void
+     * @since 1.0.0
      */
     public function admin_menu() {
         $this->hookname = add_submenu_page(
@@ -190,11 +215,11 @@ class DL_Screen_Prototype {
     }
 
     /**
-     * Action for `load-{$hookname}` hook (see {@see DL_Screen_Prototype::admin_menu} for more details).
-     *
-     * Creates screen help and add filter for screen options.
-     *
+     * Creates screen help and add filter for screen options. Action 
+     * for `load-{$hookname}` hook (see {@see DL_Screen_Prototype::admin_menu} 
+     * for more details).
      * @return void
+     * @since 1.0.0
      */
     public function screen_load() {
         $screen = $this->get_screen();
@@ -227,6 +252,7 @@ class DL_Screen_Prototype {
      * Renders screen options form. Handler for `screen_layout_columns` filter
      * (see {@see DL_Screen_Prototype::screen_load}).
      * @return void
+     * @since 1.0.0
      */
     public function screen_options() {
         // These are used in the template:
@@ -255,6 +281,7 @@ class DL_Screen_Prototype {
     /**
      * Returns array with available source code templates.
      * @return array
+     * @since 1.0.0
      */
     public function get_source_templates() {
         $templates = [
@@ -274,11 +301,10 @@ class DL_Screen_Prototype {
     }
 
     /**
-     * Action for `admin_init` hook (see {@see DL_Screen_Prototype::init} for more details).
-     *
-     * Saves screen options.
-     *
+     * Save screen options. Action for `admin_init` hook 
+     * (see {@see DL_Screen_Prototype::init} for more details).
      * @return void
+     * @since 1.0.0
      */
     public function save_screen_options() {
         $user = get_current_user_id();
@@ -300,6 +326,7 @@ class DL_Screen_Prototype {
      * Render page self.
      * @param array $args (Optional.) Arguments for rendered template.
      * @return void
+     * @since 1.0.0
      */
     public function render( $args = [] ) {
         // These are used in the template:
@@ -310,6 +337,7 @@ class DL_Screen_Prototype {
         extract( is_array( $args ) ? $args : [] );
 
         ob_start();
+        
         include( DL_PATH . 'partials/screen-' . $this->slug . '.phtml' );
         $output = ob_get_clean();
 
@@ -330,6 +358,7 @@ class DL_Screen_Prototype {
      * Render common advanced options.
      * @param boolean $display_description
      * @return string
+     * @since 1.0.0
      */
     public function render_advanced_options( $display_description ) {
         ob_start();
@@ -351,6 +380,7 @@ class DL_Screen_Prototype {
     /**
      * Render wizard form submit buttons.
      * @return string
+     * @since 1.0.0
      */
     public function render_submit_buttons() {
         ob_start();
@@ -368,7 +398,6 @@ class DL_Screen_Prototype {
          */
         return apply_filters( DL_SLUG . "_{$this->slug}_form_submit_buttons", $output );
     }
-
 }
 
 endif;

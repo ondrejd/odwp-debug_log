@@ -4,49 +4,54 @@
  * @link https://github.com/ondrejd/odwp-debug_log for the canonical source repository
  * @license https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License 3.0
  * @package odwp-debug_log
+ * @since 1.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if ( ! class_exists( 'DL_Plugin' ) ) :
+if( ! class_exists( 'DL_Plugin' ) ) :
 
 /**
  * Main class.
- *
- * @author Ondřej Doněk, <ondrejd@gmail.com>
- * @since 1.0
+ * @since 1.0.0
  */
 class DL_Plugin {
     /**
      * @const string Plugin's version.
+     * @since 1.0.0
      */
     const VERSION = '1.0.0';
 
     /**
      * @const string
+     * @since 1.0.0
      */
     const SETTINGS_KEY = DL_SLUG . '_settings';
 
     /**
      * @const string
+     * @since 1.0.0
      */
     const TABLE_NAME = DL_SLUG;
 
     /**
      * @var array $admin_screens Array with admin screens.
+     * @since 1.0.0
      */
     public static $admin_screens = [];
 
     /**
      * @var string
+     * @since 1.0.0
      */
     public static $options_page_hook;
 
     /**
      * @internal Activates the plugin.
      * @return void
+     * @since 1.0.0
      */
     public static function activate() {
         //...
@@ -55,6 +60,7 @@ class DL_Plugin {
     /**
      * @internal Deactivates the plugin.
      * @return void
+     * @since 1.0.0
      */
     public static function deactivate() {
         //...
@@ -62,6 +68,7 @@ class DL_Plugin {
 
     /**
      * @return array Default values for settings of the plugin.
+     * @since 1.0.0
      */
     public static function get_default_options() {
         return [
@@ -72,6 +79,7 @@ class DL_Plugin {
 
     /**
      * @return array Settings of the plugin.
+     * @since 1.0.0
      */
     public static function get_options() {
         $defaults = self::get_default_options();
@@ -98,6 +106,7 @@ class DL_Plugin {
      * Returns value of option with given key.
      * @param string $key Option's key.
      * @return mixed Option's value.
+     * @since 1.0.0
      * @throws Exception Whenever option with given key doesn't exist.
      */
     public static function get_option( $key ) {
@@ -113,6 +122,7 @@ class DL_Plugin {
     /**
      * Initializes the plugin.
      * @return void
+     * @since 1.0.0
      */
     public static function initialize() {
         register_activation_hook( __FILE__, [__CLASS__, 'activate'] );
@@ -130,6 +140,7 @@ class DL_Plugin {
     /**
      * Hook for "init" action.
      * @return void
+     * @since 1.0.0
      */
     public static function init() {
         // Initialize locales
@@ -141,6 +152,7 @@ class DL_Plugin {
      * Initialize settings using <b>WordPress Settings API</b>.
      * @link https://developer.wordpress.org/plugins/settings/settings-api/
      * @return void
+     * @since 1.0.0
      */
     protected static function init_settings() {
         $section1 = self::SETTINGS_KEY . '_section_1';
@@ -179,9 +191,13 @@ class DL_Plugin {
     /**
      * Hook for "admin_init" action.
      * @return void
+     * @since 1.0.0
      */
     public static function admin_init() {
         register_setting( DL_SLUG, self::SETTINGS_KEY );
+
+        // Check environment
+        self::check_environment();
 
         // Initialize options and settings page
         $options = self::get_options();
@@ -191,6 +207,7 @@ class DL_Plugin {
     /**
      * Hook for "admin_menu" action.
      * @return void
+     * @since 1.0.0
      */
     public static function admin_menu() {
         include( DL_PATH . 'src/DL_Screen_Prototype.php' );
@@ -210,6 +227,7 @@ class DL_Plugin {
      * Hook for "admin_enqueue_scripts" action.
      * @param string $hook
      * @return void
+     * @since 1.0.0
      */
     public static function admin_enqueue_scripts( $hook ) {
         wp_enqueue_script( DL_SLUG, plugins_url( 'js/admin.js', DL_FILE ), ['jquery'] );
@@ -220,8 +238,62 @@ class DL_Plugin {
     }
 
     /**
+     * Checks environment we're running and prints admin messages if needed.
+     * @return void
+     * @since 1.0.0
+     */
+    public static function check_environment() {
+        if( ! file_exists( DL_LOG ) || ! is_writable( DL_LOG ) ) {
+            add_action( 'admin_notices', function() {
+                $msg = sprintf(
+                        __( '<strong>Debug Log Viewer</strong>: Soubor (<code>%s</code>) k zápisu ladících informací není vytvořen nebo není zapisovatelný. Pro více informací přejděte na <a href="%s">nastavení tohoto pluginu</a>.', DL_SLUG ),
+                        DL_LOG,
+                        admin_url( 'options-general.php?page=odwpdlplugin_options' )
+                );
+                DL_Plugin::print_admin_notice( $msg );
+            } );
+        }
+
+        /**
+         * @var string $err_msg Error message about setting WP_DEBUG and WP_DEBUG_LOG constants.
+         */
+        $err_msg = sprintf(
+                __( 'Pro umožnění zápisu ladících informací do logovacího souboru (<code>%s</code>) musí být konstanty <code>%s</code> a <code>%s</code> nastaveny na hodnotu <code>TRUE</code>. Zde je příklad kódu, který doporučuji k použití: %s', DL_SLUG ),
+                DL_LOG,
+                'WP_DEBUG',
+                'WP_DEBUG_LOG',
+                "/**\n" .
+                " * For developers: WordPress debugging mode.\n" .
+                " *\n" .
+                " * Change this to true to enable the display of notices during development.\n" .
+                " * It is strongly recommended that plugin and theme developers use WP_DEBUG\n" .
+                " * in their development environments.\n" .
+                " *\n" .
+                " * For information on other constants that can be used for debugging,\n" .
+                " * visit the Codex.\n" .
+                " *" .
+                " * @link https://codex.wordpress.org/Debugging_in_WordPress\n" .
+                " */\n" .
+                "define( 'WP_DEBUG', true );\n" .
+                "define( 'WP_DEBUG_LOG', true );\n" .
+                "define( 'WP_DEBUG_DISPLAY', false );\n" .
+                "@ini_set( 'display_errors', 0 );\n" .
+                "define( 'SCRIPT_DEBUG', false );"
+        );
+
+        if( ! defined( 'WP_DEBUG' ) || ! defined( 'WP_DEBUG_LOG' ) ) {
+            self::print_admin_notice( $err_msg, 'error' );
+        }
+
+        if( ! defined( 'WP_DEBUG' ) || ! defined( 'WP_DEBUG_LOG' ) ) {
+            self::print_admin_notice( $err_msg, 'error' );
+        }
+    }
+
+    /**
      * Hook for "plugins_loaded" action.
      * @return void
+     * @since 1.0.0
      */
     public static function plugins_loaded() {
         //...
@@ -230,6 +302,7 @@ class DL_Plugin {
     /**
      * Hook for "wp_enqueue_scripts" action.
      * @return void
+     * @since 1.0.0
      */
     public static function enqueue_scripts() {
         //wp_enqueue_script( DL_SLUG, plugins_url( 'js/public.js', DL_FILE ), ['jquery'] );
@@ -242,6 +315,7 @@ class DL_Plugin {
     /**
      * @internal Renders the first settings section.
      * @return void
+     * @since 1.0.0
      */
     public static function render_settings_section_1() {
         ob_start( function() {} );
@@ -252,6 +326,7 @@ class DL_Plugin {
     /**
      * @internal Renders setting `list_style`.
      * @return void
+     * @since 1.0.0
      * @todo In future we should also set who can (user roles) the log.
      */
     public static function render_setting_list_style() {
@@ -264,6 +339,7 @@ class DL_Plugin {
     /**
      * @internal Renders the second settings section.
      * @return void
+     * @since 1.0.0
      */
     public static function render_settings_section_2() {
         ob_start( function() {} );
@@ -274,6 +350,7 @@ class DL_Plugin {
     /**
      * @internal Renders setting `notice_borders`.
      * @return void
+     * @since 1.0.0
      */
     public static function render_setting_debug_mode() {
         $debug_mode = self::get_option( 'debug_mode' );
@@ -285,6 +362,7 @@ class DL_Plugin {
     /**
      * @internal Uninstalls the plugin.
      * @return void
+     * @since 1.0.0
      */
     public static function uninstall() {
         if( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
@@ -298,19 +376,21 @@ class DL_Plugin {
      * @internal Prints error message in correct WP amin style.
      * @param string $msg Error message.
      * @param string $type (Optional.) One of ['info','updated','error'].
+     * @param boolean $dismissible (Optional.) Is notice dismissible?
      * @return void
+     * @since 1.0.0
      */
-    protected static function print_admin_error( $msg, $type = 'info' ) {
+    protected static function print_admin_notice( $msg, $type = 'info', $dismissible = true ) {
         $avail_types = ['error', 'info', 'updated'];
         $_type = in_array( $type, $avail_types ) ? $type : 'info';
-        printf( '<div class="%s"><p>%s</p></div>', $_type, $msg );
+        printf( '<div class="%s is-dismissible"><p>%s</p></div>', $_type, $msg );
     }
 
     /**
      * On all screens call method with given name.
      *
      * Used for calling hook's actions of the existing screens.
-     * See {@see DL_Plugin::admin_init} for an example how is used.
+     * See {@see DL_Plugin::admin_menu} for an example how is used.
      *
      * If method doesn't exist in the screen object it means that screen
      * do not provide action for the hook.
@@ -318,14 +398,15 @@ class DL_Plugin {
      * @access private
      * @param  string  $method
      * @return void
+     * @since 1.0.0
      */
     private static function screens_call_method( $method ) {
         foreach ( self::$admin_screens as $slug => $screen ) {
-            if ( method_exists( $screen, $method ) ) {
+            if( method_exists( $screen, $method ) ) {
                     call_user_func( [ $screen, $method ] );
             }
         }
     }
-} // End of DL_Plugin
+}
 
 endif;

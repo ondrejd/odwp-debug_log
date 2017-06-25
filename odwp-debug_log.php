@@ -18,6 +18,7 @@
  * @link https://github.com/ondrejd/odwp-debug_log for the canonical source repository
  * @license https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License 3.0
  * @package odwp-debug_log
+ * @since 1.0.0
  */
 
 /**
@@ -34,7 +35,7 @@
  * is used as a parameter for `odwpdl_check_requirements` function.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
@@ -43,12 +44,14 @@ defined( 'DL_SLUG' ) || define( 'DL_SLUG', 'odwpdl' );
 defined( 'DL_NAME' ) || define( 'DL_NAME', 'odwp-debug_log' );
 defined( 'DL_PATH' ) || define( 'DL_PATH', dirname( __FILE__ ) . '/' );
 defined( 'DL_FILE' ) || define( 'DL_FILE', __FILE__ );
+defined( 'DL_LOG' )  || define( 'DL_LOG', WP_CONTENT_DIR . '/debug.log' );
 
 if( ! function_exists( 'odwpdl_check_requirements' ) ) :
     /**
      * Checks requirements of our plugin.
      * @param array $requirements
      * @return array
+     * @since 1.0.0
      */
     function odwpdl_check_requirements( array $requirements ) {
         global $wp_version;
@@ -114,6 +117,7 @@ if( ! function_exists( 'odwpdl_deactivate_raw' ) ) :
     /**
      * Deactivate plugin by the raw way.
      * @return void
+     * @since 1.0.0
      */
     function odwpdl_deactivate_raw() {
         $active_plugins = get_option( 'active_plugins' );
@@ -124,6 +128,46 @@ if( ! function_exists( 'odwpdl_deactivate_raw' ) ) :
             }
         }
         update_option( 'active_plugins', $out );
+    }
+endif;
+
+if( ! function_exists( 'odwpdl_error_log' ) ) :
+    /**
+     * @internal Write message to the `wp-content/debug.log` file.
+     * @param string $message
+     * @param integer $message_type (Optional.)
+     * @param string $destination (Optional.)
+     * @param string $extra_headers (Optional.)
+     * @return void
+     * @since 1.0.0
+     */
+    function odwpdl_error_log( string $message, int $message_type = 0, string $destination = null, string $extra_headers = '' ) {
+        if( ! file_exists( DL_LOG ) || ! is_writable( DL_LOG ) ) {
+            return;
+        }
+
+        /**
+         * @var string $record Record we want to write into the log file.
+         */
+        $record = '[' . date( 'd-M-Y H:i:s', time() ) . ' UTC] ' . $message ;
+
+        file_put_contents( DL_LOG, PHP_EOL . $record, FILE_APPEND );
+    }
+endif;
+
+if( ! function_exists( 'odwpdl_write_log' ) ) :
+    /**
+     * Write record to the `wp-content/debug.log` file.
+     * @param mixed $log
+     * @return void
+     * @since 1.0.0
+     */
+    function odwpdl_write_log( $log ) {
+        if( is_array( $log ) || is_object( $log ) ) {
+            odwpdl_error_log( print_r( $log, true ) );
+        } else {
+            odwpdl_error_log( $log );
+        }
     }
 endif;
 
@@ -164,7 +208,7 @@ if( count( $odwpdl_errs ) > 0 ) {
     }
 } else {
     // Requirements are met so initialize the plugin.
-    include( DL_PATH . 'src/NG_Screen_Prototype.php' );
+    include( DL_PATH . 'src/DL_Screen_Prototype.php' );
     include( DL_PATH . 'src/DL_Plugin.php' );
     DL_Plugin::initialize();
 }
