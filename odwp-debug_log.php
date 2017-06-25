@@ -146,11 +146,7 @@ if( ! function_exists( 'odwpdl_error_log' ) ) :
             return;
         }
 
-        /**
-         * @var string $record Record we want to write into the log file.
-         */
-        $record = '[' . date( 'd-M-Y H:i:s', time() ) . ' UTC] ' . $message ;
-
+        $record = '[' . date( 'd-M-Y H:i:s', time() ) . ' UTC] ' . $message;
         file_put_contents( DL_LOG, PHP_EOL . $record, FILE_APPEND );
     }
 endif;

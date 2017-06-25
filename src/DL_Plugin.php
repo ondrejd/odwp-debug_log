@@ -248,7 +248,7 @@ class DL_Plugin {
                 $msg = sprintf(
                         __( '<strong>Debug Log Viewer</strong>: Soubor (<code>%s</code>) k zápisu ladících informací není vytvořen nebo není zapisovatelný. Pro více informací přejděte na <a href="%s">nastavení tohoto pluginu</a>.', DL_SLUG ),
                         DL_LOG,
-                        admin_url( 'options-general.php?page=odwpdlplugin_options' )
+                        admin_url( 'options-general.php?page=' . DL_SLUG . '-plugin_options' )
                 );
                 DL_Plugin::print_admin_notice( $msg );
             } );
@@ -375,15 +375,25 @@ class DL_Plugin {
     /**
      * @internal Prints error message in correct WP amin style.
      * @param string $msg Error message.
-     * @param string $type (Optional.) One of ['info','updated','error'].
+     * @param string $type (Optional.) One of ['error','info','success','warning'].
      * @param boolean $dismissible (Optional.) Is notice dismissible?
      * @return void
      * @since 1.0.0
      */
     protected static function print_admin_notice( $msg, $type = 'info', $dismissible = true ) {
-        $avail_types = ['error', 'info', 'updated'];
-        $_type = in_array( $type, $avail_types ) ? $type : 'info';
-        printf( '<div class="%s is-dismissible"><p>%s</p></div>', $_type, $msg );
+        $class = 'notice';
+
+        if( in_array( $type, ['error','info','success','warning'] ) ) {
+            $class .= ' notice-' . $type;
+        } else {
+            $class .= ' notice-info';
+        }
+
+        if( $dismissible === true) {
+            $class .= ' s-dismissible';
+        }
+        
+        printf( '<div class="%s"><p>%s</p></div>', $class, $msg );
     }
 
     /**
