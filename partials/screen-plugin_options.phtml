@@ -1,10 +1,10 @@
 <?php
 /**
  * @author Ondřej Doněk <ondrejd@gmail.com>
- * @link https://github.com/ondrejd/odwp-notices_generator for the canonical source repository
+ * @link https://github.com/ondrejd/odwp-debug_log for the canonical source repository
  * @license https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License 3.0
- * @package odwp-notices_generator
- * @see Notices_Generator_Plugin::admin_options_page()
+ * @package odwp-debug_log
+ * @see DL_Plugin::admin_options_page()
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 ?>
 <form action="options.php" method="post">
-    <h2><?php _e( 'Nastavení pro plugin Smuteční oznámení', NG_SLUG ) ?></h2>
+    <h2><?php _e( 'Nastavení pro plugin Prohlížeč chybových zpráv', NG_SLUG ) ?></h2>
 <?php
         settings_fields( NG_SLUG );
         do_settings_sections( NG_SLUG );

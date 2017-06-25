@@ -143,7 +143,6 @@ class DL_Plugin {
      * @return void
      */
     protected static function init_settings() {
-
         $section1 = self::SETTINGS_KEY . '_section_1';
         add_settings_section(
                 $section1,

@@ -1,14 +1,14 @@
 <?php
 /**
  * @author Ondřej Doněk <ondrejd@gmail.com>
- * @link https://github.com/ondrejd/odwp-notices_generator for the canonical source repository
+ * @link https://github.com/ondrejd/odwp-debug_log for the canonical source repository
  * @license https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License 3.0
- * @package odwp-notices_generator
+ * @package odwp-debug_log
  *
- * @see Notices_Generator_Plugin::render_setting_only_logged_users()
+ * @see DL_Plugin::render_setting_only_list_style()
  *
  * Variables passed:
- * @var boolean $only_logged_users
+ * @var string $list_style ['default','short']
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,8 +16,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 ?>
-<label for="odwpng_settings_only_logged_users">
-    <input type="checkbox" id="odwpng_settings_only_logged_users" name="odwpng_settings[new_notices_only_logged_users]" <?php checked( $only_logged_users ) ?>>
-    <?php _e( 'Povolit vytváření oznámení všem uživatelům', NG_SLUG ) ?>
+<label for="odwpdl_settings_list_style">
+    <select id="odwpdl_settings_list_style" name="odwpdl_settings[list_style]" value="<?php echo $list_style ?>">
+        <option value="default"<?php selected( $debug_mode, 'default' ) ?>><?php _e( 'Defaultní', DL_SLUG ) ?></option>
+        <option value="short"<?php selected( $debug_mode, 'disabled' ) ?>><?php _e( 'Zkrácený', DL_SLUG ) ?></option>
+    </select>
+    <?php _e( 'Typ zobrazení', NG_SLUG ) ?>
 </label>
-<p class="description"><?php _e( 'Pokud zaškrtnete, tak bude povoleno vytváření oznámení i nepřihlášeným uživatelům?', NG_SLUG ) ?></p>
+<p class="description"><?php _e( 'Zobrazení výpisu chyb - můžete zvolit buď defaultní nebo zkrácený výpisu.', NG_SLUG ) ?></p>

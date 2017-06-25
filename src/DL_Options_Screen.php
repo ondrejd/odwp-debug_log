@@ -20,8 +20,8 @@ class DL_Options_Screen extends DL_Screen_Prototype {
     public function __construct( \WP_Screen $screen = null ) {
         // Main properties
         $this->slug = 'plugin_options';
-        $this->menu_title = __( 'Smuteční oznámení', DL_SLUG );
-        $this->page_title = __( 'Nastavení pro plugin <em>Debug Log</em>', DL_SLUG );
+        $this->menu_title = __( 'Debug Log Viewer', DL_SLUG );
+        $this->page_title = __( 'Nastavení pro plugin <em>Debug Log Viewer</em>', DL_SLUG );
 
         // Specify help tabs
         $this->help_tabs[] = array(

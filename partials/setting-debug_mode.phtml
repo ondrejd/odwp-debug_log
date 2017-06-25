@@ -1,14 +1,14 @@
 <?php
 /**
  * @author Ondřej Doněk <ondrejd@gmail.com>
- * @link https://github.com/ondrejd/odwp-notices_generator for the canonical source repository
+ * @link https://github.com/ondrejd/odwp-debug_log for the canonical source repository
  * @license https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License 3.0
- * @package odwp-notices_generator
+ * @package odwp-debug_log
  *
- * @see Notices_Generator_Plugin::render_setting_unknown_users()
+ * @see DL_Plugin::render_setting_debug_mode()
  *
  * Variables passed:
- * @var boolean $unknown_users
+ * @var string $debug_mode ['enable','disable']
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,8 +16,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 ?>
-<label for="odwpng_settings_unknown_users">
-    <input type="checkbox" id="odwpng_settings_unknown_users" name="odwpng_settings[save_notices_from_unknown_users]" <?php checked( $unknown_users ) ?>>
-    <?php _e( 'Ukládat všechna oznámení', NG_SLUG ) ?>
+<label for="odwpdl_settings_debug_mode">
+    <select id="odwpdl_settings_debug_mode" name="odwpdl_settings[debug_mode]" value="<?php echo $debug_mode ?>">
+        <option value="enabled"<?php selected( $debug_mode, 'enabled' ) ?>><?php _e( 'Povolit', DL_SLUG ) ?></option>
+        <option value="disabled"<?php selected( $debug_mode, 'disabled' ) ?>><?php _e( 'Zakázat', DL_SLUG ) ?></option>
+    </select>
+    <?php _e( 'Povolit ladící mód', NG_SLUG ) ?>
 </label>
-<p class="description"><?php _e( 'Pokud zaškrtnete, tak se budou ukládat všechna vytvořená oznámení - i ta od nepřihlášených uživatelů. Pokud ponecháte odškrtnuté, ukládají se pouze oznámení od registrovaných uživatelů.', NG_SLUG ) ?></p>
+<p class="description"><?php _e( 'Pokud ladící mód povolíte, budou se všechny chyby zapisovat do souboru <code>debug.log</code>.', NG_SLUG ) ?></p>
