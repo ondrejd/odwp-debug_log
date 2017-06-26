@@ -17,7 +17,7 @@ if( ! class_exists( 'DL_Screen_Prototype' ) ):
  * Prototype class for administration screens.
  * @since 1.0.0
  */
-class DL_Screen_Prototype {
+abstract class DL_Screen_Prototype {
     /**
      * @var string $slug
      * @since 1.0.0
@@ -205,14 +205,15 @@ class DL_Screen_Prototype {
      * Action for `admin_menu` hook.
      * @return void
      * @since 1.0.0
+     * @todo This method should not be abstract. It should recognize from the class properties what menu item we want to create.
      */
-    public function admin_menu() {
+    abstract public function admin_menu();/* {
         $this->hookname = add_submenu_page(
             'edit.php?post_type=wizard', $this->page_title, $this->menu_title, 'manage_options', $this->slug, [$this, 'render']
         );
 
         add_action( 'load-' . $this->hookname, [$this, 'screen_load'] );
-    }
+    }*/
 
     /**
      * Creates screen help and add filter for screen options. Action 
@@ -337,8 +338,8 @@ class DL_Screen_Prototype {
         extract( is_array( $args ) ? $args : [] );
 
         ob_start();
-        
-        include( DL_PATH . 'partials/screen-' . $this->slug . '.phtml' );
+
+        include( DL_PATH . 'partials/screen-' . str_replace( DL_SLUG . '-', '', $this->slug ) . '.phtml' );
         $output = ob_get_clean();
 
         /**
@@ -352,51 +353,6 @@ class DL_Screen_Prototype {
          */
         $output = apply_filters( DL_SLUG . "_{$this->slug}_form", $output );
         echo $output;
-    }
-
-    /**
-     * Render common advanced options.
-     * @param boolean $display_description
-     * @return string
-     * @since 1.0.0
-     */
-    public function render_advanced_options( $display_description ) {
-        ob_start();
-        include( DL_PATH . 'partials/wizard-advanced_options.phtml' );
-        $output = ob_get_clean();
-
-        /**
-         * Filter wizard advanced options (HTML with part of form in <tr> element).
-         *
-         * Name of filter corresponds with slug of the particular wizard.
-         * For example for `Custom Post Type wizard` is filter name
-         * "devhelper_cpt_wizard_advanced_options_form".
-         *
-         * @param string $output Rendered HTML.
-         */
-        return apply_filters( DL_SLUG . "_{$this->slug}_advanced_options_form", $output );
-    }
-
-    /**
-     * Render wizard form submit buttons.
-     * @return string
-     * @since 1.0.0
-     */
-    public function render_submit_buttons() {
-        ob_start();
-        include( DL_PATH . 'partials/wizard-submit_buttons.phtml' );
-        $output = ob_get_clean();
-
-        /**
-         * Filter wizard form submit buttons.
-         *
-         * Name of filter corresponds with slug of the particular wizard.
-         * For example for `Custom Post Type wizard` is filter name
-         * "devhelper_cpt_wizard_form_submit_buttons".
-         *
-         * @param string $output Rendered HTML.
-         */
-        return apply_filters( DL_SLUG . "_{$this->slug}_form_submit_buttons", $output );
     }
 }
 

@@ -199,25 +199,36 @@ class DL_Plugin {
         // Check environment
         self::check_environment();
 
-        // Initialize options and settings page
+        // Initialize options
         $options = self::get_options();
         self::init_settings();
+
+        // Initialize dashboard widgets
+        //$log_widget = new DL_Log_Dashboard_Widget();
     }
 
     /**
      * Hook for "admin_menu" action.
      * @return void
      * @since 1.0.0
+     * @todo We can not initialize screens here because we have more hoooks in there (`admin_init` for example).
      */
     public static function admin_menu() {
         include( DL_PATH . 'src/DL_Screen_Prototype.php' );
         include( DL_PATH . 'src/DL_Options_Screen.php' );
+        include( DL_PATH . 'src/DL_Log_Screen.php' );
 
         /**
          * @var DL_Options_Screen $options_screen
          */
         $options_screen = new DL_Options_Screen();
         self::$admin_screens[] = $options_screen;
+
+        /**
+         * @var DL_Log_Screen $log_screen
+         */
+        $log_screen = new DL_Log_Screen();
+        self::$admin_screens[] = $log_screen;
 
         // Call action for `admin_menu` hook on all screens.
         self::screens_call_method( 'admin_menu' );
@@ -258,27 +269,11 @@ class DL_Plugin {
          * @var string $err_msg Error message about setting WP_DEBUG and WP_DEBUG_LOG constants.
          */
         $err_msg = sprintf(
-                __( 'Pro umožnění zápisu ladících informací do logovacího souboru (<code>%s</code>) musí být konstanty <code>%s</code> a <code>%s</code> nastaveny na hodnotu <code>TRUE</code>. Zde je příklad kódu, který doporučuji k použití: %s', DL_SLUG ),
+                __( 'Pro umožnění zápisu ladících informací do logovacího souboru (<code>%s</code>) musí být konstanty <code>%s</code> a <code>%s</code> nastaveny na hodnotu <code>TRUE</code>. Pro více informací přejděte na <a href="%s">nastavení tohoto pluginu</a>.', DL_SLUG ),
                 DL_LOG,
                 'WP_DEBUG',
                 'WP_DEBUG_LOG',
-                "/**\n" .
-                " * For developers: WordPress debugging mode.\n" .
-                " *\n" .
-                " * Change this to true to enable the display of notices during development.\n" .
-                " * It is strongly recommended that plugin and theme developers use WP_DEBUG\n" .
-                " * in their development environments.\n" .
-                " *\n" .
-                " * For information on other constants that can be used for debugging,\n" .
-                " * visit the Codex.\n" .
-                " *" .
-                " * @link https://codex.wordpress.org/Debugging_in_WordPress\n" .
-                " */\n" .
-                "define( 'WP_DEBUG', true );\n" .
-                "define( 'WP_DEBUG_LOG', true );\n" .
-                "define( 'WP_DEBUG_DISPLAY', false );\n" .
-                "@ini_set( 'display_errors', 0 );\n" .
-                "define( 'SCRIPT_DEBUG', false );"
+                admin_url( 'options-general.php?page=' . DL_SLUG . '-plugin_options' )
         );
 
         if( ! defined( 'WP_DEBUG' ) || ! defined( 'WP_DEBUG_LOG' ) ) {

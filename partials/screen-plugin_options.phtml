@@ -4,7 +4,7 @@
  * @link https://github.com/ondrejd/odwp-debug_log for the canonical source repository
  * @license https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License 3.0
  * @package odwp-debug_log
- * @see DL_Plugin::admin_options_page()
+ * @see DL_Plugin::admin_menu()
  * @since 1.0.0
  */
 
@@ -14,10 +14,10 @@ if( ! defined( 'ABSPATH' ) ) {
 
 ?>
 <form action="options.php" method="post">
-    <h2><?php _e( 'Nastavení pro plugin Prohlížeč chybových zpráv', NG_SLUG ) ?></h2>
+    <h2><?php _e( 'Nastavení pro plugin Prohlížeč chybových zpráv', DL_SLUG ) ?></h2>
 <?php
-        settings_fields( NG_SLUG );
-        do_settings_sections( NG_SLUG );
+        settings_fields( DL_SLUG );
+        do_settings_sections( DL_SLUG );
         submit_button();
 ?>
 </form>

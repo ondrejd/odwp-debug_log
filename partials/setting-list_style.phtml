@@ -16,11 +16,8 @@ if( ! defined( 'ABSPATH' ) ) {
 }
 
 ?>
-<label for="odwpdl_settings_list_style">
-    <select id="odwpdl_settings_list_style" name="odwpdl_settings[list_style]" value="<?php echo $list_style ?>">
-        <option value="default"<?php selected( $debug_mode, 'default' ) ?>><?php _e( 'Defaultní', DL_SLUG ) ?></option>
-        <option value="short"<?php selected( $debug_mode, 'disabled' ) ?>><?php _e( 'Zkrácený', DL_SLUG ) ?></option>
-    </select>
-    <?php _e( 'Typ zobrazení', NG_SLUG ) ?>
-</label>
-<p class="description"><?php _e( 'Zobrazení výpisu chyb - můžete zvolit buď defaultní nebo zkrácený výpisu.', NG_SLUG ) ?></p>
+<select id="<?php echo DL_SLUG ?>_settings_list_style" name="<?php echo DL_SLUG ?>_settings[list_style]" value="<?php echo $list_style ?>">
+    <option value="default"<?php selected( $list_style, 'default' ) ?>><?php _e( 'Defaultní', DL_SLUG ) ?></option>
+    <option value="short"<?php selected( $list_style, 'disabled' ) ?>><?php _e( 'Zkrácený', DL_SLUG ) ?></option>
+</select>
+<p class="description"><?php _e( 'Zobrazení výpisu chyb - můžete zvolit buď defaultní nebo zkrácený výpisu.', DL_SLUG ) ?></p>
