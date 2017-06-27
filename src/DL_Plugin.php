@@ -204,7 +204,8 @@ class DL_Plugin {
         self::init_settings();
 
         // Initialize dashboard widgets
-        //$log_widget = new DL_Log_Dashboard_Widget();
+        include( DL_PATH . 'src/DL_Log_Dashboard_Widget.php' );
+        add_action( 'wp_dashboard_setup', ['DL_Log_Dashboard_Widget', 'init'] );
     }
 
     /**
