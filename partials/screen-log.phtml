@@ -12,9 +12,16 @@ if( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+if( ! class_exists( 'DL_Log_Table' ) ) {
+    require_once( DL_PATH . 'src/DL_Log_Table.php' );
+}
+
+$dl_log_table = new DL_Log_Table();
+$dl_log_table->prepare_items();
+
 ?>
 <div class="wrap">
     <h1><?php _e( 'Prohlížeč ladících informací', DL_LOG ) ?></h1>
-    
     <p style="color: #f30;"><strong>XXX</strong> - dokončit stránku.</p>
+    <?php $dl_log_table->display(); ?>
 </div>
