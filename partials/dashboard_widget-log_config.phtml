@@ -10,9 +10,7 @@ if( ! defined( 'ABSPATH' ) ) {
 $number = ( isset( $_POST['number'] ) ) ? stripslashes( $_POST['number'] ) : '';
 self::update_dashboard_widget_options(
         DL_Log_Dashboard_Widget::WID,
-        array(
-            'example_number' => $number,
-        )
+        self::get_default_options()
 );
 
 ?>

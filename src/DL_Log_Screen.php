@@ -27,8 +27,8 @@ class DL_Log_Screen extends DL_Screen_Prototype {
     public function __construct( \WP_Screen $screen = null ) {
         // Main properties
         $this->slug = DL_SLUG . '-log';
-        $this->menu_title = __( 'Log Viewer', DL_SLUG );
-        $this->page_title = __( 'Debug Log Viewer', DL_SLUG );
+        $this->menu_title = __( 'Ladící informace', DL_SLUG );
+        $this->page_title = __( 'Prohlížeč ladících informací', DL_SLUG );
 
         // Specify help tabs
         $this->help_tabs[] = array(
