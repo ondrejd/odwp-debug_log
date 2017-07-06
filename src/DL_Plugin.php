@@ -215,6 +215,7 @@ class DL_Plugin {
      * @todo We can not initialize screens here because we have more hoooks in there (`admin_init` for example).
      */
     public static function admin_menu() {
+        include( DL_PATH . 'src/DL_Log_Record.php' );
         include( DL_PATH . 'src/DL_Screen_Prototype.php' );
         include( DL_PATH . 'src/DL_Options_Screen.php' );
         include( DL_PATH . 'src/DL_Log_Screen.php' );
