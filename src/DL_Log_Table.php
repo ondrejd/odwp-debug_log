@@ -93,7 +93,7 @@ class DL_Log_Table extends WP_List_Table {
     public function get_columns() {
         $columns = [
             'cb'   => '<input type="checkbox">',
-            'id'   => __( 'P.č.', DL_LOG ),
+            'id'   => __( '<abbr title="Pořadové číslo">P.č.</abbr>', DL_LOG ),
             'date' => __( 'Datum a čas', DL_LOG ),
             'text' => __( 'Záznam', DL_LOG ),
         ];
@@ -126,7 +126,7 @@ class DL_Log_Table extends WP_List_Table {
         $this->_column_headers = [$columns, $hidden, $sortable];
 
         // Set table items
-        $data = $tis->get_data();
+        $data = $this->get_data();
         usort( $data, [__CLASS__, 'usort_reorder'] );
         $this->items = $data;
     }
@@ -135,9 +135,49 @@ class DL_Log_Table extends WP_List_Table {
      * Returns data from the `debug.log` file.
      * @return array
      * @since 1.0.0
+     * @todo We should probably not read debug.log file directly in here but use some sort of cache instead.
      */
     protected function get_data() {
-        return [];
+        $log_raw = @file( DL_LOG, FILE_SKIP_EMPTY_LINES );
+        $log = [];
+        $record = null;
+
+        foreach( $log_raw as $log_line ) {
+            $matches = preg_split(
+                '/(\[[0-9]{2}-[a-zA-Z]{3}-[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} [a-zA-Z]{0,3}\]) ([a-zA-Z\s\d:\/.\-\_\(\)]*)/',
+                $log_line,
+                -1,
+                PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
+            );
+
+            if( is_array( $matches ) ) {
+                if( count( $matches ) == 2 ) {
+                    // This is normal log row (date and details)
+                    if( ( $record instanceof DLLogRecord ) ) {
+                        array_push( $log, $record );
+                        $record = null;
+                        $record = new DLLogRecord( '', '' );
+                    } else {
+                        $record = new DLLogRecord( '', '' );
+                    }
+
+                    $record->setTime( $matches[0] );
+                    $record->setMessage( $matches[1] );
+                }
+                elseif( count( $matches ) == 1 && ( $record instanceof DLLogRecord ) ) {
+                    if( strpos( $matches[0], '#' ) === 0 ) {
+                        // This is just continue of of previous line (debug details)
+                        $record->addErrorLog( $matches[0] );
+                    }
+                }
+            }
+        }
+
+        if( ( $record instanceof DLLogRecord ) ) {
+            array_push( $log, $record );
+        }
+
+        return $log;
     }
 
     /**
