@@ -15,6 +15,10 @@ if( ! class_exists( 'WP_List_Table' ) ) {
     require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
+if( ! class_exists( 'DL_Log_Record' ) ) {
+    require_once( DL_PATH . 'src/DL_Log_Record.php' );
+}
+
 if( ! class_exists( 'DL_Log_Table' ) ) :
 
 /**
