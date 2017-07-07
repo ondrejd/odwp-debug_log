@@ -5,4 +5,9 @@
  * @package odwp-debug_log
  */
 
-/* Place your styles here... */
+.tools_page_odwpdl-log .column-id {
+    width: 60px;
+}
+.tools_page_odwpdl-log .column-time {
+    width: 140px;
+}

@@ -19,6 +19,18 @@ if( ! class_exists( 'DL_Log_Record' ) ) :
  */
 class DL_Log_Record {
     /**
+     * @var string
+     * @since 1.0.0
+     */
+    const DATE_FORMAT = 'Y n. j. H:i:s';
+
+    /**
+     * @var integer $id
+     * @since 1.0.0
+     */
+    protected $id;
+
+    /**
      * @var integer $time
      * @since 1.0.0
      */
@@ -31,22 +43,33 @@ class DL_Log_Record {
     protected $message;
 
     /**
-     * @var array $error_log
+     * @var array $stack_trace
      * @since 1.0.0
      */
-    protected $error_log;// Should be "Stack Trace"
+    protected $stack_trace;
 
     /**
      * Construct.
+     * @param integer $id
      * @param integer $time
      * @param string $message
-     * @param array $error_log
+     * @param array $stack_trace (Optional.)
      * @since 1.0.0
      */
-    public function __construct( $time, $message, $error_log = [] ) {
+    public function __construct( $id, $time, $message, $stack_trace = [] ) {
+        $this->id = $id;
         $this->time = $time;
         $this->message = $message;
-        $this->error_log = $error_log;
+        $this->stack_trace = $stack_trace;
+    }
+
+    /**
+     * Returns index of the log record.
+     * @return integer
+     * @since 1.0.0
+     */
+    public function getId() {
+        return $this->id;
     }
 
     /**
@@ -56,7 +79,7 @@ class DL_Log_Record {
      * @since 1.0.0
      */
     public function getTime( $formatted = false ) {
-        return $formatted === true ? date( 'j.n.Y H:i:s', $this->time ) : $this->time;
+        return ( $formatted === true ) ? date( self::DATE_FORMAT, $this->time ) : $this->time;
     }
 
     /**
@@ -73,8 +96,18 @@ class DL_Log_Record {
      * @return array
      * @since 1.0.0
      */
-    public function getErrorLog() {
-        return $this->error_log;
+    public function getStackTrace() {
+        return $this->stack_trace;
+    }
+
+    /**
+     * Sets index of the log record.
+     * @param integer $id
+     * @return void
+     * @since 1.0.0
+     */
+    public function setId( $id ) {
+        $this->id = $id;
     }
 
     /**
@@ -99,22 +132,22 @@ class DL_Log_Record {
 
     /**
      * Sets stack trace of the log record.
-     * @param array $error_log
+     * @param array $stack_trace
      * @return void
      * @since 1.0.0
      */
-    public function setErrorLog( $error_log = [] ) {
-        $this->error_log = $error_log;
+    public function setStackTrace( $stack_trace = [] ) {
+        $this->error_log = $stack_trace;
     }
 
     /**
      * Adds stack trace message to the log record.
-     * @param string $message
+     * @param string $trace
      * @return void
      * @since 1.0.0
      */
-    public function addErrorLog( $message ) {
-        array_push( $this->error_log, $message );
+    public function addStackTrace( $trace ) {
+        array_push( $this->stack_trace, $trace );
     }
 }
 

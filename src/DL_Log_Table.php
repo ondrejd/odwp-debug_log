@@ -25,49 +25,53 @@ if( ! class_exists( 'DL_Log_Table' ) ) :
 class DL_Log_Table extends WP_List_Table {
     /**
      * Renders checkbox column.
-     * @param array $row
+     * @param DL_Log_Record $item
      * @return string
      * @since 1.0.0
      */
-    function column_cb( $row ) {
+    function column_cb( $item ) {
         return sprintf(
-            '<input type="checkbox" name="log_item[]" value="%s">', $row['id']
+            '<input type="checkbox" name="log_item[]" value="%s">', $item->getId()
         );
     }
 
     /**
      * Default function for rendering columns.
-     * @param array $row
+     * @param DL_Log_Record $item
      * @param string $column
      * @return string
      * @since 1.0.0
      */
-    public function column_default( $row, $column ) {
+    public function column_default( DL_Log_Record $item, $column ) {
         switch( $column ) { 
             case 'id':
-            case 'date':
+                return $item->getId();
+
+            case 'time':
+                return $item->getTime( true );
+
             case 'text':
-                return array_key_exists( $column, $row ) ? $row[$column] : '';
+                return $item->getMessage();
+
             default:
                 return '';
-                //return print_r( $row, true );
         }
     }
 
     /**
      * Renders `text` column with the `delete` and `view` action.
-     * @param array $row
+     * @param DL_Log_Record $item
      * @return string
      * @since 1.0.0
+     * @todo Display also stack trace!
      */
-    public function column_text( $row ) {
-        $id   = ( int ) $item['id'];
-        $page = ( int ) filter_input( INPUT_REQUEST, 'page' );
-        $text = $row['text'];
-
+    public function column_text( DL_Log_Record $item ) {
+        $id      = ( int ) $item->getId();
+        $page    = ( int ) filter_input( INPUT_REQUEST, 'page' );
+        $text    = $item->getMessage();
         $actions = [
-            'view'   => sprintf( __( '<a href="?page=%s&action=%s&book=%s">Edit</a>', DL_SLUG ), $pg, 'edit', $id ),
-            'delete' => sprintf( __( '<a href="?page=%s&action=%s&book=%s">Delete</a>', DL_SLUG ), $pg, 'delete', $id ),
+            'view'   => sprintf( __( '<a href="?page=%s&amp;action=%s&amp;record=%s">Edit</a>', DL_SLUG ), $page, 'edit', $id ),
+            'delete' => sprintf( __( '<a href="?page=%s&amp;action=%s&amp;record=%s">Delete</a>', DL_SLUG ), $page, 'delete', $id ),
         ];
 
         return sprintf('%1$s %2$s', $text, $this->row_actions( $actions ) );
@@ -94,7 +98,7 @@ class DL_Log_Table extends WP_List_Table {
         $columns = [
             'cb'   => '<input type="checkbox">',
             'id'   => __( '<abbr title="Pořadové číslo">P.č.</abbr>', DL_LOG ),
-            'date' => __( 'Datum a čas', DL_LOG ),
+            'time' => __( 'Datum a čas', DL_LOG ),
             'text' => __( 'Záznam', DL_LOG ),
         ];
         return $columns;
@@ -108,7 +112,7 @@ class DL_Log_Table extends WP_List_Table {
     public function get_sortable_columns() {
         $columns = [
             'id'   => ['id', false],
-            'date' => ['date', false],
+            'time' => ['time', false],
             'text' => ['text', false],
         ];
         return $columns;
@@ -138,13 +142,13 @@ class DL_Log_Table extends WP_List_Table {
      * @todo We should probably not read debug.log file directly in here but use some sort of cache instead.
      */
     protected function get_data() {
-        $log_raw = @file( DL_LOG, FILE_SKIP_EMPTY_LINES );
+        $log_raw = file( DL_LOG, FILE_SKIP_EMPTY_LINES );
         $log = [];
         $record = null;
 
         foreach( $log_raw as $log_line ) {
             $matches = preg_split(
-                '/(\[[0-9]{2}-[a-zA-Z]{3}-[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} [a-zA-Z]{0,3}\]) ([a-zA-Z\s\d:\/.\-\_\(\)]*)/',
+                '/(\[[0-9]{2}-[a-zA-Z]{3}-[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} [a-zA-Z]{0,3}\]) ([a-zA-Z\,\s\d:\/.\-\_\(\)\'\"$]*)/',
                 $log_line,
                 -1,
                 PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
@@ -153,27 +157,40 @@ class DL_Log_Table extends WP_List_Table {
             if( is_array( $matches ) ) {
                 if( count( $matches ) == 2 ) {
                     // This is normal log row (date and details)
-                    if( ( $record instanceof DLLogRecord ) ) {
+                    if( ( $record instanceof DL_Log_Record ) ) {
                         array_push( $log, $record );
                         $record = null;
-                        $record = new DLLogRecord( '', '' );
+                        $record = new DL_Log_Record( 0, '', '' );
                     } else {
-                        $record = new DLLogRecord( '', '' );
+                        $record = new DL_Log_Record( 0, '', '' );
                     }
 
-                    $record->setTime( $matches[0] );
+                    $record->setId( count( $log ) + 1 );
+                    $record->setTime( strtotime( trim( $matches[0], '[]' ) ) );
                     $record->setMessage( $matches[1] );
                 }
-                elseif( count( $matches ) == 1 && ( $record instanceof DLLogRecord ) ) {
+                elseif( count( $matches ) == 1 && ( $record instanceof DL_Log_Record ) ) {
                     if( strpos( $matches[0], '#' ) === 0 ) {
                         // This is just continue of of previous line (debug details)
-                        $record->addErrorLog( $matches[0] );
+                        $record->addStackTrace( $matches[0] );
                     }
                 }
+                /**
+                 * @todo Don't forget to remove this before the first release!!!
+                 */
+                else {
+                    var_dump( $matches );echo '<br>';
+                }
+            }
+            /**
+             * @todo Don't forget to remove this before the first release!!!
+             */
+            else {
+                var_dump( $matches );echo '<br>';
             }
         }
 
-        if( ( $record instanceof DLLogRecord ) ) {
+        if( ( $record instanceof DL_Log_Record ) ) {
             array_push( $log, $record );
         }
 
@@ -182,12 +199,12 @@ class DL_Log_Table extends WP_List_Table {
 
     /**
      * @internal Sorting method for the table data.
-     * @param array $a The first row.
-     * @param array $b The second row.
-     * @return int
+     * @param DL_Log_Record $a The first row.
+     * @param DL_Log_Record $b The second row.
+     * @return integer
      * @since 1.0.0
      */
-    protected function usort_reorder( $a, $b ) {
+    protected function usort_reorder( DL_Log_Record $a, DL_Log_Record $b ) {
         $orderby = filter_input( INPUT_GET, 'orderby' );
         if( empty( $orderby ) ) {
             $orderby = 'id';
@@ -198,7 +215,26 @@ class DL_Log_Table extends WP_List_Table {
             $order = 'asc';
         }
 
-        $result = strcmp( $a[$orderby], $b[$orderby] );
+        $val1 = null;
+        $val2 = null;
+        switch( $orderby ) {
+            case 'id':
+                $val1 = $a->getId();
+                $val2 = $b->getId();
+                break;
+
+            case 'time':
+                $val1 = $a->getTime();
+                $val2 = $b->getTime();
+                break;
+
+            case 'text':
+                $val1 = $a->getMessage();
+                $val2 = $b->getMessage();
+                break;
+        }
+
+        $result = strcmp( $val1, $val2 );
 
         return ( $order === 'asc' ) ? $result : -$result;
     }

@@ -22,8 +22,8 @@ $dl_log_table->prepare_items();
 ?>
 <div class="wrap">
     <h1><?php _e( 'Prohlížeč ladících informací', DL_LOG ) ?></h1>
-    <p style="color: #f30;"><strong>XXX</strong> - dokončit stránku.</p>
-    <pre><?php var_d
+    <p style="color: #f30;"><strong>XXX</strong> - dokončit stránku (přidat filtrování - zobrazit jen dnešní chyby, chyby za poslední hodinu, zobrazit chyby určitého typu (PHP Parse Error, PHP Warning, PHP Fatal Error).</p>
+    <!-- <?php var_dump( $dl_log_table->items ); ?> -->
     <form method="post">
         <input type="hidden" name="page" value="ttest_list_table">
         <?php
