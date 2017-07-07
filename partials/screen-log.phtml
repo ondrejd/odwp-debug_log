@@ -22,7 +22,16 @@ $dl_log_table->prepare_items();
 ?>
 <div class="wrap">
     <h1><?php _e( 'Prohlížeč ladících informací', DL_LOG ) ?></h1>
-    <p style="color: #f30;"><strong>XXX</strong> - dokončit stránku (přidat filtrování - zobrazit jen dnešní chyby, chyby za poslední hodinu, zobrazit chyby určitého typu (PHP Parse Error, PHP Warning, PHP Fatal Error).</p>
+    <div style="color: #f30;">
+        <p><strong>TODO</strong> - dokončit stránku:</p>
+        <ul style="list-style: square; padding-left: 20px;">
+            <li>přidat filtrování - zobrazit jen dnešní chyby, chyby za poslední hodinu, zobrazit chyby určitého typu (<em>PHP Parse Error</em>, <em>PHP Warning</em>, <em>PHP Fatal Error</em>)</li>
+            <li>přidat (skrytelný) sloupec s typem chyby (zobrazit jako ikonu) a hlavní text chyby o tento typ zkrátit (bude zkrácen jen, když je sloupec zobrazen)</li>
+            <li>dokončit hromadné úpravy (smazat vybrané záznamy)</li>
+            <li>opravit/dokončit řazení dat</li>
+            <li>umožnit proklik na zdrojové kódy ve kterých se chyba vyskytne</li>
+        </ul>
+    </div>
     <!-- <?php var_dump( $dl_log_table->items ); ?> -->
     <form method="post">
         <input type="hidden" name="page" value="ttest_list_table">
