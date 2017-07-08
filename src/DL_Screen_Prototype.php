@@ -37,16 +37,71 @@ abstract class DL_Screen_Prototype {
     protected $menu_title;
 
     /**
-     * @var array
+     * @var \WP_Screen $screen
      * @since 1.0.0
      */
-    protected $help_tabs = array();
+    protected $screen;
 
     /**
+     * <p>Array with tabs for screen help. Single tab can be defined by code like this:</p>
+     * <pre>
+     * $this->help_tabs[] = [
+     *     'id'      => $this->slug . '-help_tab',
+     *     'title'   => __( 'Screen help', 'textdomain' ),
+     *     'content' => sprintf(
+     *         __( '<h4>Screen help</h4><p>Some help provided by your plugin...</p>', 'textdomain' )
+     *     ),
+     * ];
+     * </pre>
+     *
      * @var array
      * @since 1.0.0
      */
-    protected $help_sidebars = array();
+    protected $help_tabs = [];
+
+    /**
+     * <p>Array with sidebars for screen help. Sidebar can be defined by code like this:</p>
+     * <pre>
+     * $this->help_sidebars[] = sprintf(
+     *     _( '<b>Usefull links</b>' . 
+     *        '<p><a href="%1$s" target="blank">Link 1</a> is the first link.</p>' . 
+     *        '<p><a href="%2$s" target="blank">Link 2</a> is the second link.</p>' . 
+     *        '<p><a href="%3$s" target="blank">Link 3</a> is the third link.</p>',
+     *        'textdomain' ),
+     *     '#',
+     *     '#',
+     *     '#'
+     * );</pre>
+     *
+     * @var array
+     * @since 1.0.0
+     */
+    protected $help_sidebars = [];
+
+    /**
+     * <p>Array with screen options. Don't forget that you can use screen options only when {@see DL_Screen_Prototype::$enable_screen_options} is set on <code>TRUE</code>. You can define them like this:</p>
+     * <pre>
+     * $this->options[$this->slug . '-option1'] = [
+     *     'label'   => __( 'The first option', 'textdomain' ),
+     *     'default' => 'default',
+     *     'option'  => $this->slug . '-option1',
+     * ];
+     * </pre>
+     */
+    protected $options = [];
+
+    /**
+     * <p>If this is set to <code>FALSE</code> these methods will be omitted:</p>
+     * <ul>
+     *   <li>{@see DL_Screen_Prototype::get_screen_options()}</li>
+     *   <li>{@see DL_Screen_Prototype::save_screen_options()}</li>
+     *   <li>{@see DL_Screen_Prototype::screen_options()}</li>
+     * </ul>
+     *
+     * @var boolean $enable_screen_options
+     * @since 1.0.0
+     */
+    protected $enable_screen_options = false;
 
     /**
      * @internal
@@ -56,12 +111,6 @@ abstract class DL_Screen_Prototype {
     protected $hookname;
 
     /**
-     * @var \WP_Screen $screen
-     * @since 1.0.0
-     */
-    protected $screen;
-
-    /**
      * Constructor.
      * @param \WP_Screen $screen Optional.
      * @return void
@@ -69,13 +118,6 @@ abstract class DL_Screen_Prototype {
      */
     public function __construct( \WP_Screen $screen = null ) {
         $this->screen = $screen;
-        $this->help_tabs[] = [
-            'id' => $this->slug . '-options_help_tab',
-            'title' => __( 'Screen options', DL_SLUG ),
-            'content' => sprintf(
-                __( '<h4>Screen options</h4><p>Pay attention to screen options - there is a setting named <b>Used template</b> - if you don\'t know what they are you can choose them and see in <b>Generated Code</b> if they fit your needs. You can choose source codes template by your needs. If not these templates can be also extended via filter - for more details see <a href="%1$s" target="blank">documentation</a>.</p>', DL_SLUG ), '#'
-            ),
-        ];
     }
 
     /**
@@ -115,30 +157,31 @@ abstract class DL_Screen_Prototype {
     }
 
     /**
-     * Returns current screen options.
+     * <p>Returns current screen options. Here is an example code how to retrieve existing screen options:</p>
+     * <pre>
+     * $screen  = $this->get_screen();
+     * $user    = get_current_user_id();
+     * $option1 = get_user_meta( $user, $this->slug . '-option1', true );
+     *
+     * if( strlen( $option1 ) == 0 ) {
+     *     $option1 = $screen->get_option( $this->slug . '-option1', 'default' );
+     * }
+     *
+     * return [
+     *     'option1' => $option1,
+     * ];
+     * </pre>
+     *
      * @return array
      * @since 1.0.0
+     * @todo Make this automatic without need of writing own code - just use {@see DL_Screen_Prototype::$options}.
      */
     public function get_screen_options() {
-        $screen = $this->get_screen();
-        $user = get_current_user_id();
-
-        $display_description = get_user_meta( $user, $this->slug . '-display_description', true );
-
-        if( strlen( $display_description ) == 0 ) {
-            $display_description = $screen->get_option( $this->slug . '-display_description', 'default' );
+        if( $this->enable_screen_options !== true ) {
+            return [];
         }
 
-        $used_template = get_user_meta( $user, $this->slug . '-used_template', true );
-
-        if( strlen( $used_template ) == 0 ) {
-            $used_template = $screen->get_option( $this->slug . '-used_template', 'default' );
-        }
-
-        return [
-            'display_description' => (bool) $display_description,
-            'used_template' => $used_template,
-        ];
+        // ...
     }
 
     /**
@@ -149,6 +192,10 @@ abstract class DL_Screen_Prototype {
      * @since 1.0.0
      */
     protected function update_option( $key, $value ) {
+        if( $this->enable_screen_options !== true ) {
+            return;
+        }
+
         $options = DL_Plugin::get_options();
         $need_update = false;
 
@@ -205,15 +252,18 @@ abstract class DL_Screen_Prototype {
      * Action for `admin_menu` hook.
      * @return void
      * @since 1.0.0
-     * @todo This method should not be abstract. It should recognize from the class properties what menu item we want to create.
      */
-    abstract public function admin_menu();/* {
-        $this->hookname = add_submenu_page(
-            'edit.php?post_type=wizard', $this->page_title, $this->menu_title, 'manage_options', $this->slug, [$this, 'render']
+    public function admin_menu() {
+        $this->hookname = add_options_page(
+                $this->page_title,
+                $this->menu_title,
+                'manage_options',
+                $this->slug,
+                [$this, 'render']
         );
 
         add_action( 'load-' . $this->hookname, [$this, 'screen_load'] );
-    }*/
+    }
 
     /**
      * Creates screen help and add filter for screen options. Action 
@@ -235,43 +285,39 @@ abstract class DL_Screen_Prototype {
         }
 
         // Screen options
-        add_filter( 'screen_layout_columns', [$this, 'screen_options'] );
+        if( $this->enable_screen_options === true ) {
+            add_filter( 'screen_layout_columns', [$this, 'screen_options'] );
 
-        $screen->add_option( $this->slug . '-display_description', [
-            'label' => __( 'Display detail descriptions?', DL_SLUG ),
-            'default' => 1,
-            'option' => $this->slug . '-display_description'
-        ] );
-        $screen->add_option($this->slug . '-used_template', [
-            'label' => __( 'Used source codes template', DL_SLUG ),
-            'default' => 'default',
-            'option' => $this->slug . '-used_template'
-        ] );
+            foreach( $this->options as $option_key => $option_props ) {
+                if( ! empty( $option_key ) && is_array( $option_props ) ) {
+                    $screen->add_option( $option_key, $option_props );
+                }
+            }
+        }
     }
 
     /**
-     * Renders screen options form. Handler for `screen_layout_columns` filter
-     * (see {@see DL_Screen_Prototype::screen_load}).
+     * <p>Renders screen options form. Handler for `screen_layout_columns` filter (see {@see DL_Screen_Prototype::screen_load}).</p>
      * @return void
      * @since 1.0.0
+     * @todo It should be rendered automatically by using {@see DL_Screen_Prototype::$options}.
      */
     public function screen_options() {
+        if( $this->enable_screen_options !== true ) {
+            return;
+        }
+
         // These are used in the template:
         $slug = $this->slug;
         $screen = $this->get_screen();
         extract( $this->get_screen_options() );
-        $templates = $this->get_source_templates();
 
         ob_start();
-        include( DL_PATH . 'partials/screen-plugin_options.phtml' );
+        include( DL_PATH . "partials/screen-{$this->slug}_options.phtml" );
         $output = ob_get_clean();
 
         /**
-         * Filter for wizard's screen options form.
-         *
-         * Name of filter corresponds with slug of the particular wizard.
-         * For example for `Custom Post Type wizard` is filter name
-         * "devhelper_cpt_wizard_screen_options_form".
+         * Filter for screen options form.
          *
          * @param string $output Rendered HTML.
          */
@@ -280,47 +326,29 @@ abstract class DL_Screen_Prototype {
     }
 
     /**
-     * Returns array with available source code templates.
-     * @return array
-     * @since 1.0.0
-     */
-    public function get_source_templates() {
-        $templates = [
-            'default' => __( 'Default', DL_SLUG ),
-        ];
-
-        /**
-         * Filter the templates used for the DevHelper wizard.
-         *
-         * Name of filter corresponds with slug of the particular wizard.
-         * For example for `Custom Post Type wizard` is filter name
-         * "devhelper_cpt_wizard_templates".
-         *
-         * @param array $templates Array with templates provided by DevHelper.
-         */
-        return apply_filters( DL_SLUG . "_{$this->slug}_templates", $templates );
-    }
-
-    /**
-     * Save screen options. Action for `admin_init` hook 
-     * (see {@see DL_Screen_Prototype::init} for more details).
+     * <p>Save screen options. Action for `admin_init` hook (see {@see DL_Screen_Prototype::init} for more details). Here is an example code how to save a screen option:</p>
+     * <pre>
+     * $user = get_current_user_id();
+     *
+     * if( 
+     *         filter_input( INPUT_POST, $this->slug . '-submit' ) &&
+     *         (bool) wp_verify_nonce( filter_input( INPUT_POST, $this->slug . '-nonce' ) ) === true
+     * ) {
+     *     $option1 = filter_input( INPUT_POST, $this->slug . '-option1' );
+     *     update_user_meta( $user, $this->slug . '-option1', $option1 );
+     * }
+     * </pre>
+     *
      * @return void
      * @since 1.0.0
+     * @todo It should be done automatically by using {@see DL_Screen_Prototype::$options} without need of writing own code.
      */
     public function save_screen_options() {
-        $user = get_current_user_id();
-
-        if(
-                filter_input( INPUT_POST, $this->slug . '-submit' ) &&
-                (bool) wp_verify_nonce( filter_input( INPUT_POST, $this->slug . '-nonce' ) ) === true
-        ) {
-            $_display_description = (string) filter_input( INPUT_POST, $this->slug . '-checkbox1' );
-            $display_description = ( strtolower( $_display_description ) == 'on' ) ? 1 : 0;
-            update_user_meta( $user, $this->slug . '-display_description', $display_description );
-
-            $used_template = (string) filter_input( INPUT_POST, $this->slug . '-select1' );
-            update_user_meta( $user, $this->slug . '-used_template', $used_template );
+        if( $this->enable_screen_options !== true ) {
+            return;
         }
+
+        // ...
     }
 
     /**
@@ -333,25 +361,19 @@ abstract class DL_Screen_Prototype {
         // These are used in the template:
         $slug = $this->slug;
         $screen = $this->get_screen();
-        $wizard = $this;
         extract( $this->get_screen_options() );
         extract( is_array( $args ) ? $args : [] );
 
         ob_start();
-
         include( DL_PATH . 'partials/screen-' . str_replace( DL_SLUG . '-', '', $this->slug ) . '.phtml' );
         $output = ob_get_clean();
 
         /**
-         * Filter for whole wizard form.
-         *
-         * Name of filter corresponds with slug of the particular wizard.
-         * For example for `Custom Post Type wizard` is filter name
-         * "devhelper_cpt_wizard_form".
+         * Filter for whole rendered screen.
          *
          * @param string $output Rendered HTML.
          */
-        $output = apply_filters( DL_SLUG . "_{$this->slug}_form", $output );
+        $output = apply_filters( DL_SLUG . "_{$this->slug}", $output );
         echo $output;
     }
 }
