@@ -26,6 +26,8 @@ if( ! class_exists( 'DL_Log_Table' ) ) :
  * @return string
  * @since 1.0.0
  * @todo Default column and direction for sorting should be set via user preferences.
+ * @todo Default per page items count should be set via user preferences.
+ * @todo Now we get all data at the first place and than we set pagination but it means that we are parsing data we don't need to - so this must be implemented other way.
  */
 class DL_Log_Table extends WP_List_Table {
     /**
@@ -39,6 +41,12 @@ class DL_Log_Table extends WP_List_Table {
      * @since 1.0.0
      */
     const DEFAULT_SORT_DIR = 'desc';
+
+    /**
+     * @var string Default per page items count.
+     * @since 1.0.0
+     */
+    const DEFAULT_PER_PAGE = 10;
 
     /**
      * Renders checkbox column.
@@ -141,15 +149,30 @@ class DL_Log_Table extends WP_List_Table {
      * @since 1.0.0
      */
     public function prepare_items() {
-        $columns = $this->get_columns();
-        $hidden = [];
+        // Prepare columns
+        $columns  = $this->get_columns();
+        $hidden   = [];
         $sortable = $this->get_sortable_columns();
+
+        // Set up column headers
         $this->_column_headers = [$columns, $hidden, $sortable];
 
-        // Set table items
+        // Prepare data
         $data = $this->get_data();
         usort( $data, [__CLASS__, 'usort_reorder'] );
-        $this->items = $data;
+
+        // Set up pagination
+        $per_page     = self::DEFAULT_PER_PAGE;
+        $current_page = $this->get_pagenum();
+        $total_items  = count( $data );
+        $found_items  = array_slice( $data, ( ( $current_page - 1 ) * $per_page ), $per_page );
+        $this->set_pagination_args( [
+            'total_items' => $total_items,
+            'per_page'    => $per_page,
+        ] );
+
+        // Set table items
+        $this->items = $found_items;
     }
 
     /**
@@ -175,13 +198,10 @@ class DL_Log_Table extends WP_List_Table {
                 if( count( $matches ) == 2 ) {
                     // This is normal log row (date and details)
                     if( ( $record instanceof DL_Log_Record ) ) {
-                        array_push( $log, $record );
-                        $record = null;
-                        $record = new DL_Log_Record( 0, '', '' );
-                    } else {
-                        $record = new DL_Log_Record( 0, '', '' );
+                        array_push( $log, $record );                        
                     }
 
+                    $record = new DL_Log_Record( 0, '', '' );
                     $record->setId( count( $log ) + 1 );
                     $record->setTime( strtotime( trim( $matches[0], '[]' ) ) );
                     $record->setMessage( $matches[1] );
