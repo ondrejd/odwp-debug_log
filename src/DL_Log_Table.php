@@ -63,12 +63,12 @@ class DL_Log_Table extends WP_List_Table {
     /**
      * Default function for rendering columns.
      * @param DL_Log_Record $item
-     * @param string $column
+     * @param string $column_name
      * @return string
      * @since 1.0.0
      */
-    public function column_default( DL_Log_Record $item, $column ) {
-        switch( $column ) { 
+    public function column_default( DL_Log_Record $item, $column_name ) {
+        switch( $column_name ) { 
             case 'id':
                 return $item->getId();
 
@@ -92,7 +92,7 @@ class DL_Log_Table extends WP_List_Table {
      */
     public function column_text( DL_Log_Record $item ) {
         $id      = ( int ) $item->getId();
-        $page    = ( int ) filter_input( INPUT_REQUEST, 'page' );
+        $page    = ( int ) filter_input( INPUT_GET, 'page' );
         $text    = $item->getMessage();
         $actions = [
             'view'   => sprintf( __( '<a href="?page=%s&amp;action=%s&amp;record=%s">Edit</a>', DL_SLUG ), $page, 'edit', $id ),
