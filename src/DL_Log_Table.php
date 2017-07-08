@@ -25,8 +25,21 @@ if( ! class_exists( 'DL_Log_Table' ) ) :
  * Table with log.
  * @return string
  * @since 1.0.0
+ * @todo Default column and direction for sorting should be set via user preferences.
  */
 class DL_Log_Table extends WP_List_Table {
+    /**
+     * @var string Defaultly sorted column.
+     * @since 1.0.0
+     */
+    const DEFAULT_SORT_COL = 'time';
+
+    /**
+     * @var string Default sorting direction.
+     * @since 1.0.0
+     */
+    const DEFAULT_SORT_DIR = 'desc';
+
     /**
      * Renders checkbox column.
      * @param DL_Log_Record $item
@@ -211,12 +224,12 @@ class DL_Log_Table extends WP_List_Table {
     protected function usort_reorder( DL_Log_Record $a, DL_Log_Record $b ) {
         $orderby = filter_input( INPUT_GET, 'orderby' );
         if( empty( $orderby ) ) {
-            $orderby = 'id';
+            $orderby = self::DEFAULT_SORT_COL;
         }
 
         $order = filter_input( INPUT_GET, 'order' );
         if( empty( $order ) ) {
-            $order = 'asc';
+            $order = self::DEFAULT_SORT_DIR;
         }
 
         $val1 = null;
@@ -246,6 +259,3 @@ class DL_Log_Table extends WP_List_Table {
 }
 
 endif;
-
-//$myListTable = new My__List_Table();
-
