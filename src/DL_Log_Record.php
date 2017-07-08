@@ -25,6 +25,30 @@ class DL_Log_Record {
     const DATE_FORMAT = 'Y n. j. H:i:s';
 
     /**
+     * @var string
+     * @since 1.0.0
+     */
+    const TYPE_ERROR   = 'PHP Fatal error';
+
+    /**
+     * @var string
+     * @since 1.0.0
+     */
+    const TYPE_NOTICE  = 'PHP Notice';
+
+    /**
+     * @var string
+     * @since 1.0.0
+     */
+    const TYPE_OTHER   = 'Other';
+
+    /**
+     * @var string
+     * @since 1.0.0
+     */
+    const TYPE_WARNING = 'PHP Warning';
+
+    /**
      * @var integer $id
      * @since 1.0.0
      */
@@ -43,24 +67,32 @@ class DL_Log_Record {
     protected $message;
 
     /**
-     * @var array $stack_trace
+     * @var array $trace
      * @since 1.0.0
      */
-    protected $stack_trace;
+    protected $trace;
+
+    /**
+     * @var string $type Log record type (PHP Fatal Error, PHP Notice, PHP Warning).
+     * @since 1.0.0
+     */
+    protected $type;
 
     /**
      * Construct.
      * @param integer $id
      * @param integer $time
-     * @param string $message
-     * @param array $stack_trace (Optional.)
+     * @param string  $message
+     * @param array   $trace (Optional.)
+     * @param string  $type
      * @since 1.0.0
      */
-    public function __construct( $id, $time, $message, $stack_trace = [] ) {
-        $this->id = $id;
-        $this->time = $time;
+    public function __construct( $id, $time, $message, $trace = [], $type = self::TYPE_OTHER ) {
+        $this->id      = $id;
+        $this->time    = $time;
         $this->message = $message;
-        $this->stack_trace = $stack_trace;
+        $this->trace   = $trace;
+        $this->type    = $type;
     }
 
     /**
@@ -96,8 +128,17 @@ class DL_Log_Record {
      * @return array
      * @since 1.0.0
      */
-    public function getStackTrace() {
-        return $this->stack_trace;
+    public function getTrace() {
+        return $this->trace;
+    }
+
+    /**
+     * Returns log record type.
+     * @return array
+     * @since 1.0.0
+     */
+    public function getType() {
+        return $this->type;
     }
 
     /**
@@ -132,12 +173,12 @@ class DL_Log_Record {
 
     /**
      * Sets stack trace of the log record.
-     * @param array $stack_trace
+     * @param array $trace
      * @return void
      * @since 1.0.0
      */
-    public function setStackTrace( $stack_trace = [] ) {
-        $this->error_log = $stack_trace;
+    public function setTrace( $trace = [] ) {
+        $this->trace = $trace;
     }
 
     /**
@@ -146,8 +187,17 @@ class DL_Log_Record {
      * @return void
      * @since 1.0.0
      */
-    public function addStackTrace( $trace ) {
-        array_push( $this->stack_trace, $trace );
+    public function addTrace( $trace ) {
+        array_push( $this->trace, $trace );
+    }
+
+    /**
+     * Sets log record type.
+     * @param string $type
+     * @since 1.0.0
+     */
+    public function setType( $type ) {
+        $this->type = $type;
     }
 }
 

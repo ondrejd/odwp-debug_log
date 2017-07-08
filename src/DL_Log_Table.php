@@ -78,8 +78,33 @@ class DL_Log_Table extends WP_List_Table {
             case 'text':
                 return $item->getMessage();
 
+            case 'type':
+                return $item->getType();
+
             default:
                 return '';
+        }
+    }
+
+    /**
+     * Renders column with log record type.
+     * @param DL_Log_Record $item
+     * @return string
+     * @since 1.0.0
+     */
+    function column_type( DL_Log_Record $item ) {
+        switch( $item->getType() ) {
+            case DL_Log_Record::TYPE_ERROR:
+                return __( 'Chyba', DL_SLUG );
+
+            case DL_Log_Record::TYPE_NOTICE:
+                return __( 'Upozornění', DL_SLUG );
+
+            case DL_Log_Record::TYPE_OTHER:
+                return __( 'Ostatní', DL_SLUG );
+
+            case DL_Log_Record::TYPE_WARNING:
+                return __( 'Varování', DL_SLUG );
         }
     }
 
@@ -95,8 +120,8 @@ class DL_Log_Table extends WP_List_Table {
         $page    = ( int ) filter_input( INPUT_GET, 'page' );
         $text    = $item->getMessage();
         $actions = [
-            'view'   => sprintf( __( '<a href="?page=%s&amp;action=%s&amp;record=%s">Edit</a>', DL_SLUG ), $page, 'edit', $id ),
-            'delete' => sprintf( __( '<a href="?page=%s&amp;action=%s&amp;record=%s">Delete</a>', DL_SLUG ), $page, 'delete', $id ),
+            'view'   => sprintf( __( '<a href="?page=%s&amp;action=%s&amp;record=%s">Zobrazit</a>', DL_SLUG ), $page, 'view', $id ),
+            'delete' => sprintf( __( '<a href="?page=%s&amp;action=%s&amp;record=%s">Smazat</a>', DL_SLUG ), $page, 'delete', $id ),
         ];
 
         return sprintf('%1$s %2$s', $text, $this->row_actions( $actions ) );
@@ -125,6 +150,7 @@ class DL_Log_Table extends WP_List_Table {
             'id'   => __( '<abbr title="Pořadové číslo">P.č.</abbr>', DL_LOG ),
             'time' => __( 'Datum a čas', DL_LOG ),
             'text' => __( 'Záznam', DL_LOG ),
+            'type' => __( 'Typ chyby', DL_LOG ),
         ];
         return $columns;
     }
@@ -139,6 +165,7 @@ class DL_Log_Table extends WP_List_Table {
             'id'   => ['id', false],
             'time' => ['time', false],
             'text' => ['text', false],
+            'type' => ['type', false],
         ];
         return $columns;
     }
@@ -204,12 +231,31 @@ class DL_Log_Table extends WP_List_Table {
                     $record = new DL_Log_Record( 0, '', '' );
                     $record->setId( count( $log ) + 1 );
                     $record->setTime( strtotime( trim( $matches[0], '[]' ) ) );
-                    $record->setMessage( $matches[1] );
+
+                    $message = $matches[1];
+
+                    if( strpos( $matches[1], DL_Log_Record::TYPE_ERROR ) === 0 ) {
+                        $record->setType( DL_Log_Record::TYPE_ERROR );
+                        $message = str_replace( DL_Log_Record::TYPE_ERROR . ': ', '', $message );
+                    }
+                    else if( strpos( $matches[1], DL_Log_Record::TYPE_NOTICE ) === 0 ) {
+                        $record->setType( DL_Log_Record::TYPE_NOTICE );
+                        $message = str_replace( DL_Log_Record::TYPE_NOTICE . ': ', '', $message );
+                    }
+                    else if( strpos( $matches[1], DL_Log_Record::TYPE_WARNING ) === 0 ) {
+                        $record->setType( DL_Log_Record::TYPE_WARNING );
+                        $message = str_replace( DL_Log_Record::TYPE_WARNING . ': ', '', $message );
+                    }
+                    else {
+                        $record->setType( DL_Log_Record::TYPE_OTHER );
+                    }
+
+                    $record->setMessage( $message );
                 }
                 elseif( count( $matches ) == 1 && ( $record instanceof DL_Log_Record ) ) {
                     if( strpos( $matches[0], '#' ) === 0 ) {
                         // This is just continue of of previous line (debug details)
-                        $record->addStackTrace( $matches[0] );
+                        $record->addTrace( $matches[0] );
                     }
                 }
                 /**
@@ -268,6 +314,11 @@ class DL_Log_Table extends WP_List_Table {
             case 'text':
                 $val1 = $a->getMessage();
                 $val2 = $b->getMessage();
+                break;
+
+            case 'type':
+                $val1 = $a->getType();
+                $val2 = $b->getType();
                 break;
         }
 
