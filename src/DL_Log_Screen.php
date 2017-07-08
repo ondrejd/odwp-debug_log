@@ -31,19 +31,14 @@ class DL_Log_Screen extends DL_Screen_Prototype {
         $this->page_title = __( 'Prohlížeč ladících informací', DL_SLUG );
 
         // Specify help tabs
-        $this->help_tabs[] = array(
-            'id'      => $this->slug . '-help_tab',
-            'title'   => __( 'Tables', DL_SLUG ),
-            'content' => __( '<p style="color: #f30;"><code>XXX</code> Fill this screen help!<p>', DL_SLUG ),
-        );
+        $this->help_tabs = [];
 
         // Specify help sidebars
-        $this->help_sidebars[] = sprintf(
-            __( '<b>Usefull links</b><p><a href="%1$s" target="blank"><code>WP_List_Table</code></a> on <b>WordPress Codex</b>.</p><p><a href="%2$s" target="blank"><code>WP_List_Table</code></a> on <b>WordPress Code Reference</b>.</a></p><!-- <p><a href="%3$s" target="blank">Link 3</a> is the third link.</p> -->', DL_SLUG ),
-            'http://codex.wordpress.org/Class_Reference/WP_List_Table',
-            'https://developer.wordpress.org/reference/classes/wp_list_table/',
-            '#'
-        );
+        $this->help_sidebars = [];
+
+        // Specify screen options
+        $this->options = [];
+        $this->enable_screen_options = false;
 
         // Finish screen constuction
         parent::__construct( $screen );

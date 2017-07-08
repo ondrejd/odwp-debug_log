@@ -43,6 +43,23 @@ class DL_Options_Screen extends DL_Screen_Prototype {
         // Finish screen constuction
         parent::__construct( $screen );
     }
+
+    /**
+     * Action for `admin_menu` hook.
+     * @return void
+     * @since 1.0.0
+     */
+    public function admin_menu() {
+        $this->hookname = add_options_page(
+                $this->page_title,
+                $this->menu_title,
+                'manage_options',
+                $this->slug,
+                [$this, 'render']
+        );
+
+        add_action( 'load-' . $this->hookname, [$this, 'screen_load'] );
+    }
 }
 
 endif;

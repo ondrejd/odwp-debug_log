@@ -253,17 +253,7 @@ abstract class DL_Screen_Prototype {
      * @return void
      * @since 1.0.0
      */
-    public function admin_menu() {
-        $this->hookname = add_options_page(
-                $this->page_title,
-                $this->menu_title,
-                'manage_options',
-                $this->slug,
-                [$this, 'render']
-        );
-
-        add_action( 'load-' . $this->hookname, [$this, 'screen_load'] );
-    }
+    abstract public function admin_menu();
 
     /**
      * Creates screen help and add filter for screen options. Action 
