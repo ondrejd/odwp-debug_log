@@ -36,7 +36,8 @@ class DL_Options_Screen extends DL_Screen_Prototype {
         // Specify help sidebars
         $this->help_sidebars = [];
 
-        // Disable screen options
+        // Specify screen options
+        $this->options = [];
         $this->enable_screen_options = false;
 
         // Finish screen constuction
