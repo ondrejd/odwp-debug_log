@@ -13,11 +13,11 @@ Small [WordPress][1] plugin especially for developers that allows better work de
 
 ### Enabling/disabling debug mode
 
-![Enabling/disabling debug mode](screenshot-03.png "Enabling/disabling debug mode")
+__TODO__ ~~![Enabling/disabling debug mode](screenshot-03.png "Enabling/disabling debug mode")~~
 
 ### Dashboard widget
 
-![Dashboard widget](screenshot-02.png "Dashboard widget")
+__TODO__ ~~![Dashboard widget](screenshot-02.png "Dashboard widget")~~
 
 ### Log page
 
