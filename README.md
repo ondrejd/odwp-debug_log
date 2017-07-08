@@ -21,6 +21,6 @@ Small [WordPress][1] plugin especially for developers that allows better work de
 
 ### Log page
 
-![Log page](screenshot-03.png "Log page")
+![Log page](screenshot-01.png "Log page")
 
 [1]: https://wordpress.org/plugins
