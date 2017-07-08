@@ -72,7 +72,6 @@ class DL_Plugin {
      */
     public static function get_default_options() {
         return [
-            'list_style' => 'default', // ['default','short']
             'debug_mode' => 'disable', // ['enable','disable']
         ];
     }
@@ -158,33 +157,17 @@ class DL_Plugin {
         $section1 = self::SETTINGS_KEY . '_section_1';
         add_settings_section(
                 $section1,
-                __( 'Obecné nastavení pluginu' ),
+                __( 'Nastavení ladícího módu' ),
                 [__CLASS__, 'render_settings_section_1'],
                 DL_SLUG
         );
 
         add_settings_field(
-                'list_style',
-                __( 'Styl zobrazení', DL_SLUG ),
-                [__CLASS__, 'render_setting_list_style'],
-                DL_SLUG,
-                $section1
-        );
-
-        $section2 = self::SETTINGS_KEY . '_section_2';
-        add_settings_section(
-                $section2,
-                __( 'Nastavení debug módu' ),
-                [__CLASS__, 'render_settings_section_2'],
-                DL_SLUG
-        );
-
-        add_settings_field(
                 'debug_mode',
-                __( 'Povolit debug mód', DL_SLUG ),
+                __( 'Povolit ladící mód', DL_SLUG ),
                 [__CLASS__, 'render_setting_debug_mode'],
                 DL_SLUG,
-                $section2
+                $section1
         );
     }
 
@@ -316,30 +299,6 @@ class DL_Plugin {
     public static function render_settings_section_1() {
         ob_start( function() {} );
         include( DL_PATH . 'partials/settings-section_1.phtml' );
-        echo ob_get_flush();
-    }
-
-    /**
-     * @internal Renders setting `list_style`.
-     * @return void
-     * @since 1.0.0
-     * @todo In future we should also set who can (user roles) the log.
-     */
-    public static function render_setting_list_style() {
-        $list_style = self::get_option( 'list_style' );
-        ob_start( function() {} );
-        include( DL_PATH . 'partials/setting-list_style.phtml' );
-        echo ob_get_flush();
-    }
-
-    /**
-     * @internal Renders the second settings section.
-     * @return void
-     * @since 1.0.0
-     */
-    public static function render_settings_section_2() {
-        ob_start( function() {} );
-        include( DL_PATH . 'partials/settings-section_2.phtml' );
         echo ob_get_flush();
     }
 

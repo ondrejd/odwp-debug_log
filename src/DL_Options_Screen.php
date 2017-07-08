@@ -31,39 +31,16 @@ class DL_Options_Screen extends DL_Screen_Prototype {
         $this->page_title = __( 'Nastavení pro plugin <em>Prohlížeč ladících informací</em>', DL_SLUG );
 
         // Specify help tabs
-        $this->help_tabs[] = array(
-            'id'      => $this->slug . '-help_tab',
-            'title'   => __( 'Tables', DL_SLUG ),
-            'content' => __( '<p style="color: #f30;"><code>XXX</code> Fill this screen help!<p>', DL_SLUG ),
-        );
+        $this->help_tabs = [];
 
         // Specify help sidebars
-        $this->help_sidebars[] = sprintf(
-            __( '<b>Usefull links</b><p><a href="%1$s" target="blank"><code>WP_List_Table</code></a> on <b>WordPress Codex</b>.</p><p><a href="%2$s" target="blank"><code>WP_List_Table</code></a> on <b>WordPress Code Reference</b>.</a></p><!-- <p><a href="%3$s" target="blank">Link 3</a> is the third link.</p> -->', DL_SLUG ),
-            'http://codex.wordpress.org/Class_Reference/WP_List_Table',
-            'https://developer.wordpress.org/reference/classes/wp_list_table/',
-            '#'
-        );
+        $this->help_sidebars = [];
+
+        // Disable screen options
+        $this->enable_screen_options = false;
 
         // Finish screen constuction
         parent::__construct( $screen );
-    }
-
-    /**
-     * Action for `admin_menu` hook.
-     * @return void
-     * @since 1.0.0
-     */
-    public function admin_menu() {
-        $this->hookname = add_options_page(
-                $this->page_title,
-                $this->menu_title,
-                'manage_options',
-                $this->slug,
-                [$this, 'render']
-        );
-
-        add_action( 'load-' . $this->hookname, [$this, 'screen_load'] );
     }
 }
 
