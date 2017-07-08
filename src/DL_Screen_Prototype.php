@@ -63,9 +63,9 @@ abstract class DL_Screen_Prototype {
      * <p>Array with sidebars for screen help. Sidebar can be defined by code like this:</p>
      * <pre>
      * $this->help_sidebars[] = sprintf(
-     *     _( '<b>Usefull links</b>' . 
-     *        '<p><a href="%1$s" target="blank">Link 1</a> is the first link.</p>' . 
-     *        '<p><a href="%2$s" target="blank">Link 2</a> is the second link.</p>' . 
+     *     _( '<b>Usefull links</b>' .
+     *        '<p><a href="%1$s" target="blank">Link 1</a> is the first link.</p>' .
+     *        '<p><a href="%2$s" target="blank">Link 2</a> is the second link.</p>' .
      *        '<p><a href="%3$s" target="blank">Link 3</a> is the third link.</p>',
      *        'textdomain' ),
      *     '#',
@@ -330,7 +330,7 @@ abstract class DL_Screen_Prototype {
      * <pre>
      * $user = get_current_user_id();
      *
-     * if( 
+     * if(
      *         filter_input( INPUT_POST, $this->slug . '-submit' ) &&
      *         (bool) wp_verify_nonce( filter_input( INPUT_POST, $this->slug . '-nonce' ) ) === true
      * ) {
