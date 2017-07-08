@@ -13,7 +13,7 @@ Small [WordPress][1] plugin especially for developers that allows better work de
 
 ### Enabling/disabling debug mode
 
-![Enabling/disabling debug mode](screenshot-01.png "Enabling/disabling debug mode")
+![Enabling/disabling debug mode](screenshot-03.png "Enabling/disabling debug mode")
 
 ### Dashboard widget
 
