@@ -181,7 +181,7 @@ abstract class DL_Screen_Prototype {
             return [];
         }
 
-        // ...
+        return [];
     }
 
     /**
@@ -234,6 +234,7 @@ abstract class DL_Screen_Prototype {
     /**
      * Action for `init` hook.
      * @return void
+     * @since 1.0.0
      */
     public function admin_enqueue_scripts() {
         // ...
