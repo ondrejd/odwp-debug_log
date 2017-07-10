@@ -292,6 +292,7 @@ abstract class DL_Screen_Prototype {
      * @return void
      * @since 1.0.0
      * @todo It should be rendered automatically by using {@see DL_Screen_Prototype::$options}.
+     * @todo In WordPress Dashboard screen options there is no apply button and all is done by AJAX - it would be nice to have this the same.
      */
     public function screen_options() {
         if( $this->enable_screen_options !== true ) {
@@ -304,7 +305,8 @@ abstract class DL_Screen_Prototype {
         extract( $this->get_screen_options() );
 
         ob_start();
-        include( DL_PATH . "partials/screen-{$this->slug}_options.phtml" );
+        $template = str_replace( DL_SLUG . '-', '', "screen-{$this->slug}_options.phtml" );
+        include( DL_PATH . "partials/{$template}" );
         $output = ob_get_clean();
 
         /**

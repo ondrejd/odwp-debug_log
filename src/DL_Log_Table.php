@@ -22,7 +22,7 @@ if( ! class_exists( 'DL_Log_Record' ) ) {
 if( ! class_exists( 'DL_Log_Table' ) ) :
 
 /**
- * Table with log.
+ * Table with log. User options for the table are implemented partially in {@see DL_Log_Screen}.
  * @return string
  * @since 1.0.0
  * @todo Default column and direction for sorting should be set via user preferences.
@@ -30,6 +30,12 @@ if( ! class_exists( 'DL_Log_Table' ) ) :
  * @todo Now we get all data at the first place and than we set pagination but it means that we are parsing data we don't need to - so this must be implemented other way.
  */
 class DL_Log_Table extends WP_List_Table {
+    /**
+     * @var string Default per page items count.
+     * @since 1.0.0
+     */
+    const DEFAULT_PER_PAGE = 10;
+
     /**
      * @var string Defaultly sorted column.
      * @since 1.0.0
@@ -43,10 +49,39 @@ class DL_Log_Table extends WP_List_Table {
     const DEFAULT_SORT_DIR = 'desc';
 
     /**
-     * @var string Default per page items count.
+     * @var boolean Default settings for displaying icons instead of text in record type column.
      * @since 1.0.0
      */
-    const DEFAULT_PER_PAGE = 10;
+    const DEFAULT_SHOW_ICONS = true;
+
+    /**
+     * Returns default options for the table.
+     * @return array
+     * @since 1.0.0
+     */
+    public static function get_default_options() {
+        return [
+            'per_page'   => self::DEFAULT_PER_PAGE,
+            'show_icons' => self::DEFAULT_SHOW_ICONS,
+            'sort_col'   => self::DEFAULT_SORT_COL,
+            'sort_dir'   => self::DEFAULT_SORT_DIR,
+        ];
+    }
+
+    /**
+     * Returns options for the table.
+     * @return array
+     * @since 1.0.0
+     * @todo We should load actual options from the user metas and then merge them with the defaults options.
+     * @todo Finish this!
+     */
+    public static function get_options() {
+        $defaults = self::get_default_options();
+
+        //...
+
+        return $defaults;
+    }
 
     /**
      * Renders checkbox column.
@@ -67,7 +102,7 @@ class DL_Log_Table extends WP_List_Table {
      * @return string
      * @since 1.0.0
      */
-    public function column_default( DL_Log_Record $item, $column_name ) {
+    public function column_default( $item, $column_name ) {
         switch( $column_name ) { 
             case 'id':
                 return $item->getId();
@@ -93,18 +128,24 @@ class DL_Log_Table extends WP_List_Table {
      * @since 1.0.0
      */
     function column_type( DL_Log_Record $item ) {
+        $show_icons = self::get_options()['show_icons'];
+
         switch( $item->getType() ) {
             case DL_Log_Record::TYPE_ERROR:
-                return __( 'Chyba', DL_SLUG );
+                $lbl = __( 'Chyba', DL_SLUG );
+                return ( $show_icons === true ) ? '<span class="dashicons dashicons-warning" title="' . $lbl .'"></span>' : $lbl;
 
             case DL_Log_Record::TYPE_NOTICE:
-                return __( 'Upozornění', DL_SLUG );
+                $lbl = __( 'Upozornění', DL_SLUG );
+                return ( $show_icons === true ) ? '<span class="dashicons dashicons-format-status" title="' . $lbl .'"></span>' : $lbl;
 
             case DL_Log_Record::TYPE_OTHER:
-                return __( 'Ostatní', DL_SLUG );
+                $lbl = __( 'Ostatní', DL_SLUG );
+                return ( $show_icons === true ) ? '<span class="dashicons dashicons-editor-help" title="' . $lbl .'"></span>' : $lbl;
 
             case DL_Log_Record::TYPE_WARNING:
-                return __( 'Varování', DL_SLUG );
+                $lbl = __( 'Varování', DL_SLUG );
+                return ( $show_icons === true ) ? '<span class="dashicons dashicons-flag" title="' . $lbl .'"></span>' : $lbl;
         }
     }
 
@@ -149,8 +190,8 @@ class DL_Log_Table extends WP_List_Table {
             'cb'   => '<input type="checkbox">',
             'id'   => __( '<abbr title="Pořadové číslo">P.č.</abbr>', DL_LOG ),
             'time' => __( 'Datum a čas', DL_LOG ),
+            'type' => __( 'Typ', DL_LOG ),
             'text' => __( 'Záznam', DL_LOG ),
-            'type' => __( 'Typ chyby', DL_LOG ),
         ];
         return $columns;
     }
@@ -189,7 +230,7 @@ class DL_Log_Table extends WP_List_Table {
         usort( $data, [__CLASS__, 'usort_reorder'] );
 
         // Set up pagination
-        $per_page     = self::DEFAULT_PER_PAGE;
+        $per_page     = self::get_options()['per_page'];
         $current_page = $this->get_pagenum();
         $total_items  = count( $data );
         $found_items  = array_slice( $data, ( ( $current_page - 1 ) * $per_page ), $per_page );
@@ -215,7 +256,7 @@ class DL_Log_Table extends WP_List_Table {
 
         foreach( $log_raw as $log_line ) {
             $matches = preg_split(
-                '/(\[[0-9]{2}-[a-zA-Z]{3}-[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} [a-zA-Z]{0,3}\]) ([a-zA-Z\,\s\d:\/.\-\_\(\)\'\"$]*)/',
+                '/(\[[0-9]{2}-[a-zA-Z]{3}-[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} [a-zA-Z]{0,3}\]) ([a-zA-Z\,\s\d:=\/.\-\_\(\)\'\"$]*)/',
                 $log_line,
                 -1,
                 PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
@@ -290,12 +331,12 @@ class DL_Log_Table extends WP_List_Table {
     protected function usort_reorder( DL_Log_Record $a, DL_Log_Record $b ) {
         $orderby = filter_input( INPUT_GET, 'orderby' );
         if( empty( $orderby ) ) {
-            $orderby = self::DEFAULT_SORT_COL;
+            $orderby = self::get_options()['sort_col'];
         }
 
         $order = filter_input( INPUT_GET, 'order' );
         if( empty( $order ) ) {
-            $order = self::DEFAULT_SORT_DIR;
+            $order = self::get_options()['sort_dir'];
         }
 
         $val1 = null;

@@ -11,6 +11,10 @@ if( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+if( ! class_exists( 'DL_Log_Screen' ) ) {
+    require_once( DL_PATH . 'src/DL_Log_Screen.php' );
+}
+
 if( ! class_exists( 'DL_Log_Screen' ) ) :
 
 /**
@@ -37,8 +41,12 @@ class DL_Log_Screen extends DL_Screen_Prototype {
         $this->help_sidebars = [];
 
         // Specify screen options
-        $this->options = [];
-        $this->enable_screen_options = false;
+        $this->options[$this->slug . '-show_icons'] = [
+            'label'   => __( 'Zobrazit typ záznamu jako ikonu?', 'textdomain' ),
+            'default' => true,
+            'option'  => $this->slug . '-show_icons',
+        ];
+        $this->enable_screen_options = true;
 
         // Finish screen constuction
         parent::__construct( $screen );
@@ -59,6 +67,55 @@ class DL_Log_Screen extends DL_Screen_Prototype {
         );
 
         add_action( 'load-' . $this->hookname, [$this, 'screen_load'] );
+    }
+
+    /**
+     * Returns current screen options.
+     * @return array
+     * @see DL_Screen_Prototype::get_screen_options()
+     * @since 1.0.0
+     */
+    public function get_screen_options() {
+        if( $this->enable_screen_options !== true ) {
+            return [];
+        }
+
+        $screen = $this->get_screen();
+        $user   = get_current_user_id();
+
+        // Option for showing icons in record type column
+        $show_icons_key = $this->slug . '-show_icons';
+        $show_icons = get_user_meta( $user, $show_icons_key, true );
+        if( strlen( $show_icons ) == 0 ) {
+            $show_icons = $screen->get_option( $show_icons_key, 'default' );
+        }
+
+        return [
+            'show_icons' => (bool) $show_icons,
+        ];
+    }
+
+    /**
+     * Save screen options.
+     * @return void
+     * @see DL_Screen_Prototype::get_screen_options()
+     * @since 1.0.0
+     * @todo It should be done automatically by using {@see DL_Screen_Prototype::$options} without need of writing own code.
+     */
+    public function save_screen_options() {
+        if( $this->enable_screen_options !== true ) {
+            return;
+        }
+
+        $user = get_current_user_id();
+
+        if(
+                filter_input( INPUT_POST, $this->slug . '-submit' ) &&
+                (bool) wp_verify_nonce( filter_input( INPUT_POST, $this->slug . '-nonce' ) ) === true
+        ) {
+            $show_icons = filter_input( INPUT_POST, $this->slug . '-show_icons' );
+            update_user_meta( $user, $this->slug . '-show_icons', ( strtolower( $show_icons ) == 'on' ) ? 1 : 0 );
+        }
     }
 }
 

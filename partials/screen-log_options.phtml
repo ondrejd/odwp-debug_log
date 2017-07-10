@@ -1,0 +1,31 @@
+<?php
+/**
+ * @author Ondřej Doněk <ondrejd@gmail.com>
+ * @link https://github.com/ondrejd/odwp-debug_log for the canonical source repository
+ * @license https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License 3.0
+ * @package odwp-debug_log
+ * @see DL_Screen_Prototype::screen_options()
+ * @since 1.0.0
+ */
+
+if( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+?>
+<div id="screen-options-wrap" class="hidden" aria-label="<?php esc_html_e( 'Screen Options Tab', DL_SLUG ); ?>">
+    <form name="<?php echo $slug; ?>-form" method="post">
+        <?php echo wp_nonce_field( -1, $slug . '-nonce', true, false); ?>
+        <input type="hidden" name="screen_name" value="<?php echo $screen->id; ?>">
+        <fieldset>
+            <legend><?php esc_html_e( 'Zobrazit typ záznamu jako ikonu?', DL_SLUG ); ?></legend>
+            <label for="<?php echo $slug; ?>-show_icons" title="<?php esc_html_e( 'Zobrazit typ záznamu jako ikonu?', DL_SLUG ); ?>">
+                <input type="checkbox" name="<?php echo $slug; ?>-show_icons" id="<?php echo $slug; ?>-checkbox1" <?php checked( $show_icons ); ?>>
+                <?php esc_html_e( 'Zaškrtněte pokud chcete mít typ záznamu (chyba, oznámení, ostatní, upozornění) jako ikonu a ne jako normální text.', DL_SLUG ); ?>
+            </label>
+        </fieldset>
+        <p class="submit">
+            <input type="submit" name="<?php echo $slug; ?>-submit" value="<?php esc_html_e( 'Použít', DL_SLUG ); ?>" class="button button-primary">
+        </p>
+    </form>
+</div>
