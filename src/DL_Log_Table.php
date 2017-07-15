@@ -276,7 +276,7 @@ class DL_Log_Table extends WP_List_Table {
 
         foreach( $log_raw as $log_line ) {
             $matches = preg_split(
-                '/(\[[0-9]{2}-[a-zA-Z]{3}-[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} [a-zA-Z]{0,3}\]) ([a-zA-Z\,\s\d:=\/.\-\_\(\)\'\"$]*)/',
+                '/(\[[0-9]{2}-[a-zA-Z]{3}-[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} [a-zA-Z]{0,3}\])/',
                 $log_line,
                 -1,
                 PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
@@ -293,36 +293,13 @@ class DL_Log_Table extends WP_List_Table {
                     $record->setId( count( $log ) + 1 );
                     $record->setTime( strtotime( trim( $matches[0], '[]' ) ) );
 
-                    $message = $matches[1];
-
-                    if( strpos( $matches[1], DL_Log_Record::TYPE_ERROR ) === 0 ) {
-                        $record->setType( DL_Log_Record::TYPE_ERROR );
-                        $message = str_replace( DL_Log_Record::TYPE_ERROR . ': ', '', $message );
-                    }
-                    else if( strpos( $matches[1], DL_Log_Record::TYPE_NOTICE ) === 0 ) {
-                        $record->setType( DL_Log_Record::TYPE_NOTICE );
-                        $message = str_replace( DL_Log_Record::TYPE_NOTICE . ': ', '', $message );
-                    }
-                    else if( strpos( $matches[1], DL_Log_Record::TYPE_PARSER ) === 0 ) {
-                        $record->setType( DL_Log_Record::TYPE_PARSER );
-                        $message = str_replace( DL_Log_Record::TYPE_PARSER . ': ', '', $message );
-                    }
-                    else if( strpos( $matches[1], DL_Log_Record::TYPE_WARNING ) === 0 ) {
-                        $record->setType( DL_Log_Record::TYPE_WARNING );
-                        $message = str_replace( DL_Log_Record::TYPE_WARNING . ': ', '', $message );
-                    }
-                    else if( strpos( $matches[1], DL_Log_Record::TYPE_ODWPDL ) === 0 ) {
-                        $record->setType( DL_Log_Record::TYPE_ODWPDL );
-                        $message = str_replace( DL_Log_Record::TYPE_ODWPDL . ': ', '', $message );
-                        $record->setDisplay( false );
-                    }
-                    else {
-                        $record->setType( DL_Log_Record::TYPE_OTHER );
-                    }
-
+                    $message = trim( $matches[1] );
+                    $type    = $this->recognize_record_type( $message );
+                    $message = str_replace( "{$type}: ", '', $message );
                     $message = $this->make_source_links( $message );
 
                     $record->setMessage( $message );
+                    $record->setType( $type );
                 }
                 elseif( count( $matches ) == 1 && ( $record instanceof DL_Log_Record ) ) {
                     if( strpos( $matches[0], '#' ) === 0 ) {
@@ -332,10 +309,20 @@ class DL_Log_Table extends WP_List_Table {
                 }
                 else {
                     odwpdl_write_log( 'ODWPDL Log Parse error: ' . print_r( $matches, true ) );
+                    echo '<pre>';
+                    echo 'WRONG MATCHES:'.PHP_EOL;
+                    var_dump( $log_line );
+                    var_dump( $matches );
+                    exit();
                 }
             }
             else {
                 odwpdl_write_log( 'ODWPDL Log Parse error: ' . print_r( $matches, true ) );
+                echo '<pre>';
+                echo 'WRONG MATCHES:'.PHP_EOL;
+                var_dump( $log_line );
+                var_dump( $matches );
+                exit();
             }
         }
 
@@ -347,13 +334,41 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * @internal Returns the same text as given but the mentioned PHP source files are made accessible as links.
+     * @internal Recognizes and returns type of log record from the given string.
      * @param string $str
      * @return string
+     * @see DL_Log_Table::get_data()
      * @since 1.0.0
+     */
+    private function recognize_record_type( $str ){
+        if( strpos( $str, DL_Log_Record::TYPE_ERROR ) === 0 ) {
+            return DL_Log_Record::TYPE_ERROR;
+        }
+        else if( strpos( $str, DL_Log_Record::TYPE_NOTICE ) === 0 ) {
+            return DL_Log_Record::TYPE_NOTICE;
+        }
+        else if( strpos( $str, DL_Log_Record::TYPE_PARSER ) === 0 ) {
+            return DL_Log_Record::TYPE_PARSER;
+        }
+        else if( strpos( $str, DL_Log_Record::TYPE_WARNING ) === 0 ) {
+            return DL_Log_Record::TYPE_WARNING;
+        }
+        else if( strpos( $str, DL_Log_Record::TYPE_ODWPDL ) === 0 ) {
+            return DL_Log_Record::TYPE_ODWPDL;
+        }
+
+        return DL_Log_Record::TYPE_OTHER;
+    }
+
+    /**
+     * @internal Returns the same text as given but the mentioned PHP source files are made accessible as links.
      * @link http://php.net/manual/en/function.get-defined-functions.php
      * @link https://stackoverflow.com/questions/13421317/finding-the-php-file-at-run-time-where-a-method-of-an-object-was-defined
      * @link https://stackoverflow.com/questions/2222142/how-to-find-out-where-a-function-is-defined
+     * @param string $str
+     * @return string
+     * @see DL_Log_Table::get_data()
+     * @since 1.0.0
      */
     private function make_source_links( $str ) {
         if ( strpos( $str, ABSPATH ) === false ) {
