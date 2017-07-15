@@ -35,10 +35,41 @@ class DL_Log_Screen extends DL_Screen_Prototype {
         $this->page_title = __( 'Prohlížeč ladících informací', DL_SLUG );
 
         // Specify help tabs
-        $this->help_tabs = [];
+        $this->help_tabs[] = [
+            'id' => $this->slug . '-todo_tab',
+            'title' => 'TODO',
+            'content' =>
+                '<div style="color: #f30;">' .
+                '    <ul style="list-style: square; padding-left: 20px;">' .
+                '        <li style="text-decoration: line-through;">přidat sloupec s typem chyby a hlavní text chyby o tento typ zkrátit (bude zkrácen jen, když je sloupec zobrazen)</li>' .
+                '        <li>přidat filtrování - zobrazit jen dnešní chyby, chyby za poslední hodinu, zobrazit chyby určitého typu (<em>PHP Parse Error</em>, <em>PHP Warning</em>, <em>PHP Fatal Error</em>)</li>' .
+                '        <li>dokončit hromadné úpravy (smazat vybrané záznamy)</li>' .
+                '        <li>opravit/dokončit řazení dat</li>' .
+                '        <li>umožnit proklik na zdrojové kódy ve kterých se chyba vyskytne</li>' .
+                '        <li style="text-decoration: line-through;">přidat základní stránkování</li>' .
+                '        <li>zobrazit <em>stack trace</em> pokud je definována</li>' .
+                '        <li>' .
+                '            <b>Uživatelské nastavení:</b>' .
+                '            <ul style="list-style: square; padding-left: 20px;">' .
+                '                <li>udělat to tak, aby nebylo zapotřebí <em>custom</em> šablony pro vygenerování formuláře s nastavením obrazovky (<code>DL_Screen_Prototype::screen_options()</code>)</li>' .
+                '                <li>defaultní počet položek na stránce</li>' .
+                '                <li>které sloupce se mají zobrazit</li>' .
+                '                <li>jak zobrazit sloupec s typem záznamu - jestli jako text či ikonu</li>' .
+                '            </ul>' .
+                '        </li>' .
+                '        <li>vyřešit všechny problémy, které se mohou vyskytnout při použití na nástěnce (<em>dashboard widget</em>)</li>' .
+                '    </ul>' .
+                '</div>',
+        ];
 
         // Specify help sidebars
-        $this->help_sidebars = [];
+        $this->help_sidebars[] = sprintf(
+                '<b>%s</b>' .
+                '<p><a href="%s" target="blank">%s</a></p>',
+                __( 'Užitečné odkazy', DL_LOG ),
+                'https://github.com/ondrejd/odwp-debug_log',
+                __( 'GitHub', DL_LOG )
+        );
 
         // Specify screen options
         $this->options[$this->slug . '-show_icons'] = [

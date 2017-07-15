@@ -267,10 +267,11 @@ abstract class DL_Screen_Prototype {
         $screen = $this->get_screen();
 
         // Screen help
+        // Help tabs
         foreach( $this->help_tabs as $tab ) {
             $screen->add_help_tab( $tab );
         }
-
+        // Help sidebars
         foreach( $this->help_sidebars as $sidebar ) {
             $screen->set_help_sidebar( $sidebar );
         }
