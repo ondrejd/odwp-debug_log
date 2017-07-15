@@ -18,10 +18,14 @@ if( ! defined( 'ABSPATH' ) ) {
         <?php echo wp_nonce_field( -1, $slug . '-nonce', true, false); ?>
         <input type="hidden" name="screen_name" value="<?php echo $screen->id; ?>">
         <fieldset>
-            <legend><?php esc_html_e( 'Zobrazit typ záznamu jako ikonu?', DL_SLUG ); ?></legend>
+            <legend><?php esc_html_e( 'Nastavení pro zobrazení datové tabulky', DL_SLUG ); ?></legend>
             <label for="<?php echo $slug; ?>-show_icons" title="<?php esc_html_e( 'Zobrazit typ záznamu jako ikonu?', DL_SLUG ); ?>">
                 <input type="checkbox" name="<?php echo $slug; ?>-show_icons" id="<?php echo $slug; ?>-checkbox1" <?php checked( $show_icons ); ?>>
                 <?php esc_html_e( 'Zaškrtněte pokud chcete mít typ záznamu (chyba, oznámení, ostatní, upozornění) jako ikonu a ne jako normální text.', DL_SLUG ); ?>
+            </label>
+            <label for="<?php echo $slug; ?>-show_file_links" title="<?php esc_html_e( 'Zobrazit odkazy na zdrojové soubory?', DL_SLUG ); ?>">
+                <input type="checkbox" name="<?php echo $slug; ?>-show_file_links" id="<?php echo $slug; ?>-checkbox2" <?php checked( $show_file_links ); ?>>
+                <?php esc_html_e( 'Zaškrtněte pokud chcete zobrazit odkazy na zdrojové soubory, ve kterých se chyba vyskytla.', DL_SLUG ); ?>
             </label>
         </fieldset>
         <p class="submit">

@@ -42,9 +42,14 @@ class DL_Log_Screen extends DL_Screen_Prototype {
 
         // Specify screen options
         $this->options[$this->slug . '-show_icons'] = [
-            'label'   => __( 'Zobrazit typ záznamu jako ikonu?', 'textdomain' ),
+            'label'   => __( 'Zobrazit typ záznamu jako ikonu?', DL_SLUG ),
             'default' => true,
             'option'  => $this->slug . '-show_icons',
+        ];
+        $this->options[$this->slug . '-show_file_links'] = [
+            'label'   => __( 'Zobrazit odkazy na zdrojové soubory?', DL_SLUG ),
+            'default' => true,
+            'option'  => $this->slug . '-show_file_links',
         ];
         $this->enable_screen_options = true;
 
@@ -86,12 +91,19 @@ class DL_Log_Screen extends DL_Screen_Prototype {
         // Option for showing icons in record type column
         $show_icons_key = $this->slug . '-show_icons';
         $show_icons = get_user_meta( $user, $show_icons_key, true );
-        if( strlen( $show_icons ) == 0 ) {
+        if( strlen( $show_icons ) == 0 ){
             $show_icons = $screen->get_option( $show_icons_key, 'default' );
+        }
+
+        $show_file_links_key = $this->slug . '-show_file_links';
+        $show_file_links = get_user_meta( $user, $show_file_links_key, true );
+        if( strlen( $show_file_links ) == 0 ){
+            $show_file_links = $screen->get_option( $show_file_links_key, 'default' );
         }
 
         return [
             'show_icons' => (bool) $show_icons,
+            'show_file_links' => (bool) $show_file_links,
         ];
     }
 
@@ -113,8 +125,12 @@ class DL_Log_Screen extends DL_Screen_Prototype {
                 filter_input( INPUT_POST, $this->slug . '-submit' ) &&
                 (bool) wp_verify_nonce( filter_input( INPUT_POST, $this->slug . '-nonce' ) ) === true
         ) {
+            // Show icons
             $show_icons = filter_input( INPUT_POST, $this->slug . '-show_icons' );
             update_user_meta( $user, $this->slug . '-show_icons', ( strtolower( $show_icons ) == 'on' ) ? 1 : 0 );
+            // Show file links
+            $show_file_links = filter_input( INPUT_POST, $this->slug . '-show_file_links' );
+            update_user_meta( $user, $this->slug . '-show_file_links', ( strtolower( $show_file_links ) == 'on' ) ? 1 : 0 );
         }
     }
 }
