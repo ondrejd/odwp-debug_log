@@ -28,6 +28,7 @@ if( ! class_exists( 'DL_Log_Table' ) ) :
  * @todo Default column and direction for sorting should be set via user preferences.
  * @todo Default per page items count should be set via user preferences.
  * @todo Now we get all data at the first place and than we set pagination but it means that we are parsing data we don't need to - so this must be implemented other way.
+ * @todo We should parse only rows that going to be displayed not all of them.
  */
 class DL_Log_Table extends WP_List_Table {
     /**
@@ -143,6 +144,10 @@ class DL_Log_Table extends WP_List_Table {
                 $lbl = __( 'Ostatní', DL_SLUG );
                 return ( $show_icons === true ) ? '<span class="dashicons dashicons-editor-help" title="' . $lbl .'"></span>' : $lbl;
 
+            case DL_Log_Record::TYPE_PARSER:
+                $lbl = __( 'Chyba kódu', DL_SLUG );
+                return ( $show_icons === true ) ? '<span class="dashicons  dashicons-thumbs-down" title="' . $lbl . '"></span>' : $lbl;
+
             case DL_Log_Record::TYPE_WARNING:
                 $lbl = __( 'Varování', DL_SLUG );
                 return ( $show_icons === true ) ? '<span class="dashicons dashicons-flag" title="' . $lbl .'"></span>' : $lbl;
@@ -169,11 +174,26 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
+     * Custom method for displaying rows.
+     * @return void
+     * @since 1.0.0
+     */
+    public function display_rows() {
+        foreach( $this->items as $item ) {
+            if( ! ( $item instanceof \DL_Log_Record ) ) {
+                continue;
+            }
+
+            $this->single_row( $item );
+        }
+    }
+
+    /**
      * Returns array describing bulk actions available for the table.
      * @return array
      * @since 1.0.0
      */
-    function get_bulk_actions() {
+    public function get_bulk_actions() {
         $actions = [
             'delete' => __( 'Smaž', DL_SLUG ),
         ];
@@ -283,13 +303,24 @@ class DL_Log_Table extends WP_List_Table {
                         $record->setType( DL_Log_Record::TYPE_NOTICE );
                         $message = str_replace( DL_Log_Record::TYPE_NOTICE . ': ', '', $message );
                     }
+                    else if( strpos( $matches[1], DL_Log_Record::TYPE_PARSER ) === 0 ) {
+                        $record->setType( DL_Log_Record::TYPE_PARSER );
+                        $message = str_replace( DL_Log_Record::TYPE_PARSER . ': ', '', $message );
+                    }
                     else if( strpos( $matches[1], DL_Log_Record::TYPE_WARNING ) === 0 ) {
                         $record->setType( DL_Log_Record::TYPE_WARNING );
                         $message = str_replace( DL_Log_Record::TYPE_WARNING . ': ', '', $message );
                     }
+                    else if( strpos( $matches[1], DL_Log_Record::TYPE_ODWPDL ) === 0 ) {
+                        $record->setType( DL_Log_Record::TYPE_ODWPDL );
+                        $message = str_replace( DL_Log_Record::TYPE_ODWPDL . ': ', '', $message );
+                        $record->setDisplay( false );
+                    }
                     else {
                         $record->setType( DL_Log_Record::TYPE_OTHER );
                     }
+
+                    $message = $this->make_source_links( $message );
 
                     $record->setMessage( $message );
                 }
@@ -299,18 +330,12 @@ class DL_Log_Table extends WP_List_Table {
                         $record->addTrace( $matches[0] );
                     }
                 }
-                /**
-                 * @todo Don't forget to remove this before the first release!!!
-                 */
                 else {
-                    var_dump( $matches );echo '<br>';
+                    odwpdl_write_log( 'ODWPDL Log Parse error: ' . print_r( $matches, true ) );
                 }
             }
-            /**
-             * @todo Don't forget to remove this before the first release!!!
-             */
             else {
-                var_dump( $matches );echo '<br>';
+                odwpdl_write_log( 'ODWPDL Log Parse error: ' . print_r( $matches, true ) );
             }
         }
 
@@ -319,6 +344,48 @@ class DL_Log_Table extends WP_List_Table {
         }
 
         return $log;
+    }
+
+    /**
+     * @internal Returns the same text as given but the mentioned PHP source files are made accessible as links.
+     * @param string $str
+     * @return string
+     * @since 1.0.0
+     * @link http://php.net/manual/en/function.get-defined-functions.php
+     * @link https://stackoverflow.com/questions/13421317/finding-the-php-file-at-run-time-where-a-method-of-an-object-was-defined
+     * @link https://stackoverflow.com/questions/2222142/how-to-find-out-where-a-function-is-defined
+     */
+    private function make_source_links( $str ) {
+        if ( strpos( $str, ABSPATH ) === false ) {
+            return $str;
+        }
+
+        // 1) Search for file links
+        $file_links = [];
+        $matches = preg_split(
+                '/((\/home\/www\/ondrejd.com\/ssl\/[a-zA-Z.\-\_\/]*))/',
+                $str,
+                -1,
+                PREG_SPLIT_DELIM_CAPTURE
+        );
+
+        foreach( $matches as $match ){
+            if( strpos( $match, ABSPATH ) === 0 ){
+                if( ! in_array( $match, $file_links ) ){
+                    $file_links[] = $match;
+                }
+            }
+        }
+
+        // 2) Update string with HTML anchors for file links
+        foreach( $file_links as $file_link ){
+            $str = str_replace( $file_link, '<a href="#" target="blank"><code>' . $file_link . '</code></a>', $str );
+        }
+
+        // 3) Process "on line 11"...
+        // TODO Process file line.
+
+        return $str;
     }
 
     /**

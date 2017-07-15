@@ -46,6 +46,18 @@ class DL_Log_Record {
      * @var string
      * @since 1.0.0
      */
+    const TYPE_PARSER  = 'PHP Parse error';
+
+    /**
+     * @var string
+     * @since 1.0.0
+     */
+    const TYPE_ODWPDL  = 'ODWPDL Log Parse error';
+
+    /**
+     * @var string
+     * @since 1.0.0
+     */
     const TYPE_WARNING = 'PHP Warning';
 
     /**
@@ -77,6 +89,12 @@ class DL_Log_Record {
      * @since 1.0.0
      */
     protected $type;
+
+    /**
+     * @var boolean Show log record?
+     * @since 1.0.0
+     */
+    protected $display = true;
 
     /**
      * Construct.
@@ -142,6 +160,15 @@ class DL_Log_Record {
     }
 
     /**
+     * Returns TRUE if record should be displayed.
+     * @return boolean
+     * @since 1.0.0
+     */
+    public function getDisplay() {
+        return $this->display;
+    }
+
+    /**
      * Sets index of the log record.
      * @param integer $id
      * @return void
@@ -192,12 +219,30 @@ class DL_Log_Record {
     }
 
     /**
+     * Returns <em>TRUE</em> if error record has a stack trace.
+     * @return boolean
+     * @since 1.0.0
+     */
+    public function hasTrace() {
+        return ( count( $this->trace ) > 0 );
+    }
+
+    /**
      * Sets log record type.
      * @param string $type
      * @since 1.0.0
      */
     public function setType( $type ) {
         $this->type = $type;
+    }
+
+    /**
+     * Sets if record should be displayed.
+     * @param boolean $display
+     * @since 1.0.0
+     */
+    public function setDisplay( $display ) {
+        $this->display = ( bool ) $display;
     }
 }
 
