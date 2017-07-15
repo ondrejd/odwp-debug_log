@@ -12,24 +12,33 @@ if( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+$user = get_current_user();
+$rows_per_page = (int) get_user_meta( $user, $slug . '-rows_per_page', true );
+
 ?>
-<div id="screen-options-wrap" class="hidden" aria-label="<?php esc_html_e( 'Screen Options Tab', DL_SLUG ); ?>">
-    <form name="<?php echo $slug; ?>-form" method="post">
+<div id="screen-options-wrap" class="hidden" aria-label="<?php esc_html_e( 'Screen Options Tab', DL_SLUG ) ?>">
+    <form name="<?php echo $slug ?>-form" method="post">
         <?php echo wp_nonce_field( -1, $slug . '-nonce', true, false); ?>
-        <input type="hidden" name="screen_name" value="<?php echo $screen->id; ?>">
+        <input type="hidden" name="screen_name" value="<?php echo $screen->id ?>">
         <fieldset>
-            <legend><?php esc_html_e( 'Nastavení pro zobrazení datové tabulky', DL_SLUG ); ?></legend>
-            <label for="<?php echo $slug; ?>-show_icons" title="<?php esc_html_e( 'Zobrazit typ záznamu jako ikonu?', DL_SLUG ); ?>">
-                <input type="checkbox" name="<?php echo $slug; ?>-show_icons" id="<?php echo $slug; ?>-checkbox1" <?php checked( $show_icons ); ?>>
-                <?php esc_html_e( 'Zaškrtněte pokud chcete mít typ záznamu (chyba, oznámení, ostatní, upozornění) jako ikonu a ne jako normální text.', DL_SLUG ); ?>
+            <legend><?php esc_html_e( 'Nastavení pro zobrazení datové tabulky', DL_SLUG ) ?></legend>
+            <p>
+                <label for="<?php echo $slug ?>-number1">
+                    <?php esc_html_e( 'Počet řádků zobrazených na stránce', DL_SLUG ) ?>
+                    <input type="number" name="<?php echo $slug ?>-rows_per_page" id="<?php echo $slug ?>-number1" min="5" max="100" step="1" value="<?php echo $rows_per_page ?>">
+                </label>
+            </p>
+            <label for="<?php echo $slug ?>-checkbox1" title="<?php esc_html_e( 'Zobrazit typ záznamu jako ikonu?', DL_SLUG ) ?>">
+                <input type="checkbox" name="<?php echo $slug ?>-show_icons" id="<?php echo $slug ?>-checkbox1" <?php checked( $show_icons ) ?>>
+                <?php esc_html_e( 'Zaškrtněte pokud chcete mít typ záznamu (chyba, oznámení, ostatní, upozornění) jako ikonu a ne jako normální text.', DL_SLUG ) ?>
             </label>
-            <label for="<?php echo $slug; ?>-show_file_links" title="<?php esc_html_e( 'Zobrazit odkazy na zdrojové soubory?', DL_SLUG ); ?>">
-                <input type="checkbox" name="<?php echo $slug; ?>-show_file_links" id="<?php echo $slug; ?>-checkbox2" <?php checked( $show_file_links ); ?>>
-                <?php esc_html_e( 'Zaškrtněte pokud chcete zobrazit odkazy na zdrojové soubory, ve kterých se chyba vyskytla.', DL_SLUG ); ?>
+            <label for="<?php echo $slug ?>-checkbox2" title="<?php esc_html_e( 'Zobrazit odkazy na zdrojové soubory?', DL_SLUG ) ?>">
+                <input type="checkbox" name="<?php echo $slug ?>-show_file_links" id="<?php echo $slug ?>-checkbox2" <?php checked( $show_file_links ) ?>>
+                <?php esc_html_e( 'Zaškrtněte pokud chcete zobrazit odkazy na zdrojové soubory, ve kterých se chyba vyskytla.', DL_SLUG ) ?>
             </label>
         </fieldset>
         <p class="submit">
-            <input type="submit" name="<?php echo $slug; ?>-submit" value="<?php esc_html_e( 'Použít', DL_SLUG ); ?>" class="button button-primary">
+            <input type="submit" name="<?php echo $slug ?>-submit" value="<?php esc_html_e( 'Použít', DL_SLUG ) ?>" class="button button-primary">
         </p>
     </form>
 </div>

@@ -72,6 +72,11 @@ class DL_Log_Screen extends DL_Screen_Prototype {
         );
 
         // Specify screen options
+        $this->options[$this->slug . '-rows_per_page'] = [
+            'label'   => __( 'Počet záznamů na stránku', DL_SLUG ),
+            'default' => 10,
+            'option'  => $this->slug . '-rows_per_page',
+        ];
         $this->options[$this->slug . '-show_icons'] = [
             'label'   => __( 'Zobrazit typ záznamu jako ikonu?', DL_SLUG ),
             'default' => true,
@@ -120,6 +125,12 @@ class DL_Log_Screen extends DL_Screen_Prototype {
         $user   = get_current_user_id();
 
         // Option for showing icons in record type column
+        $rows_per_page_key = $this->slug . '-rows_per_page';
+        $rows_per_page = get_user_meta( $user, $rows_per_page_key, true );
+        if( strlen( $rows_per_page ) == 0){
+            $rows_per_page = $screen->get_option( $rows_per_page, 'default' );
+        }
+
         $show_icons_key = $this->slug . '-show_icons';
         $show_icons = get_user_meta( $user, $show_icons_key, true );
         if( strlen( $show_icons ) == 0 ){
@@ -133,6 +144,7 @@ class DL_Log_Screen extends DL_Screen_Prototype {
         }
 
         return [
+            'rows_per_page' => (int) $rows_per_page,
             'show_icons' => (bool) $show_icons,
             'show_file_links' => (bool) $show_file_links,
         ];
@@ -156,6 +168,9 @@ class DL_Log_Screen extends DL_Screen_Prototype {
                 filter_input( INPUT_POST, $this->slug . '-submit' ) &&
                 (bool) wp_verify_nonce( filter_input( INPUT_POST, $this->slug . '-nonce' ) ) === true
         ) {
+            // Rows per page
+            $rows_per_page = filter_input( INPUT_POST, $this->slug . '-rows_per_page' );
+            update_user_meta( $user, $this->slug . '-rows_per_page', ( int ) $rows_per_page );
             // Show icons
             $show_icons = filter_input( INPUT_POST, $this->slug . '-show_icons' );
             update_user_meta( $user, $this->slug . '-show_icons', ( strtolower( $show_icons ) == 'on' ) ? 1 : 0 );
