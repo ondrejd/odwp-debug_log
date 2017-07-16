@@ -145,6 +145,13 @@ class DL_Plugin {
         // Initialize locales
         $path = DL_PATH . 'languages';
         load_plugin_textdomain( DL_SLUG, false, $path );
+
+        // Initialize options
+        $options = self::get_options();
+
+        // Initialize admin screens
+        self::init_screens();
+        self::screens_call_method( 'init' );
     }
 
     /**
@@ -172,6 +179,29 @@ class DL_Plugin {
     }
 
     /**
+     * Initialize admin screens.
+     * @return void
+     * @since 1.0.0
+     */
+    protected static function init_screens() {
+        include( DL_PATH . 'src/DL_Screen_Prototype.php' );
+        include( DL_PATH . 'src/DL_Options_Screen.php' );
+        include( DL_PATH . 'src/DL_Log_Screen.php' );
+
+        /**
+         * @var DL_Options_Screen $options_screen
+         */
+        $options_screen = new DL_Options_Screen();
+        self::$admin_screens[$options_screen->get_slug()] = $options_screen;
+
+        /**
+         * @var DL_Log_Screen $log_screen
+         */
+        $log_screen = new DL_Log_Screen();
+        self::$admin_screens[$log_screen->get_slug()] = $log_screen;
+    }
+
+    /**
      * Hook for "admin_init" action.
      * @return void
      * @since 1.0.0
@@ -182,9 +212,11 @@ class DL_Plugin {
         // Check environment
         self::check_environment();
 
-        // Initialize options
-        $options = self::get_options();
+        // Initialize Settings API
         self::init_settings();
+
+        // Initialize admin screens
+        self::screens_call_method( 'admin_init' );
 
         // Initialize dashboard widgets
         include( DL_PATH . 'src/DL_Log_Dashboard_Widget.php' );
@@ -195,25 +227,8 @@ class DL_Plugin {
      * Hook for "admin_menu" action.
      * @return void
      * @since 1.0.0
-     * @todo We can not initialize screens here because we have more hoooks in there (`admin_init` for example).
      */
     public static function admin_menu() {
-        include( DL_PATH . 'src/DL_Screen_Prototype.php' );
-        include( DL_PATH . 'src/DL_Options_Screen.php' );
-        include( DL_PATH . 'src/DL_Log_Screen.php' );
-
-        /**
-         * @var DL_Options_Screen $options_screen
-         */
-        $options_screen = new DL_Options_Screen();
-        self::$admin_screens[] = $options_screen;
-
-        /**
-         * @var DL_Log_Screen $log_screen
-         */
-        $log_screen = new DL_Log_Screen();
-        self::$admin_screens[] = $log_screen;
-
         // Call action for `admin_menu` hook on all screens.
         self::screens_call_method( 'admin_menu' );
     }
