@@ -32,6 +32,12 @@ if( ! class_exists( 'DL_Log_Table' ) ) :
  */
 class DL_Log_Table extends WP_List_Table {
     /**
+     * @var string Comma-separated list of defaultly hidden columns.
+     * @since 1.0.0
+     */
+    const DEFAULT_HIDDEN_COLS = 'id';
+
+    /**
      * @var string Default per page items count.
      * @since 1.0.0
      */
@@ -56,16 +62,24 @@ class DL_Log_Table extends WP_List_Table {
     const DEFAULT_SHOW_ICONS = true;
 
     /**
+     * @var boolean Default settings for displaying file names as HTML links to real source files.
+     * @since 1.0.0
+     */
+    const DEFAULT_SHOW_LINKS = true;
+
+    /**
      * Returns default options for the table.
      * @return array
      * @since 1.0.0
      */
     public static function get_default_options() {
         return [
-            'per_page'   => self::DEFAULT_PER_PAGE,
-            'show_icons' => self::DEFAULT_SHOW_ICONS,
-            'sort_col'   => self::DEFAULT_SORT_COL,
-            'sort_dir'   => self::DEFAULT_SORT_DIR,
+            'hidden_cols' => self::DEFAULT_HIDDEN_COLS,
+            'per_page'    => self::DEFAULT_PER_PAGE,
+            'show_icons'  => self::DEFAULT_SHOW_ICONS,
+            'show_links'  => self::DEFAULT_SHOW_LINKS,
+            'sort_col'    => self::DEFAULT_SORT_COL,
+            'sort_dir'    => self::DEFAULT_SORT_DIR,
         ];
     }
 
@@ -73,15 +87,58 @@ class DL_Log_Table extends WP_List_Table {
      * Returns options for the table.
      * @return array
      * @since 1.0.0
-     * @todo We should load actual options from the user metas and then merge them with the defaults options.
-     * @todo Finish this!
      */
     public static function get_options() {
+        $screen_slug = DL_SLUG . '-log';
+        $user = get_current_user_id();
+
+        $hidden_cols_key = $screen_slug . '-hidden_cols';
+        $hidden_cols = get_user_meta( $user, $hidden_cols_key, true );
+        if( strlen( $hidden_cols ) == 0 ) {
+            $hidden_cols = self::DEFAULT_HIDDEN_COLS;
+        }
+
+        $per_page_key = $screen_slug . '-per_page';
+        $per_page = get_user_meta( $user, $per_page_key, true );
+        if( strlen( $per_page ) == 0 ) {
+            $per_page = self::DEFAULT_PER_PAGE;
+        }
+
+        $show_icons_key = $screen_slug . '-show_icons';
+        $show_icons = get_user_meta( $user, $show_icons_key, true );
+        if( strlen( $show_icons ) == 0 ) {
+            $show_icons = self::DEFAULT_SHOW_ICONS;
+        }
+
+        $show_links_key = $screen_slug . '-show_links';
+        $show_links = get_user_meta( $user, $show_links_key, true );
+        if( strlen( $show_links ) == 0 ) {
+            $show_links = self::DEFAULT_SHOW_LINKS;
+        }
+
+        $sort_col_key = $screen_slug . '-sort_col';
+        $sort_col = get_user_meta( $user, $sort_col_key, true );
+        if( strlen( $sort_col ) == 0 ) {
+            $sort_col = self::DEFAULT_SORT_COL;
+        }
+
+        $sort_dir_key = $screen_slug . '-sort_dir';
+        $sort_dir = get_user_meta( $user, $sort_dir_key, true );
+        if( strlen( $sort_dir ) == 0 ) {
+            $sort_dir = self::DEFAULT_SORT_DIR;
+        }
+
         $defaults = self::get_default_options();
+        $currents = [
+            'hidden_cols' => $hidden_cols,
+            'per_page'    => ( int ) $per_page,
+            'show_icons'  => ( bool ) $show_icons,
+            'show_links'  => ( bool ) $show_links,
+            'sort_col'    => $sort_col,
+            'sort_dir'    => $sort_dir,
+        ];
 
-        //...
-
-        return $defaults;
+        return array_merge( $defaults, $currents );
     }
 
     /**
@@ -217,6 +274,41 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
+     * Returns array with table columns that can be hidden.
+     * @return array
+     * @since 1.0.0
+     */
+    public function get_hideable_columns() {
+        $columns = [
+            'id'   => ['id', true],
+            'type' => ['type', false],
+        ];
+        return $columns;
+    }
+
+    /**
+     * Returns array with table columns that are hidden.
+     * @return array
+     * @since 1.0.0
+     * @todo Get really hidden columns from user meta!
+     */
+    public function get_hidden_columns() {
+        // Prepare defaultly hidden columns
+        $defaults = [];
+        foreach( $this->get_hideable_columns() as $key => $spec ) {
+            if( ( bool ) $spec[1] === true ) {
+                $defaults[] = $key;
+            }
+        }
+
+        // Get hidden columns by user
+        $hidden   = []; // TODO Get it from user_meta!
+
+        // Returns it
+        return array_merge( $defaults, $hidden );
+    }
+
+    /**
      * Returns array with sortable table columns.
      * @return array
      * @since 1.0.0
@@ -239,7 +331,7 @@ class DL_Log_Table extends WP_List_Table {
     public function prepare_items() {
         // Prepare columns
         $columns  = $this->get_columns();
-        $hidden   = [];
+        $hidden   = $this->get_hidden_columns();
         $sortable = $this->get_sortable_columns();
 
         // Set up column headers
@@ -270,6 +362,7 @@ class DL_Log_Table extends WP_List_Table {
      * @todo We should probably not read debug.log file directly in here but use some sort of cache instead.
      */
     protected function get_data() {
+        $options = self::get_options();
         $log_raw = file( DL_LOG, FILE_SKIP_EMPTY_LINES );
         $log = [];
         $record = null;
@@ -296,7 +389,11 @@ class DL_Log_Table extends WP_List_Table {
                     $message = trim( $matches[1] );
                     $type    = $this->recognize_record_type( $message );
                     $message = str_replace( "{$type}: ", '', $message );
-                    $message = $this->make_source_links( $message );
+
+                    // Make links to source files
+                    if( $options['show_links'] === true ) {
+                        $message = $this->make_source_links( $message );
+                    }
 
                     $record->setMessage( $message );
                     $record->setType( $type );
@@ -340,7 +437,7 @@ class DL_Log_Table extends WP_List_Table {
      * @see DL_Log_Table::get_data()
      * @since 1.0.0
      */
-    private function recognize_record_type( $str ){
+    private function recognize_record_type( $str ) {
         if( strpos( $str, DL_Log_Record::TYPE_ERROR ) === 0 ) {
             return DL_Log_Record::TYPE_ERROR;
         }
@@ -384,16 +481,16 @@ class DL_Log_Table extends WP_List_Table {
                 PREG_SPLIT_DELIM_CAPTURE
         );
 
-        foreach( $matches as $match ){
-            if( strpos( $match, ABSPATH ) === 0 ){
-                if( ! in_array( $match, $file_links ) ){
+        foreach( $matches as $match ) {
+            if( strpos( $match, ABSPATH ) === 0 ) {
+                if( ! in_array( $match, $file_links ) ) {
                     $file_links[] = $match;
                 }
             }
         }
 
         // 2) Update string with HTML anchors for file links
-        foreach( $file_links as $file_link ){
+        foreach( $file_links as $file_link ) {
             $str = str_replace( $file_link, '<a href="#" target="blank"><code>' . $file_link . '</code></a>', $str );
         }
 

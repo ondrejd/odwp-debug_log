@@ -5,6 +5,10 @@
  * @package odwp-debug_log
  */
 
+label.disabled {
+    color: #666 !important;
+    cursor: default;
+}
 .tools_page_odwpdl-log .column-id {
     width: 60px;
 }
@@ -13,4 +17,21 @@
 }
 .tools_page_odwpdl-log .column-type {
     width: 60px;
+}
+
+.todo-list--cont {}
+.todo-list, .todo-list ul {
+    padding-left: 20px;
+}
+.todo-list li, .todo-list ul li, .todo-list * li {
+    color: #f30;
+    list-style: square !important;
+    margin: 0 0 0 0px;
+    padding: 0 0 0 0px;
+}
+.todo-list li.done {
+    text-decoration: line-through;
+}
+.todo-list li code {
+    font-size: 90%;
 }

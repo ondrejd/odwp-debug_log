@@ -12,29 +12,72 @@ if( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-$user = get_current_user();
-$rows_per_page = (int) get_user_meta( $user, $slug . '-rows_per_page', true );
+if( ! class_exists( 'DL_Log_Table' ) ) {
+    require_once( DL_PATH . 'src/DL_Log_Table.php' );
+}
+
+$dl_log_table = new DL_Log_Table();
+$table_options = $dl_log_table->get_options();
+$all_columns = $dl_log_table->get_columns();
+$hidden_columns = $dl_log_table->get_hidden_columns();
+$hideable_columns = array_keys( $dl_log_table->get_hideable_columns() );
+// Access all options directly
+extract( $table_options );
 
 ?>
 <div id="screen-options-wrap" class="hidden" aria-label="<?php esc_html_e( 'Screen Options Tab', DL_SLUG ) ?>">
+<?php
+/*echo '<pre>';
+var_dump( $table_options );
+echo '</pre>';*/
+?>
     <form name="<?php echo $slug ?>-form" method="post">
         <?php echo wp_nonce_field( -1, $slug . '-nonce', true, false); ?>
         <input type="hidden" name="screen_name" value="<?php echo $screen->id ?>">
         <fieldset>
             <legend><?php esc_html_e( 'Nastavení pro zobrazení datové tabulky', DL_SLUG ) ?></legend>
             <p>
+                <label><?php esc_html_e( 'Zobrazené sloupce: ', DL_SLUG ) ?></label>
+                <?php foreach( $all_columns as $col_key => $col_label ) : 
+                    if( $col_key != 'cb' ) :
+                        $checked = ! in_array( $col_key, $hidden_columns );
+                        $disabled = ! in_array( $col_key, $hideable_columns );
+                ?>
+                <label for="<?php echo $slug ?>-log_table_col_<?php echo $col_key ?>" class="<?php echo $disabled ? 'disabled' : '' ?>">
+                    <input type="checkbox" name="<?php echo $slug ?>-show_cols[<?php echo $col_key ?>]" id="<?php echo $slug ?>-log_table_col_<?php echo $col_key ?>" <?php checked( $checked ) ?> <?php disabled( $disabled ) ?>>
+                    <?php echo $col_label ?>
+                </label>
+                <?php endif; endforeach ?>
+                <span class="description"> <?php esc_html_e( '(Zašedlé položky jsou zobrazeny vždy.)', DL_LOG ) ?></span>
+            </p>
+            <p>
                 <label for="<?php echo $slug ?>-number1">
-                    <?php esc_html_e( 'Počet řádků zobrazených na stránce', DL_SLUG ) ?>
-                    <input type="number" name="<?php echo $slug ?>-rows_per_page" id="<?php echo $slug ?>-number1" min="5" max="100" step="1" value="<?php echo $rows_per_page ?>">
+                    <?php esc_html_e( 'Počet řádků zobrazených na stránce: ', DL_SLUG ) ?>
+                    <input type="number" name="<?php echo $slug ?>-per_page" id="<?php echo $slug ?>-number1" min="5" max="100" step="1" value="<?php echo $per_page ?>">
                 </label>
             </p>
             <label for="<?php echo $slug ?>-checkbox1" title="<?php esc_html_e( 'Zobrazit typ záznamu jako ikonu?', DL_SLUG ) ?>">
                 <input type="checkbox" name="<?php echo $slug ?>-show_icons" id="<?php echo $slug ?>-checkbox1" <?php checked( $show_icons ) ?>>
                 <?php esc_html_e( 'Zaškrtněte pokud chcete mít typ záznamu (chyba, oznámení, ostatní, upozornění) jako ikonu a ne jako normální text.', DL_SLUG ) ?>
-            </label>
+            </label><br>
             <label for="<?php echo $slug ?>-checkbox2" title="<?php esc_html_e( 'Zobrazit odkazy na zdrojové soubory?', DL_SLUG ) ?>">
-                <input type="checkbox" name="<?php echo $slug ?>-show_file_links" id="<?php echo $slug ?>-checkbox2" <?php checked( $show_file_links ) ?>>
+                <input type="checkbox" name="<?php echo $slug ?>-show_links" id="<?php echo $slug ?>-checkbox2" <?php checked( $show_links ) ?>>
                 <?php esc_html_e( 'Zaškrtněte pokud chcete zobrazit odkazy na zdrojové soubory, ve kterých se chyba vyskytla.', DL_SLUG ) ?>
+            </label><br>
+            <label for="<?php echo $slug ?>-select1">
+                <?php esc_html_e( 'Nastavte sloupec, který se bude řadit defaultně ', DL_SLUG ) ?>
+                <select name="<?php echo $slug ?>-select1" id="<?php echo $slug ?>-select1" value="<?php echo $sort_col ?>">
+                    <?php foreach( $dl_log_table->get_columns() as $col_key => $col_lbl ) : 
+                        if( $col_key != 'cb' ) :
+                    ?>
+                    <option value="<?php echo $col_key ?>" <?php selected( $col_key, $sort_col ) ?>><?php echo $col_lbl ?></option>
+                    <?php endif; endforeach ?>
+                </select>
+                <?php esc_html_e( ' a způsob jeho řazení ', DL_SLUG ) ?>
+                <select name="<?php echo $slug ?>-select2" id="<?php echo $slug ?>-select2" value="<?php echo $sort_dir ?>">
+                    <option value="asc" <?php selected( 'desc', $sort_dir ) ?>><?php esc_html_e( 'Vzestupně', DL_SLUG ) ?></option>
+                    <option value="desc" <?php selected( 'desc', $sort_dir ) ?>><?php esc_html_e( 'Sestupně', DL_SLUG ) ?></option>
+                </select>
             </label>
         </fieldset>
         <p class="submit">
