@@ -17,10 +17,14 @@ __TODO__ ~~![Enabling/disabling debug mode](screenshot-03.png "Enabling/disablin
 
 ### Dashboard widget
 
-__TODO__ ~~![Dashboard widget](screenshot-02.png "Dashboard widget")~~
+__TODO__ ~~![Dashboard widget](screenshot-03.png "Dashboard widget")~~
 
 ### Log page
 
 ![Log page](screenshot-01.png "Log page")
+
+#### Screen options or log page
+
+__TODO__ ~~![Screen options](screenshot-02.png "Screen options for log page")~~
 
 [1]: https://wordpress.org/plugins
