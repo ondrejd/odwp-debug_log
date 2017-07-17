@@ -23,8 +23,8 @@ __TODO__ ~~![Dashboard widget](screenshot-03.png "Dashboard widget")~~
 
 ![Log page](screenshot-01.png "Log page")
 
-#### Screen options or log page
+#### Screen options for the log page
 
-__TODO__ ~~![Screen options](screenshot-02.png "Screen options for log page")~~
+__TODO__ ~~![Screen options](screenshot-02.png "Screen options for the log page")~~
 
 [1]: https://wordpress.org/plugins
