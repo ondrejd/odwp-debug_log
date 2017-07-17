@@ -19,11 +19,30 @@ label.disabled {
     width: 60px;
 }
 
+h3.help-title, h4.help-title {
+    margin-bottom: 0px;
+}
+.help-list, .help-list ul {
+    padding-left: 1em;
+}
+.help-list, .help-list li, .help-list ul li {
+    list-style: none !important;
+    margin: 0 0 0 0px;
+    padding: 0 0 0 0px;
+}
+.help-list li .dashicons {
+    width: 32px;
+}
+
+.help_tab_img {
+    width: 100%;
+}
+
 .todo-list--cont {}
 .todo-list, .todo-list ul {
     padding-left: 20px;
 }
-.todo-list li, .todo-list ul li, .todo-list * li {
+.todo-list li, .todo-list ul li {
     color: #f30;
     list-style: square !important;
     margin: 0 0 0 0px;

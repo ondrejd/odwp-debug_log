@@ -23,6 +23,12 @@ if( ! class_exists( 'DL_Log_Screen' ) ) :
  */
 class DL_Log_Screen extends DL_Screen_Prototype {
     /**
+     * @var string
+     * @since 1.0.0
+     */
+    const SLUG = DL_SLUG . '-log';
+
+    /**
      * Constructor.
      * @param WP_Screen $screen Optional.
      * @return void
@@ -30,13 +36,54 @@ class DL_Log_Screen extends DL_Screen_Prototype {
      */
     public function __construct( \WP_Screen $screen = null ) {
         // Main properties
-        $this->slug = DL_SLUG . '-log';
+        $this->slug = self::SLUG;
         $this->menu_title = __( 'Ladící informace', DL_SLUG );
         $this->page_title = __( 'Prohlížeč ladících informací', DL_SLUG );
 
         // Specify help tabs
         $this->help_tabs[] = [
-            'id' => $this->slug . '-todo_tab',
+            'id' => self::SLUG . '-info-helptab',
+            'title' => __( 'Obecné', DL_SLUG ),
+            'content' => sprintf(
+                    __(
+                            //'<h3 class="help-title">Obecné informace</h3>' .
+                            '<p>Tabulka obsahuje seznam <strong>chybových zpráv</strong>, které vznikly během běhu vaší instalace systému <a href="$s" target="blank">WordPress</a>. Tyto chyby jsou uloženy v souboru <code>debug.log</code>. Tuto tabulku si můžete přidat ve formě widgetu i na <a href="$s">nástěnku</a>.</p>' .
+                            '<h4 class="help-title">Sloupce tabulky</h4>' .
+                            '<ul class="help-list">' .
+                                '<li><strong>Pořadové číslo</strong>&nbsp;&ndash;&nbsp;Pořadové číslo chyby</li>' .
+                                '<li><strong>Datum a čas</strong>&nbsp;&ndash;&nbsp;Datum a čas ve kterém se chyba vyskytla</li>' .
+                                '<li><strong>Typ chyby</strong>&nbsp;&ndash;&nbsp;Typ chyby (viz. přehled níže)</li>' .
+                                '<li><strong>Záznam</strong>&nbsp;&ndash;&nbsp;Text chyby (včetně <em>stack trace</em>)</li>' .
+                            '</ul>' .
+                            '<h4 class="help-title">Typy chyb</h4>' .
+                            '<ul class="help-list">' .
+                                '<li><span class="dashicons dashicons-warning"></span><em>' . DL_Log_Record::TYPE_ERROR . '</em>&nbsp;&ndash;&nbsp;fatální chyba</li>' .
+                                '<li><span class="dashicons dashicons-format-status"></span><em>' . DL_Log_Record::TYPE_NOTICE . '</em>&nbsp;&ndash;&nbsp;chybová připomínka</li>' .
+                                '<li><span class="dashicons dashicons-editor-help"></span><em>' . DL_Log_Record::TYPE_OTHER . '</em>&nbsp;&ndash;&nbsp;jiné chyby</li>' .
+                                '<li><span class="dashicons dashicons-thumbs-down"></span><em>' . DL_Log_Record::TYPE_PARSER . '</em>&nbsp;&ndash;&nbsp;chyba PHP parseru</li>' .
+                                '<li><span class="dashicons dashicons-flag"></span><em>' . DL_Log_Record::TYPE_WARNING . '</em>&nbsp;&ndash;&nbsp;varování na konstrukci v PHP kódu</li>' .
+                                '<li><span class="dashicons dashicons-no"></span><em>' . DL_Log_Record::TYPE_ODWPDL . '</em>&nbsp;&ndash;&nbsp;Chyba log parseru rozšíření <em>odwp-debug_log</em></li>' .
+                            '</ul>',
+                            DL_SLUG
+                    ),
+                    'https://wordpress.org/',
+                    get_admin_url()
+            ),
+        ];
+        $this->help_tabs[] = [
+            'id' => self::SLUG . '-options-helptab',
+            'title' => __( 'Nastavení', DL_SLUG ),
+            'content' => sprintf(
+                    __(
+                            '<p>Zobrazení tabulky se záznamem logu může být ovlivněna nastavením.</p>' .
+                            '<p><img src="%s" alt="Nastavení pluginu" title="Nastavení pluginu" class="help_tab_img"></p>',
+                            DL_SLUG
+                    ),
+                    plugins_url( 'screenshot-02.png', DL_FILE )
+            ),
+        ];
+        $this->help_tabs[] = [
+            'id' => self::SLUG . '-todo_tab',
             'title' => 'TODO',
             'content' =>
                 '<div class="todo-list--cont">' .
@@ -66,42 +113,45 @@ class DL_Log_Screen extends DL_Screen_Prototype {
         // Specify help sidebars
         $this->help_sidebars[] = sprintf(
                 '<b>%s</b>' .
+                '<p><a href="%s" target="blank">%s</a></p>' .
                 '<p><a href="%s" target="blank">%s</a></p>',
                 __( 'Užitečné odkazy', DL_LOG ),
                 'https://github.com/ondrejd/odwp-debug_log',
-                __( 'GitHub', DL_LOG )
+                __( 'GitHub - zdrojové kódy', DL_LOG ),
+                'https://github.com/ondrejd/odwp-debug_log/issues',
+                __( 'GitHub - ohlášení chyb', DL_LOG )
         );
 
         // Specify screen options
-        $this->options[$this->slug . '-hidden_cols'] = [
+        $this->options[self::SLUG . '-hidden_cols'] = [
             'label'   => __( 'Zobrazené sloupce', DL_SLUG ),
             'default' => DL_Log_Table::DEFAULT_HIDDEN_COLS,
-            'option'  => $this->slug . '-hidden_cols',
+            'option'  => self::SLUG . '-hidden_cols',
         ];
-        $this->options[$this->slug . '-per_page'] = [
+        $this->options[self::SLUG . '-per_page'] = [
             'label'   => __( 'Počet záznamů na stránku', DL_SLUG ),
             'default' => DL_Log_Table::DEFAULT_PER_PAGE,
-            'option'  => $this->slug . '-per_page',
+            'option'  => self::SLUG . '-per_page',
         ];
-        $this->options[$this->slug . '-show_icons'] = [
+        $this->options[self::SLUG . '-show_icons'] = [
             'label'   => __( 'Zobrazit typ záznamu jako ikonu?', DL_SLUG ),
             'default' => DL_Log_Table::DEFAULT_SHOW_ICONS,
-            'option'  => $this->slug . '-show_icons',
+            'option'  => self::SLUG . '-show_icons',
         ];
-        $this->options[$this->slug . '-show_links'] = [
+        $this->options[self::SLUG . '-show_links'] = [
             'label'   => __( 'Zobrazit odkazy na zdrojové soubory?', DL_SLUG ),
             'default' => DL_Log_Table::DEFAULT_SHOW_LINKS,
-            'option'  => $this->slug . '-show_links',
+            'option'  => self::SLUG . '-show_links',
         ];
-        $this->options[$this->slug . '-sort_col'] = [
+        $this->options[self::SLUG . '-sort_col'] = [
             'label'   => __( 'Defaultní sloupec k řazení', DL_SLUG ),
             'default' => DL_Log_Table::DEFAULT_SORT_COL,
-            'option'  => $this->slug . '-sort_col',
+            'option'  => self::SLUG . '-sort_col',
         ];
-        $this->options[$this->slug . '-sort_dir'] = [
+        $this->options[self::SLUG . '-sort_dir'] = [
             'label'   => __( 'Defaultní směr řazení', DL_SLUG ),
             'default' => DL_Log_Table::DEFAULT_SORT_DIR,
-            'option'  => $this->slug . '-sort_dir',
+            'option'  => self::SLUG . '-sort_dir',
         ];
         $this->enable_screen_options = true;
 
@@ -119,7 +169,7 @@ class DL_Log_Screen extends DL_Screen_Prototype {
                 $this->page_title,
                 $this->menu_title,
                 'manage_options',
-                $this->slug,
+                self::SLUG,
                 [$this, 'render']
         );
 
@@ -156,34 +206,34 @@ class DL_Log_Screen extends DL_Screen_Prototype {
         $user = get_current_user_id();
 
         if(
-                filter_input( INPUT_POST, $this->slug . '-submit' ) &&
-                (bool) wp_verify_nonce( filter_input( INPUT_POST, $this->slug . '-nonce' ) ) === true
+                filter_input( INPUT_POST, self::SLUG . '-submit' ) &&
+                (bool) wp_verify_nonce( filter_input( INPUT_POST, self::SLUG . '-nonce' ) ) === true
         ) {
             // TODO Hidden columns
-//$show_cols   = filter_input( INPUT_POST, $this->slug . '-show_cols', FILTER_DEFAULT , FILTER_REQUIRE_ARRAY );
+//$show_cols   = filter_input( INPUT_POST, self::SLUG . '-show_cols', FILTER_DEFAULT , FILTER_REQUIRE_ARRAY );
 //var_dump( $show_cols );
 // 1) mame sloupce, ktere chce uzivatel zobrazit
 // 2) vyloucime ty, ktere nemohou byt skryty
 // 3) ted vyhodime ostatni zaskrtnute
 // 4) ty co zbydou ulozime jako retezec do $hidden_cols
 //exit();
-//$hidden_cols = filter_input( INPUT_POST, $this->slug . '-hidden_cols' );
-//update_user_meta( $user, $this->slug . '-hidden_cols', $hidden_cols );
+//$hidden_cols = filter_input( INPUT_POST, self::SLUG . '-hidden_cols' );
+//update_user_meta( $user, self::SLUG . '-hidden_cols', $hidden_cols );
             // Rows per page
-            $per_page = filter_input( INPUT_POST, $this->slug . '-per_page' );
-            update_user_meta( $user, $this->slug . '-per_page', ( int ) $per_page );
+            $per_page = filter_input( INPUT_POST, self::SLUG . '-per_page' );
+            update_user_meta( $user, self::SLUG . '-per_page', ( int ) $per_page );
             // Show icons
-            $show_icons = filter_input( INPUT_POST, $this->slug . '-show_icons' );
-            update_user_meta( $user, $this->slug . '-show_icons', ( strtolower( $show_icons ) == 'on' ) ? 1 : 0 );
+            $show_icons = filter_input( INPUT_POST, self::SLUG . '-show_icons' );
+            update_user_meta( $user, self::SLUG . '-show_icons', ( strtolower( $show_icons ) == 'on' ) ? 1 : 0 );
             // Show links
-            $show_links = filter_input( INPUT_POST, $this->slug . '-show_links' );
-            update_user_meta( $user, $this->slug . '-show_links', ( strtolower( $show_links ) == 'on' ) ? 1 : 0 );
+            $show_links = filter_input( INPUT_POST, self::SLUG . '-show_links' );
+            update_user_meta( $user, self::SLUG . '-show_links', ( strtolower( $show_links ) == 'on' ) ? 1 : 0 );
             // Sorting column
-            $sort_col = filter_input( INPUT_POST, $this->slug . '-sort_col' );
-            update_user_meta( $user, $this->slug . '-sort_col', $sort_col );
+            $sort_col = filter_input( INPUT_POST, self::SLUG . '-sort_col' );
+            update_user_meta( $user, self::SLUG . '-sort_col', $sort_col );
             // Sorting direction
-            $sort_dir = filter_input( INPUT_POST, $this->slug . '-sort_dir' );
-            update_user_meta( $user, $this->slug . '-sort_dir', $sort_dir );
+            $sort_dir = filter_input( INPUT_POST, self::SLUG . '-sort_dir' );
+            update_user_meta( $user, self::SLUG . '-sort_dir', $sort_dir );
         }
     }
 }
