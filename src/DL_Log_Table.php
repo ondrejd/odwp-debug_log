@@ -80,6 +80,12 @@ class DL_Log_Table extends WP_List_Table {
     const DEFAULT_SHOW_LINKS = true;
 
     /**
+     * @var boolean Default settings for displaying stack trace in the table.
+     * @since 1.0.0
+     */
+    const DEFAULT_SHOW_TRACE = true;
+
+    /**
      * @var DL_Log_Parser $parser
      * @since 1.0.0
      */
@@ -96,6 +102,7 @@ class DL_Log_Table extends WP_List_Table {
             'per_page'    => self::DEFAULT_PER_PAGE,
             'show_icons'  => self::DEFAULT_SHOW_ICONS,
             'show_links'  => self::DEFAULT_SHOW_LINKS,
+            'show_trace'  => self::DEFAULT_SHOW_TRACE,
             'sort_col'    => self::DEFAULT_SORT_COL,
             'sort_dir'    => self::DEFAULT_SORT_DIR,
         ];
@@ -129,6 +136,11 @@ class DL_Log_Table extends WP_List_Table {
             $show_links = self::DEFAULT_SHOW_LINKS;
         }
 
+        $show_trace = get_user_meta( $user, DL_Log_Screen::SLUG . '-show_trace', true );
+        if( strlen( $show_trace ) == 0 ) {
+            $show_trace = self::DEFAULT_SHOW_TRACE;
+        }
+
         $sort_col = get_user_meta( $user, DL_Log_Screen::SLUG . '-sort_col', true );
         if( strlen( $sort_col ) == 0 ) {
             $sort_col = self::DEFAULT_SORT_COL;
@@ -145,6 +157,7 @@ class DL_Log_Table extends WP_List_Table {
             'per_page'    => ( int ) $per_page,
             'show_icons'  => ( bool ) $show_icons,
             'show_links'  => ( bool ) $show_links,
+            'show_trace'  => ( bool ) $show_trace,
             'sort_col'    => $sort_col,
             'sort_dir'    => $sort_dir,
         ];
@@ -234,9 +247,34 @@ class DL_Log_Table extends WP_List_Table {
      * @todo Display also stack trace!
      */
     public function column_text( DL_Log_Record $item ) {
-        $id      = ( int ) $item->getId();
-        $page    = ( int ) filter_input( INPUT_GET, 'page' );
-        $text    = $item->getMessage();
+        $id = ( int ) $item->getId();
+        $page = ( int ) filter_input( INPUT_GET, 'page' );
+        $text = $item->getMessage();
+        $options = $this->get_options();
+        $show_links = $options['show_links'];
+        $show_trace = $options['show_trace'];
+
+        if( $item->hasTrace() === true ) {
+            $icon = ( $show_trace === true )
+                    ? '<span class="dashicons dashicons-arrow-up-alt2"></span>'
+                    : '<span class="dashicons dashicons-arrow-down-alt2"></span>';
+
+            $text .= '<div class="stack-trace ' . ( $show_trace === true ? '' : 'stack-trace--collapsed' ) . '">' . PHP_EOL;
+            $text .= '    <b onclick="StackTraceToggler.toggle(this)">' . $icon . ' ' . __( 'Stack trace', DL_SLUG ) . '</b>' . PHP_EOL;
+            $text .= '    <ul>' . PHP_EOL;
+
+            foreach( $item->getTrace() as $trace ) {
+                if( $show_links === true ) {
+                    $trace = $this->parser->make_source_links( $trace );
+                }
+
+                $text .= '        <li>' . $trace . '</li>';
+            }
+
+            $text .= '    </ul>' . PHP_EOL;
+            $text .= '</div>' . PHP_EOL;
+        }
+
         $actions = [
             'view'   => sprintf( __( '<a href="?page=%s&amp;action=%s&amp;record=%s">Zobrazit</a>', DL_SLUG ), $page, 'view', $id ),
             'delete' => sprintf( __( '<a href="?page=%s&amp;action=%s&amp;record=%s">Smazat</a>', DL_SLUG ), $page, 'delete', $id ),
@@ -353,6 +391,9 @@ class DL_Log_Table extends WP_List_Table {
             $this->get_sortable_columns(),
         ];
 
+        // Process bulk actions
+        $this->process_bulk_actions();
+
         // Prepare data
         $this->parser = new DL_Log_Parser( null, $options );
         $this->parser->sort( [
@@ -368,6 +409,15 @@ class DL_Log_Table extends WP_List_Table {
         $this->items = $this->parser->get_data( [
             'page' => $this->get_pagenum()
         ] );
+    }
+
+    /**
+     * Process bulk actions.
+     * @return void
+     * @since 1.0.0
+     */
+    public function process_bulk_actions() {
+        // ...
     }
 }
 

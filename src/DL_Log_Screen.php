@@ -143,6 +143,11 @@ class DL_Log_Screen extends DL_Screen_Prototype {
             'default' => DL_Log_Table::DEFAULT_SHOW_LINKS,
             'option'  => self::SLUG . '-show_links',
         ];
+        $this->options[self::SLUG . '-show_trace'] = [
+            'label'   => __( 'Zobrazit <em>stack trace</em> defaultně rozbalenou?', DL_SLUG ),
+            'default' => DL_Log_Table::DEFAULT_SHOW_TRACE,
+            'option'  => self::SLUG . '-show_trace',
+        ];
         $this->options[self::SLUG . '-sort_col'] = [
             'label'   => __( 'Defaultní sloupec k řazení', DL_SLUG ),
             'default' => DL_Log_Table::DEFAULT_SORT_COL,
@@ -228,6 +233,9 @@ class DL_Log_Screen extends DL_Screen_Prototype {
             // Show links
             $show_links = filter_input( INPUT_POST, self::SLUG . '-show_links' );
             update_user_meta( $user, self::SLUG . '-show_links', ( strtolower( $show_links ) == 'on' ) ? 1 : 0 );
+            // Show trace
+            $show_trace = filter_input( INPUT_POST, self::SLUG . '-show_trace' );
+            update_user_meta( $user, self::SLUG . '-show_trace', ( strtolower( $show_trace ) == 'on' ) ? 1 : 0 );
             // Sorting column
             $sort_col = filter_input( INPUT_POST, self::SLUG . '-sort_col' );
             update_user_meta( $user, self::SLUG . '-sort_col', $sort_col );

@@ -64,6 +64,10 @@ echo '</pre>';*/
                 <input type="checkbox" name="<?php echo $slug ?>-show_links" id="<?php echo $slug ?>-checkbox2" <?php checked( $show_links ) ?>>
                 <?php esc_html_e( 'Zaškrtněte pokud chcete zobrazit odkazy na zdrojové soubory, ve kterých se chyba vyskytla.', DL_SLUG ) ?>
             </label><br>
+            <label for="<?php echo $slug ?>-checkbox3" title="<?php esc_html_e( 'Zobrazit stack trace defaultně rozbalenou?', DL_SLUG ) ?>">
+                <input type="checkbox" name="<?php echo $slug ?>-show_trace" id="<?php echo $slug ?>-checkbox3" <?php checked( $show_trace ) ?>>
+                <?php _e( 'Zaškrtněte pokud chcete zobrazit <em>stack trace</em> defaultně rozbalenou.', DL_SLUG ) ?>
+            </label><br>
             <label for="<?php echo $slug ?>-select1">
                 <?php esc_html_e( 'Nastavte sloupec, který se bude řadit defaultně ', DL_SLUG ) ?>
                 <select name="<?php echo $slug ?>-select1" id="<?php echo $slug ?>-select1" value="<?php echo $sort_col ?>">
