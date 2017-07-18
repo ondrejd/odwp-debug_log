@@ -301,6 +301,8 @@ class DL_Log_Parser {
 
     /**
      * Returns data from the log.
+     * @return array
+     * @since 1.0.0
      */
     public function get_data( $options = ['page' => 1] ) {
         if( $this->is_parsed !== true ) {
@@ -315,8 +317,9 @@ class DL_Log_Parser {
         foreach( $data_raw as $log_line ) {
             if( $this->get_options()['show_links'] === true ) {
                 $log_line->setMessage( $this->make_source_links( $log_line->getMessage() ) );
-                array_push( $data, $log_line );
             }
+
+            array_push( $data, $log_line );
         }
         
         return $data;
@@ -329,7 +332,7 @@ class DL_Log_Parser {
      * @see DL_Log_Table::get_data()
      * @since 1.0.0
      */
-    private function parse_type( $str ) {
+    public function parse_type( $str ) {
         if( strpos( $str, DL_Log_Record::TYPE_ERROR ) === 0 ) {
             return DL_Log_Record::TYPE_ERROR;
         }
@@ -359,7 +362,7 @@ class DL_Log_Parser {
      * @see DL_Log_Parser::get_data()
      * @since 1.0.0
      */
-    private function make_source_links( $str ) {
+    public function make_source_links( $str ) {
         if ( strpos( $str, ABSPATH ) === false ) {
             return $str;
         }
