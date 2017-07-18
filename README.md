@@ -5,9 +5,12 @@ Small [WordPress][1] plugin especially for developers that allows better work de
 ## Features
 
 * enabling/disabling _WP_ debug mode directly from _WP_ administration
-* dashboard widget that displays content of the `debug.log` file
-* standalone _WP_ admin page that displays content of the `debug.log` file
-* offers English and Czech locales
+* widget for _WP_ admin dashboard that displays content of the `debug.log` file
+* _WP_ admin page (__Administration__ > __Tools__ > __Log Viewer__) that displays content of the `debug.log` file
+* rich table list for displaying log records implements all what _WP_ offers - sorting, filtering, pagination, screen options etc.
+* source files referenced in log can be easily viewed by built-in viewer (for source code highlightning is used [GeSHi][2])
+* stack trace (if present) is displayed as collapsable pane
+* Czech ~~and English~~ locales
 
 ## Screenshots
 
