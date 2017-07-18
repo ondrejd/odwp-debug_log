@@ -102,6 +102,18 @@ class DL_Log_Parser {
     private $_record = null;
 
     /**
+     * @var string "Order" sorting parameter.
+     * @since 1.0.0
+     */
+    private $_order;
+
+    /**
+     * @var string "Order by" sorting parameter.
+     * @since 1.0.0
+     */
+    private $_orderby;
+
+    /**
      * Constructor.
      * @param array $args Array with arguments (can contains either "log" or "file" properties).
      * @param boolean $options Options for parsing.
@@ -154,6 +166,40 @@ class DL_Log_Parser {
         }
 
         return $default;
+    }
+
+    /**
+     * @internal Returns "Order by" parameter for sorting.
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_sort_order() {
+        if( empty( $this->_order ) ) {
+            $this->_order = filter_input( INPUT_GET, 'order' );
+
+            if( empty( $this->_order ) ) {
+                $this->_order = self::get_options()['sort_dir'];
+            }
+        }
+
+        return $this->_order;
+    }
+
+    /**
+     * @internal Returns "Order by" parameter for sorting.
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_sort_orderby() {
+        if( empty( $this->_orderby ) ) {
+            $this->_orderby = filter_input( INPUT_GET, 'orderby' );
+
+            if( empty( $this->_orderby ) ) {
+                $this->_orderby = self::get_options()['sort_col'];
+            }
+        }
+
+        return $this->_orderby;
     }
 
     /**
@@ -296,7 +342,15 @@ class DL_Log_Parser {
             $this->parse();
         }
 
-        // ...
+        if( array_key_exists( 'sort_col', $args ) ) {
+            $this->_orderby = $args['sort_col'];
+        }
+
+        if( array_key_exists( 'sort_dir', $args ) ) {
+            $this->_order = $args['sort_dir'];
+        }
+
+        usort( $this->log, [$this, 'usort_reorder'] );
     }
 
     /**
@@ -403,18 +457,11 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     protected function usort_reorder( DL_Log_Record $a, DL_Log_Record $b ) {
-        $orderby = filter_input( INPUT_GET, 'orderby' );
-        if( empty( $orderby ) ) {
-            $orderby = self::get_options()['sort_col'];
-        }
-
-        $order = filter_input( INPUT_GET, 'order' );
-        if( empty( $order ) ) {
-            $order = self::get_options()['sort_dir'];
-        }
-
+        $order = $this->get_sort_order();
+        $orderby = $this->get_sort_orderby();
         $val1 = null;
         $val2 = null;
+
         switch( $orderby ) {
             case 'id':
                 $val1 = $a->getId();

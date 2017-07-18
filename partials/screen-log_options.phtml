@@ -70,7 +70,7 @@ echo '</pre>';*/
             </label><br>
             <label for="<?php echo $slug ?>-select1">
                 <?php esc_html_e( 'Nastavte sloupec, který se bude řadit defaultně ', DL_SLUG ) ?>
-                <select name="<?php echo $slug ?>-select1" id="<?php echo $slug ?>-select1" value="<?php echo $sort_col ?>">
+                <select name="<?php echo $slug ?>-sort_col" id="<?php echo $slug ?>-select1" value="<?php echo $sort_col ?>">
                     <?php foreach( $dl_log_table->get_columns() as $col_key => $col_lbl ) : 
                         if( $col_key != 'cb' ) :
                     ?>
@@ -78,7 +78,7 @@ echo '</pre>';*/
                     <?php endif; endforeach ?>
                 </select>
                 <?php esc_html_e( ' a způsob jeho řazení ', DL_SLUG ) ?>
-                <select name="<?php echo $slug ?>-select2" id="<?php echo $slug ?>-select2" value="<?php echo $sort_dir ?>">
+                <select name="<?php echo $slug ?>-sort_dir" id="<?php echo $slug ?>-select2" value="<?php echo $sort_dir ?>">
                     <option value="asc" <?php selected( 'desc', $sort_dir ) ?>><?php esc_html_e( 'Vzestupně', DL_SLUG ) ?></option>
                     <option value="desc" <?php selected( 'desc', $sort_dir ) ?>><?php esc_html_e( 'Sestupně', DL_SLUG ) ?></option>
                 </select>

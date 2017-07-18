@@ -394,18 +394,44 @@ class DL_Log_Table extends WP_List_Table {
         // Process bulk actions
         $this->process_bulk_actions();
 
+        // Needed hack (because otherway is arrow indicating sorting
+        // in table head not displayed correctly).
+        $orderby = filter_input( INPUT_POST, DL_Log_Screen::SLUG . '-sort_col' );
+        $order = filter_input( INPUT_POST, DL_Log_Screen::SLUG . '-sort_dir' );
+
+        if( empty( $orderby ) ) {
+            $orderby = filter_input( INPUT_GET, 'orderby' );
+        }
+
+        if( empty( $orderby ) ) {
+            $orderby = $options['sort_col'];
+        }
+
+        if( empty( $order ) ) {
+            $order = filter_input( INPUT_GET, 'order' );
+        }
+
+        if( empty( $order ) ) {
+            $order = $options['sort_dir'];
+        }
+
+        $_GET['orderby'] = $orderby;
+        $_GET['order'] = $order;
+
         // Prepare data
         $this->parser = new DL_Log_Parser( null, $options );
         $this->parser->sort( [
-            'sort_col'    => $options['sort_col'],
-            'sort_dir'    => $options['sort_dir'],
+            'sort_col'    => $orderby,
+            'sort_dir'    => $order,
         ] );
 
+        // Pagination arguments
         $this->set_pagination_args( [
             'total_items' => $this->parser->get_total_count(),
             'per_page'    => $this->parser->get_options( 'per_page', self::DEFAULT_PER_PAGE ),
         ] );
 
+        // Get data to display
         $this->items = $this->parser->get_data( [
             'page' => $this->get_pagenum()
         ] );
