@@ -1,6 +1,6 @@
 # Debug Log Viewer
 
-Small [WordPress][1] plugin especially for developers that allows better work debug log.
+Small [WordPress][1] plugin especially for developers that allows better work with `debug.log` file.
 
 ## Features
 
@@ -13,6 +13,8 @@ Small [WordPress][1] plugin especially for developers that allows better work de
 * Czech ~~and English~~ locales
 
 ## Screenshots
+
+Here are some screenshots:
 
 ### Enabling/disabling debug mode
 
