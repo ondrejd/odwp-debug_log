@@ -92,6 +92,22 @@ class DL_Log_Table extends WP_List_Table {
     protected $parser = null;
 
     /**
+     * Constructor.
+     * @param array $args (Optional.)
+     * @return void
+     * @since 1.0.0
+     */
+    public function __construct( $args = [] ) {
+        parent::__construct( [
+            'singular' => __( 'Záznam', DL_SLUG ),
+            'plural'   => __( 'Záznamy', DL_SLUG ),
+            'ajax'     => true,
+        ] );
+
+        $this->parser = new DL_Log_Parser( null, self::get_options() );
+    }
+
+    /**
      * Returns default options for the table.
      * @return array
      * @since 1.0.0
@@ -377,6 +393,135 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
+     * Returns array with the list of views available on this table.
+     *
+     * @access protected
+     * @return array
+     * @since 1.0.0
+     * @todo Load correct count of items!
+     * @todo Highlight currently selected view!
+     */
+    protected function get_views() {
+        $views = [
+            'today'     => __( 'Dnešní', DL_SLUG ),
+            'yesterday' => __( 'Včerejší', DL_SLUG ),
+            'earlier'   => __( 'Dřívější', DL_SLUG ),
+            'all'       => __( 'Všechny', DL_SLUG ),
+        ];
+        $current_view = filter_input( INPUT_GET, 'view' );
+
+        if( empty( $current_view ) ) {
+            $current_view = 'all';
+        }
+
+        $ret = [];
+
+        foreach( $views as $view => $view_lbl ) {
+            $url = add_query_arg( 'view', $view, plugins_url() );
+            $cls = ( $view == $current_view ) ? ' class="current"' : '';
+            $cnt = $this->get_view_items_count( $view );
+            $ret[$view] = sprintf( '<a href="%s"%s>%s (%s)</a>', $url, $cls, $view_lbl, $cnt );
+        }
+
+        return $ret;
+    }
+
+    /**
+     * @internal Returns count of items for given view.
+     * @param string $view
+     * @return integer
+     * @since 1.0.0
+     */
+    private function get_view_items_count( $view ) {
+        $this->parser->reset();
+
+        if( $view == 'all' ) {
+            $this->parser->filter( function( \DL_Log_Record $record ) {
+                return true;
+            } );
+        }
+        elseif( $view == 'today' ) {
+            $this->parser->filter( function( \DL_Log_Record $record ) {
+                $date_today = new DateTime();
+                $date_real = new DateTime( date( 'Y-m-d H:i:s', $record->getTime() ) );
+                return ( $date_today == $date_real );
+            } );
+        }
+        elseif( $view == 'yesterday' ) {
+            $this->parser->filter( function( \DL_Log_Record $record ) {
+                $date_yesterday = new DateTime();
+                $date_yesterday->sub(new DateInterval( 'P1D' ) );
+                $date_real = new DateTime( date( 'Y-m-d H:i:s', $record->getTime() ) );
+                return ( $date_yesterday == $date_real );
+            } );
+        }
+        elseif( $view == 'earlier' ) {
+            $this->parser->filter( function( \DL_Log_Record $record ) {
+                $date_yesterday = new DateTime();
+                $date_yesterday->sub(new DateInterval( 'P1D' ) );
+                $date_real = new DateTime( date( 'Y-m-d H:i:s', $record->getTime() ) );
+                return ( $date_yesterday > $date_real );
+            } );
+        }
+
+        // Get data
+        extract( $this->get_order_args() );
+        $this->parser->sort( [
+            'sort_col'    => $orderby,
+            'sort_dir'    => $order,
+        ] );
+        $data = $this->parser->get_data( ['page' => -1] );
+
+        return count( $data );
+    }
+
+    /**
+     * 
+     * @return integer
+     */
+    public function get_filter() {
+        $filter = filter_input( INPUT_POST, 'filter-by-type' );
+
+        if( empty( $filter ) ) {
+            $filter = filter_input( INPUT_GET, 'filter-by-type' );
+        }
+
+        if( empty( $filter ) ) {
+            return 0;
+        }
+
+        return ( int ) $filter;
+    }
+
+    /**
+     * Extra controls to be displayed between bulk actions and pagination
+     * @param string $which
+     * @return void
+     * @since 1.0.0
+     */
+    protected function extra_tablenav( $which ) {
+        if( $which != 'top' ) {
+            return;
+        }
+
+        $filter = $this->get_filter();
+?>
+<div class="alignleft actions">
+    <label for="filter_by_type" class="screen-reader-text"><?php _e( 'Typ záznamu', DL_SLUG ) ?></label>
+    <select name="filter-by-type" id="filter_by_type">
+        <option<?php selected( $filter, 0 ) ?> value="0"><?php _e( '— Typ záznamu —', DL_SLUG ) ?></option>
+        <option<?php selected( $filter, 1 ) ?> value="1"><?php _e( 'Chyba', DL_SLUG ) ?></option>
+        <option<?php selected( $filter, 2 ) ?> value="2"><?php _e( 'Oznámení', DL_SLUG ) ?></option>
+        <option<?php selected( $filter, 3 ) ?> value="3"><?php _e( 'Chyba PHP parseru', DL_SLUG ) ?></option>
+        <option<?php selected( $filter, 4 ) ?> value="4"><?php _e( 'Varování', DL_SLUG ) ?></option>
+        <option<?php selected( $filter, 5 ) ?> value="5"><?php _e( 'Jiný', DL_SLUG ) ?></option>
+    </select>
+    <input name="<?php echo DL_SLUG . '-filter_submit' ?>" id="<?php echo DL_SLUG . '-filter_submit' ?>" class="button" value="<?php _e( 'Filtrovat', DL_SLUG ) ?>" type="submit">
+</div>
+<?php
+    }
+
+    /**
      * Prepares data items for the table.
      * @return void
      * @since 1.0.0
@@ -394,8 +539,71 @@ class DL_Log_Table extends WP_List_Table {
         // Process bulk actions
         $this->process_bulk_actions();
 
+        // Get order arguments
+        extract( $this->get_order_args() );
         // Needed hack (because otherway is arrow indicating sorting
         // in table head not displayed correctly).
+        $_GET['orderby'] = $orderby;
+        $_GET['order'] = $order;
+
+        // Prepare data
+        $this->parser->reset();
+
+        // Apply filters
+        $filter = $this->get_filter();
+        if( ! empty( $filter ) ) {
+            $this->apply_filter( $filter );
+        }
+
+        // Apply sorting
+        $this->parser->sort( [
+            'sort_col'    => $orderby,
+            'sort_dir'    => $order,
+        ] );
+
+        // Pagination arguments
+        $this->set_pagination_args( [
+            'total_items' => $this->parser->get_total_count(),
+            'per_page'    => $this->parser->get_options( 'per_page', self::DEFAULT_PER_PAGE ),
+        ] );
+
+        // Get data to display
+        $this->items = $this->parser->get_data( [
+            'page' => $this->get_pagenum()
+        ] );
+    }
+
+    /**
+     * Applies filter on parser data.
+     * @param string $filter
+     * @return void
+     * @since 1.0.0
+     */
+    private function apply_filter( $filter ) {
+        $_filter = null;
+
+        switch( $filter ) {
+            case 1 : $_filter = DL_Log_Record::TYPE_ERROR; break;
+            case 2 : $_filter = DL_Log_Record::TYPE_NOTICE; break;
+            case 3 : $_filter = DL_Log_Record::TYPE_PARSER; break;
+            case 4 : $_filter = DL_Log_Record::TYPE_WARNING; break;
+            case 5 : $_filter = DL_Log_Record::TYPE_OTHER; break;
+        }
+
+        if( ! is_null( $_filter ) ) {
+            $this->parser->filter( function( \DL_Log_Record $record ) use( $_filter ) {
+                return ( $record->getType() == $_filter );
+            } );
+        }
+    }
+
+    /**
+     * @internal Returns array with sorting arguments ['orderby' => 'id', 'order' => 'asc'].
+     * @return array
+     * @since 1.0.0
+     */
+    private function get_order_args() {
+        $options  = self::get_options();
         $orderby = filter_input( INPUT_POST, DL_Log_Screen::SLUG . '-sort_col' );
         $order = filter_input( INPUT_POST, DL_Log_Screen::SLUG . '-sort_dir' );
 
@@ -415,26 +623,7 @@ class DL_Log_Table extends WP_List_Table {
             $order = $options['sort_dir'];
         }
 
-        $_GET['orderby'] = $orderby;
-        $_GET['order'] = $order;
-
-        // Prepare data
-        $this->parser = new DL_Log_Parser( null, $options );
-        $this->parser->sort( [
-            'sort_col'    => $orderby,
-            'sort_dir'    => $order,
-        ] );
-
-        // Pagination arguments
-        $this->set_pagination_args( [
-            'total_items' => $this->parser->get_total_count(),
-            'per_page'    => $this->parser->get_options( 'per_page', self::DEFAULT_PER_PAGE ),
-        ] );
-
-        // Get data to display
-        $this->items = $this->parser->get_data( [
-            'page' => $this->get_pagenum()
-        ] );
+        return ['order' => $order, 'orderby' => $orderby];
     }
 
     /**
@@ -444,6 +633,216 @@ class DL_Log_Table extends WP_List_Table {
      */
     public function process_bulk_actions() {
         // ...
+    }
+
+    /**
+     * We override default {@see WP_List_Table::pagination()} method because
+     * we need to add filter argument into it.
+     * @param string $which
+     * @return void
+     * @since 1.0.0
+     */
+    protected function pagination( $which ) {
+        if ( empty( $this->_pagination_args ) ) {
+            return;
+        }
+
+        $total_items = $this->_pagination_args['total_items'];
+        $total_pages = $this->_pagination_args['total_pages'];
+        $infinite_scroll = false;
+        if ( isset( $this->_pagination_args['infinite_scroll'] ) ) {
+            $infinite_scroll = $this->_pagination_args['infinite_scroll'];
+        }
+
+        if ( 'top' === $which && $total_pages > 1 ) {
+            $this->screen->render_screen_reader_content( 'heading_pagination' );
+        }
+
+        $output = '<span class="displaying-num">' . sprintf( _n( '%s item', '%s items', $total_items ), number_format_i18n( $total_items ) ) . '</span>';
+
+        $current = $this->get_pagenum();
+        $removable_query_args = wp_removable_query_args();
+
+        $current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+
+        $current_url = remove_query_arg( $removable_query_args, $current_url );
+
+        // [ondrejd]: added filter
+        $filter = $this->get_filter();
+        if( $filter > 0 ) {
+            $current_url = add_query_arg( 'filter-by-type', $filter, $current_url );
+        }
+
+        $page_links = array();
+
+        $total_pages_before = '<span class="paging-input">';
+        $total_pages_after  = '</span></span>';
+
+        $disable_first = $disable_last = $disable_prev = $disable_next = false;
+
+        if ( $current == 1 ) {
+            $disable_first = true;
+            $disable_prev = true;
+        }
+        if ( $current == 2 ) {
+            $disable_first = true;
+        }
+        if ( $current == $total_pages ) {
+            $disable_last = true;
+            $disable_next = true;
+        }
+        if ( $current == $total_pages - 1 ) {
+            $disable_last = true;
+        }
+
+        if ( $disable_first ) {
+            $page_links[] = '<span class="tablenav-pages-navspan" aria-hidden="true">&laquo;</span>';
+        } else {
+            $page_links[] = sprintf( "<a class='first-page' href='%s'><span class='screen-reader-text'>%s</span><span aria-hidden='true'>%s</span></a>",
+                    esc_url( remove_query_arg( 'paged', $current_url ) ),
+                    __( 'First page' ),
+                    '&laquo;'
+            );
+        }
+
+        if ( $disable_prev ) {
+            $page_links[] = '<span class="tablenav-pages-navspan" aria-hidden="true">&lsaquo;</span>';
+        } else {
+            $page_links[] = sprintf( "<a class='prev-page' href='%s'><span class='screen-reader-text'>%s</span><span aria-hidden='true'>%s</span></a>",
+                    esc_url( add_query_arg( 'paged', max( 1, $current-1 ), $current_url ) ),
+                    __( 'Previous page' ),
+                    '&lsaquo;'
+            );
+        }
+
+        if ( 'bottom' === $which ) {
+            $html_current_page  = $current;
+            $total_pages_before = '<span class="screen-reader-text">' . __( 'Current Page' ) . '</span><span id="table-paging" class="paging-input"><span class="tablenav-paging-text">';
+        } else {
+            $html_current_page = sprintf( "%s<input class='current-page' id='current-page-selector' type='text' name='paged' value='%s' size='%d' aria-describedby='table-paging' /><span class='tablenav-paging-text'>",
+                    '<label for="current-page-selector" class="screen-reader-text">' . __( 'Current Page' ) . '</label>',
+                    $current,
+                    strlen( $total_pages )
+            );
+        }
+        $html_total_pages = sprintf( "<span class='total-pages'>%s</span>", number_format_i18n( $total_pages ) );
+        $page_links[] = $total_pages_before . sprintf( _x( '%1$s of %2$s', 'paging' ), $html_current_page, $html_total_pages ) . $total_pages_after;
+
+        if ( $disable_next ) {
+            $page_links[] = '<span class="tablenav-pages-navspan" aria-hidden="true">&rsaquo;</span>';
+        } else {
+            $page_links[] = sprintf( "<a class='next-page' href='%s'><span class='screen-reader-text'>%s</span><span aria-hidden='true'>%s</span></a>",
+                    esc_url( add_query_arg( 'paged', min( $total_pages, $current+1 ), $current_url ) ),
+                    __( 'Next page' ),
+                    '&rsaquo;'
+            );
+        }
+
+        if ( $disable_last ) {
+            $page_links[] = '<span class="tablenav-pages-navspan" aria-hidden="true">&raquo;</span>';
+        } else {
+            $page_links[] = sprintf( "<a class='last-page' href='%s'><span class='screen-reader-text'>%s</span><span aria-hidden='true'>%s</span></a>",
+                    esc_url( add_query_arg( 'paged', $total_pages, $current_url ) ),
+                    __( 'Last page' ),
+                    '&raquo;'
+            );
+        }
+
+        $pagination_links_class = 'pagination-links';
+        if ( ! empty( $infinite_scroll ) ) {
+            $pagination_links_class = ' hide-if-js';
+        }
+        $output .= "\n<span class='$pagination_links_class'>" . join( "\n", $page_links ) . '</span>';
+
+        if ( $total_pages ) {
+            $page_class = $total_pages < 2 ? ' one-page' : '';
+        } else {
+            $page_class = ' no-pages';
+        }
+        $this->_pagination = "<div class='tablenav-pages{$page_class}'>$output</div>";
+
+        echo $this->_pagination;
+    }
+
+    /**
+     * We override default {@see WP_List_Table::print_column_headers()} method
+     * because we need to add filter argument into it.
+     * @param boolean $with_id (Optional.)
+     * @return void
+     * @since 1.0.0
+     */
+    public function print_column_headers( $with_id = true ) {
+        list( $columns, $hidden, $sortable, $primary ) = $this->get_column_info();
+
+        $current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+        $current_url = remove_query_arg( 'paged', $current_url );
+
+        // [ondrejd]: added filter
+        $filter = $this->get_filter();
+        if( $filter > 0 ) {
+            $current_url = add_query_arg( 'filter-by-type', $filter, $current_url );
+        }
+
+        if ( isset( $_GET['orderby'] ) ) {
+                $current_orderby = $_GET['orderby'];
+        } else {
+                $current_orderby = '';
+        }
+
+        if ( isset( $_GET['order'] ) && 'desc' === $_GET['order'] ) {
+                $current_order = 'desc';
+        } else {
+                $current_order = 'asc';
+        }
+
+        if ( ! empty( $columns['cb'] ) ) {
+                static $cb_counter = 1;
+                $columns['cb'] = '<label class="screen-reader-text" for="cb-select-all-' . $cb_counter . '">' . __( 'Select All' ) . '</label>'
+                        . '<input id="cb-select-all-' . $cb_counter . '" type="checkbox" />';
+                $cb_counter++;
+        }
+
+        foreach ( $columns as $column_key => $column_display_name ) {
+                $class = array( 'manage-column', "column-$column_key" );
+
+                if ( in_array( $column_key, $hidden ) ) {
+                        $class[] = 'hidden';
+                }
+
+                if ( 'cb' === $column_key )
+                        $class[] = 'check-column';
+                elseif ( in_array( $column_key, array( 'posts', 'comments', 'links' ) ) )
+                        $class[] = 'num';
+
+                if ( $column_key === $primary ) {
+                        $class[] = 'column-primary';
+                }
+
+                if ( isset( $sortable[$column_key] ) ) {
+                        list( $orderby, $desc_first ) = $sortable[$column_key];
+
+                        if ( $current_orderby === $orderby ) {
+                                $order = 'asc' === $current_order ? 'desc' : 'asc';
+                                $class[] = 'sorted';
+                                $class[] = $current_order;
+                        } else {
+                                $order = $desc_first ? 'desc' : 'asc';
+                                $class[] = 'sortable';
+                                $class[] = $desc_first ? 'asc' : 'desc';
+                        }
+
+                        $column_display_name = '<a href="' . esc_url( add_query_arg( compact( 'orderby', 'order' ), $current_url ) ) . '"><span>' . $column_display_name . '</span><span class="sorting-indicator"></span></a>';
+                }
+
+                $tag = ( 'cb' === $column_key ) ? 'td' : 'th';
+                $scope = ( 'th' === $tag ) ? 'scope="col"' : '';
+                $id = $with_id ? "id='$column_key'" : '';
+
+                if ( !empty( $class ) )
+                        $class = "class='" . join( ' ', $class ) . "'";
+
+                echo "<$tag $scope $id $class>$column_display_name</$tag>";
+        }
     }
 }
 

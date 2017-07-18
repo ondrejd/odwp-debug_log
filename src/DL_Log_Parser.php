@@ -95,6 +95,12 @@ class DL_Log_Parser {
     private $log = [];
 
     /**
+     * @var array $log Parsed log (copy for canceling filters).
+     * @since 1.0.0
+     */
+    private $log_unfiltered = [];
+
+    /**
      * @internal Used as temporary variable when parsing data.
      * @var \DL_Log_Record $_record
      * @since 1.0.0
@@ -123,6 +129,8 @@ class DL_Log_Parser {
     public function __construct( $args = [], $options = [] ) {
         $this->parse_args( $args );
         $this->set_options( $options );
+        $this->prepare();
+        $this->parse();
     }
 
     /**
@@ -255,6 +263,8 @@ class DL_Log_Parser {
             $this->prepare();
         }
 
+        $this->log = [];
+
         foreach( $this->log_raw as $log_line ) {
             $this->parse_line( $log_line );
         }
@@ -262,6 +272,9 @@ class DL_Log_Parser {
         if( ( $this->_record instanceof DL_Log_Record ) ) {
             array_push( $this->log, $this->_record );
         }
+
+        $this->log_unfiltered = $this->log;
+        $this->is_parsed = true;
     }
 
     /**
@@ -320,15 +333,17 @@ class DL_Log_Parser {
 
     /**
      * Filtres parsed log data.
+     * @param function $filter_func
      * @return void
      * @since 1.0.0
      */
-    public function filter() {
+    public function filter( $filter_func ) {
         if( $this->is_parsed !== true ) {
             $this->parse();
         }
 
-        // ...
+        $temp = array_filter( $this->log, $filter_func );
+        $this->log = $temp;
     }
 
     /**
@@ -354,19 +369,34 @@ class DL_Log_Parser {
     }
 
     /**
+     * Reset used sorting or filters.
+     * @return void
+     * @since 1.0.0
+     */
+    public function reset() {
+        $this->log = $this->log_unfiltered;
+    }
+
+    /**
      * Returns data from the log.
      * @return array
      * @since 1.0.0
      */
-    public function get_data( $options = ['page' => 1] ) {
+    public function get_data( $options = ['page' => -1] ) {
         if( $this->is_parsed !== true ) {
             $this->parse();
         }
 
-        $per_page = $this->get_options( 'per_page', DL_Log_Table::DEFAULT_PER_PAGE );
-        $current  = array_key_exists( 'page', $options ) ? $options['page'] : 1;
-        $data_raw = array_slice( $this->log, ( ( $current - 1 ) * $per_page ), $per_page );
+        $data_raw = [];
         $data     = [];
+
+        if( $options['page'] == -1 ) {
+            $data_raw = $this->log;
+        } else {
+            $per_page = $this->get_options( 'per_page', DL_Log_Table::DEFAULT_PER_PAGE );
+            $current  = array_key_exists( 'page', $options ) ? $options['page'] : 1;
+            $data_raw = array_slice( $this->log, ( ( $current - 1 ) * $per_page ), $per_page );
+        }
 
         foreach( $data_raw as $log_line ) {
             if( $this->get_options()['show_links'] === true ) {

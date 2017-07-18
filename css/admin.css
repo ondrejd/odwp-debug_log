@@ -48,7 +48,7 @@ h3.help-title, h4.help-title {
     margin: 0 0 0 0px;
     padding: 0 0 0 0px;
 }
-.todo-list li.done {
+.todo-list .done {
     text-decoration: line-through;
 }
 .todo-list li code {

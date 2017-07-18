@@ -27,6 +27,7 @@ add_thickbox();
         <input type="hidden" name="page" value="<?php echo DL_Log_Screen::SLUG ?>">
         <?php
             $dl_log_table->search_box( 'search', 'search_id' );
+            //$dl_log_table->views();
             $dl_log_table->display();
         ?>
     </form>
