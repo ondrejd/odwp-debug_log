@@ -440,7 +440,15 @@ class DL_Log_Parser {
 
         // 2) Update string with HTML anchors for file links
         foreach( $file_links as $file_link ) {
-            $str = str_replace( $file_link, '<a href="#" target="blank"><code>' . $file_link . '</code></a>', $str );
+            $url = add_query_arg( 'file', $file_link, plugins_url( 'odwpdl-show_url.php', DL_FILE ) ) .
+                    '&amp;TB_iframe=true&amp;height=500&amp;width=900';
+            $str = str_replace(
+                    $file_link,
+                    '<a class="thickbox" href="' . $url . '" title="' . $file_link . '" target="blank">' .
+                        '<code>' . $file_link . '</code>' .
+                    '</a>',
+                    $str
+            );
         }
 
         // 3) Process "on line 11" or ":11" ...

@@ -92,7 +92,7 @@ class DL_Log_Screen extends DL_Screen_Prototype {
                 '        <li>přidat filtrování - zobrazit jen dnešní chyby, chyby za poslední hodinu, zobrazit chyby určitého typu (<em>PHP Parse Error</em>, <em>PHP Warning</em>, <em>PHP Fatal Error</em>)</li>' .
                 '        <li>dokončit hromadné úpravy (smazat vybrané záznamy)</li>' .
                 '        <li class="done">opravit/dokončit řazení dat</li>' .
-                '        <li>umožnit proklik na zdrojové kódy ve kterých se chyba vyskytne</li>' .
+                '        <li class="done">umožnit proklik na zdrojové kódy ve kterých se chyba vyskytne</li>' .
                 '        <li class="done">přidat základní stránkování</li>' .
                 '        <li class="done">zobrazit <em>stack trace</em> pokud je definována</li>' .
                 '        <li>' .
