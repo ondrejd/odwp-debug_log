@@ -241,7 +241,7 @@ class DL_Plugin {
      */
     public static function admin_enqueue_scripts( $hook ) {
         wp_enqueue_script( DL_SLUG, plugins_url( 'js/admin.js', DL_FILE ), ['jquery'] );
-        wp_localize_script( DL_SLUG, 'odwpng', [
+        wp_localize_script( DL_SLUG, 'odwpdl', [
             //...
         ] );
         wp_enqueue_style( DL_SLUG, plugins_url( 'css/admin.css', DL_FILE ) );
