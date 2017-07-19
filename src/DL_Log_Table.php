@@ -504,6 +504,10 @@ class DL_Log_Table extends WP_List_Table {
             return;
         }
 
+        if( $this->parser->get_total_count() == 0 ) {
+            return;
+        }
+
         $filter = $this->get_filter();
 ?>
 <div class="alignleft actions">
