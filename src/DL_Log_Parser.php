@@ -284,6 +284,7 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     private function parse_line( $log_line ) {
+        $show_links = $this->get_options( 'show_links', DL_Log_Table::DEFAULT_SHOW_LINKS );
         $matches = preg_split(
             '/(\[[0-9]{2}-[a-zA-Z]{3}-[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} [a-zA-Z]{0,3}\])/',
             $log_line,
@@ -295,10 +296,11 @@ class DL_Log_Parser {
             // TODO odwpdl_write_log( 'ODWPDL Log Parse error: ' . print_r( $matches, true ) );
             // TODO Remove lines below!
             echo '<pre>';
-            echo 'WRONG MATCHES:'.PHP_EOL;
+            echo 'WRONG MATCHES [1]:'.PHP_EOL;
             var_dump( $log_line );
             var_dump( $matches );
-            exit();
+            echo '</pre>';
+            return;
         }
 
         if( count( $matches ) == 2 ) {
@@ -308,11 +310,17 @@ class DL_Log_Parser {
             }
 
             $msg = trim( $matches[1] );
+            $type = $this->parse_type( $msg );
+
+            if( $show_links ) {
+                $msg = str_replace( $type . ': ', '', $msg );
+            }
+
             $this->_record = new DL_Log_Record( 0, '', '' );
             $this->_record->setId( count( $this->log ) + 1 );
             $this->_record->setTime( strtotime( trim( $matches[0], '[]' ) ) );
-            $this->_record->setType( $this->parse_type( $msg ) );
-            $this->_record->setMessage( str_replace( $this->_record->getType() . ': ', '', $msg ) );
+            $this->_record->setType( $type );
+            $this->_record->setMessage( $msg );
         }
         elseif( count( $matches ) == 1 && ( $this->_record instanceof DL_Log_Record ) ) {
             if( strpos( $matches[0], '#' ) === 0 ) {
@@ -321,13 +329,18 @@ class DL_Log_Parser {
             }
         }
         else {
+            if( empty( trim( $matches[0] ) ) ) {
+                return;
+            }
+
             // TODO odwpdl_write_log( 'ODWPDL Log Parse error: ' . print_r( $matches, true ) );
             // TODO Remove lines below!
             echo '<pre>';
-            echo 'WRONG MATCHES:'.PHP_EOL;
+            echo 'WRONG MATCHES [2]:'.PHP_EOL;
             var_dump( $log_line );
             var_dump( $matches );
-            exit();
+            echo '</pre>';
+            return;
         }
     }
 
@@ -451,14 +464,12 @@ class DL_Log_Parser {
             return $str;
         }
 
+        $abspath = str_replace( '/', '\/', ABSPATH );
+        $regexp  = '/((' . $abspath . '[a-zA-Z.\-\_\/]*))/';
+
         // 1) Search for file links
         $file_links = [];
-        $matches = preg_split(
-                '/((\/home\/www\/ondrejd.com\/ssl\/[a-zA-Z.\-\_\/]*))/',
-                $str,
-                -1,
-                PREG_SPLIT_DELIM_CAPTURE
-        );
+        $matches = preg_split( $regexp, $str, -1, PREG_SPLIT_DELIM_CAPTURE );
 
         foreach( $matches as $match ) {
             if( strpos( $match, ABSPATH ) === 0 ) {
