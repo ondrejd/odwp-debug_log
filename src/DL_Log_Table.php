@@ -270,6 +270,10 @@ class DL_Log_Table extends WP_List_Table {
         $show_links = $options['show_links'];
         $show_trace = $options['show_trace'];
 
+        if( $show_links === true ) {
+            $text = $this->parser->make_source_links( $text );
+        }
+
         if( $item->hasTrace() === true ) {
             $icon = ( $show_trace === true )
                     ? '<span class="dashicons dashicons-arrow-up-alt2"></span>'
