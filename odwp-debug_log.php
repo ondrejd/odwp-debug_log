@@ -103,7 +103,7 @@ if( ! function_exists( 'odwpdl_check_requirements' ) ) :
             foreach( $requirements['wp']['plugins'] as $req_plugin ) {
                 if( ! in_array( $req_plugin, $active_plugins ) ) {
                     $errors[] = sprintf(
-                            __( 'Je vyžadován plugin <b>%s</b>, ten ale není nainstalován!', $slug ),
+                            __( 'Je vyžadován plugin <b>%s</b>, ten ale není nainstalován!', DL_SLUG ),
                             $req_plugin
                     );
                 }
@@ -124,7 +124,7 @@ if( ! function_exists( 'odwpdl_deactivate_raw' ) ) :
         $active_plugins = get_option( 'active_plugins' );
         $out = [];
         foreach( $active_plugins as $key => $val ) {
-            if( $val != 'odwp-debug_log/odwp-debug_log.php' ) {
+            if( $val != DL_NAME . '/' . DL_NAME . '.php' ) {
                 $out[$key] = $val;
             }
         }

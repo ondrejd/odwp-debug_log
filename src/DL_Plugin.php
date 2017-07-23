@@ -124,9 +124,9 @@ class DL_Plugin {
      * @since 1.0.0
      */
     public static function initialize() {
-        register_activation_hook( __FILE__, [__CLASS__, 'activate'] );
-        register_deactivation_hook( __FILE__, [__CLASS__, 'deactivate'] );
-        register_uninstall_hook( __FILE__, [__CLASS__, 'uninstall'] );
+        register_activation_hook( DL_FILE, [__CLASS__, 'activate'] );
+        register_deactivation_hook( DL_FILE, [__CLASS__, 'deactivate'] );
+        register_uninstall_hook( DL_FILE, [__CLASS__, 'uninstall'] );
 
         add_action( 'init', [__CLASS__, 'init'] );
         add_action( 'admin_init', [__CLASS__, 'admin_init'] );
