@@ -400,23 +400,14 @@ class DL_Log_Parser {
             $this->parse();
         }
 
-        $data_raw = [];
         $data     = [];
 
         if( $options['page'] == -1 ) {
-            $data_raw = $this->log;
+            $data = $this->log;
         } else {
             $per_page = $this->get_options( 'per_page', DL_Log_Table::DEFAULT_PER_PAGE );
             $current  = array_key_exists( 'page', $options ) ? $options['page'] : 1;
-            $data_raw = array_slice( $this->log, ( ( $current - 1 ) * $per_page ), $per_page );
-        }
-
-        foreach( $data_raw as $log_line ) {
-            if( $this->get_options()['show_links'] === true ) {
-                $log_line->setMessage( $this->make_source_links( $log_line->getMessage() ) );
-            }
-
-            array_push( $data, $log_line );
+            $data     = array_slice( $this->log, ( ( $current - 1 ) * $per_page ), $per_page );
         }
         
         return $data;
