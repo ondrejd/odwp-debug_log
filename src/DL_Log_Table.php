@@ -86,6 +86,12 @@ class DL_Log_Table extends WP_List_Table {
     const DEFAULT_SHOW_TRACE = true;
 
     /**
+     * @var boolean Default settings for displaying short links to source codes.
+     * @since 1.0.0
+     */
+    const DEFAULT_SHORT_SRC_LINKS = true;
+
+    /**
      * @var DL_Log_Parser $parser
      * @since 1.0.0
      */
@@ -114,13 +120,14 @@ class DL_Log_Table extends WP_List_Table {
      */
     public static function get_default_options() {
         return [
-            'hidden_cols' => self::DEFAULT_HIDDEN_COLS,
-            'per_page'    => self::DEFAULT_PER_PAGE,
-            'show_icons'  => self::DEFAULT_SHOW_ICONS,
-            'show_links'  => self::DEFAULT_SHOW_LINKS,
-            'show_trace'  => self::DEFAULT_SHOW_TRACE,
-            'sort_col'    => self::DEFAULT_SORT_COL,
-            'sort_dir'    => self::DEFAULT_SORT_DIR,
+            'hidden_cols'     => self::DEFAULT_HIDDEN_COLS,
+            'per_page'        => self::DEFAULT_PER_PAGE,
+            'show_icons'      => self::DEFAULT_SHOW_ICONS,
+            'show_links'      => self::DEFAULT_SHOW_LINKS,
+            'show_trace'      => self::DEFAULT_SHOW_TRACE,
+            'sort_col'        => self::DEFAULT_SORT_COL,
+            'sort_dir'        => self::DEFAULT_SORT_DIR,
+            'short_src_links' => self::DEFAULT_SHORT_SRC_LINKS,
         ];
     }
 
@@ -167,15 +174,21 @@ class DL_Log_Table extends WP_List_Table {
             $sort_dir = self::DEFAULT_SORT_DIR;
         }
 
+        $short_src_links = get_user_meta( $user, DL_Log_Screen::SLUG . '-short_src_links', true );
+        if( strlen( short_src_links ) == 0 ) {
+            $short_src_links = self::DEFAULT_SHORT_SRC_LINKS;
+        }
+
         $defaults = self::get_default_options();
         $currents = [
-            'hidden_cols' => $hidden_cols,
-            'per_page'    => ( int ) $per_page,
-            'show_icons'  => ( bool ) $show_icons,
-            'show_links'  => ( bool ) $show_links,
-            'show_trace'  => ( bool ) $show_trace,
-            'sort_col'    => $sort_col,
-            'sort_dir'    => $sort_dir,
+            'hidden_cols'     => $hidden_cols,
+            'per_page'        => ( int ) $per_page,
+            'show_icons'      => ( bool ) $show_icons,
+            'show_links'      => ( bool ) $show_links,
+            'show_trace'      => ( bool ) $show_trace,
+            'sort_col'        => $sort_col,
+            'sort_dir'        => $sort_dir,
+            'short_src_links' => (bool) $short_src_links,
         ];
 
         return array_merge( $defaults, $currents );

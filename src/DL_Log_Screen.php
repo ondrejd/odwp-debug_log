@@ -102,11 +102,13 @@ class DL_Log_Screen extends DL_Screen_Prototype {
                 '                <li class="working">které sloupce se mají zobrazit</li>' .
                 '                <li class="done">jak zobrazit sloupec s typem záznamu - jestli jako text či ikonu</li>' .
                 '                <li class="done">uživatelské nastavení pro defaultní řazení (sloupec a směr řazení)</li>' .
+                '                <li>chce uživatel zobrazit zkrácené cesty ke zdrojovým souborům nebo ne (nastavení <code>short_src_links</code>?</li>' .
                 '            </ul>' .
                 '        </li>' .
                 '        <li>vyřešit všechny problémy, které se mohou vyskytnout při použití na nástěnce (<em>dashboard widget</em>)</li>' .
                 '        <li class="done"><b>FIXME</b> - nezobrazují se odkazy na zdrojové soubory</li>' .
                 '        <li><b>FIXME</b> - když smažu jednotlivý řádek (a parametry pro akci jdou tudíž přes <code>$_GET</code>, tak (pokud zrovna nemažu poslední řádek) můžu nechtěně smazat při obnovení prohlížeče (F5) další záznamy;<small> nejjednodušší je přidat <em>JavaScript</em> pro znovunačtení stránky na konec smazání potvrzující zprávy (prostě jen výstrahu pro uživatele a odpovídající <em>timeout</em>)</small></li>' .
+                '        <li>znovu zkontrolovat všechno nastavení na hlavní stránce s výpisem logu</li>' .
                 '        <li>smazat tuto záložku (<b>TODO</b>) a aktualizovat záložku <b>Nastavení</b> a <b>Obecné</b></li>' .
                 '    </ul>' .
                 '</div>',
@@ -116,8 +118,11 @@ class DL_Log_Screen extends DL_Screen_Prototype {
         $this->help_sidebars[] = sprintf(
                 '<b>%s</b>' .
                 '<p><a href="%s" target="blank">%s</a></p>' .
+                '<p><a href="%s" target="blank">%s</a></p>' .
                 '<p><a href="%s" target="blank">%s</a></p>',
                 __( 'Užitečné odkazy', DL_LOG ),
+                'https://ondrejd.com' .
+                __( 'Domovské stránky autora', DL_LOG ),
                 'https://github.com/ondrejd/odwp-debug_log',
                 __( 'GitHub - zdrojové kódy', DL_LOG ),
                 'https://github.com/ondrejd/odwp-debug_log/issues',
@@ -134,6 +139,11 @@ class DL_Log_Screen extends DL_Screen_Prototype {
             'label'   => __( 'Počet záznamů na stránku', DL_SLUG ),
             'default' => DL_Log_Table::DEFAULT_PER_PAGE,
             'option'  => self::SLUG . '-per_page',
+        ];
+        $this->options[self::SLUG . '-short_src_links'] = [
+            'label'   => __( '', DL_SLUG ),
+            'default' => DL_Log_Table::DEFAULT_SHORT_SRC_LINKS,
+            'option'  => self::SLUG . '-short_src_links',
         ];
         $this->options[self::SLUG . '-show_icons'] = [
             'label'   => __( 'Zobrazit typ záznamu jako ikonu?', DL_SLUG ),
@@ -235,6 +245,9 @@ class DL_Log_Screen extends DL_Screen_Prototype {
             // Show links
             $show_links = filter_input( INPUT_POST, self::SLUG . '-show_links' );
             update_user_meta( $user, self::SLUG . '-show_links', ( strtolower( $show_links ) == 'on' ) ? 1 : 0 );
+            // Show short links
+            $short_src_links = filter_input( INPUT_POST, self::SLUG . '-short_src_links' );
+            update_user_meta( $user, self::SLUG . '-short_src_links', ( strtolower( $short_src_links ) == 'on' ) ? 1 : 0 );
             // Show trace
             $show_trace = filter_input( INPUT_POST, self::SLUG . '-show_trace' );
             update_user_meta( $user, self::SLUG . '-show_trace', ( strtolower( $show_trace ) == 'on' ) ? 1 : 0 );

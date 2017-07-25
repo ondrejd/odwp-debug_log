@@ -456,6 +456,7 @@ class DL_Log_Parser {
             return $str;
         }
 
+        $short_src_links = (bool) $this->get_options( 'short_src_links', DL_Log_Table::DEFAULT_SHORT_SRC_LINKS );
         $abspath = str_replace( '/', '\/', ABSPATH );
         $regexp  = '/((' . $abspath . '[a-zA-Z.\-\_\/]*))/';
 
@@ -473,12 +474,13 @@ class DL_Log_Parser {
 
         // 2) Update string with HTML anchors for file links
         foreach( $file_links as $file_link ) {
+            $file_name = ( $short_src_links === true ) ? str_replace( ABSPATH, '.../', $file_link ) : $file_link;
             $url = add_query_arg( 'file', $file_link, plugins_url( 'odwpdl-show_url.php', DL_FILE ) ) .
                     '&amp;TB_iframe=true&amp;height=500&amp;width=900';
             $str = str_replace(
                     $file_link,
                     '<a class="thickbox" href="' . $url . '" title="' . $file_link . '" target="blank">' .
-                        '<code>' . $file_link . '</code>' .
+                        '<code>' . $file_name . '</code>' .
                     '</a>',
                     $str
             );

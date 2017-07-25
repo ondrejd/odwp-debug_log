@@ -25,7 +25,7 @@ $hideable_columns = array_keys( $dl_log_table->get_hideable_columns() );
 extract( $table_options );
 
 ?>
-<div id="screen-options-wrap" class="hidden" aria-label="<?php esc_html_e( 'Screen Options Tab', DL_SLUG ) ?>">
+<div id="screen-options-wrap" class="hidden" aria-label="<?php _e( 'Screen Options Tab', DL_SLUG ) ?>">
 <?php
 /*echo '<pre>';
 var_dump( $table_options );
@@ -35,57 +35,61 @@ echo '</pre>';*/
         <?php echo wp_nonce_field( -1, $slug . '-nonce', true, false); ?>
         <input type="hidden" name="screen_name" value="<?php echo $screen->id ?>">
         <fieldset>
-            <legend><?php esc_html_e( 'Nastavení pro zobrazení datové tabulky', DL_SLUG ) ?></legend>
+            <legend><?php _e( 'Nastavení pro zobrazení tabulky', DL_SLUG ) ?></legend>
             <p>
-                <label><?php esc_html_e( 'Zobrazené sloupce: ', DL_SLUG ) ?></label>
+                <label><?php _e( 'Zobrazené sloupce: ', DL_SLUG ) ?></label>
                 <?php foreach( $all_columns as $col_key => $col_label ) : 
                     if( $col_key != 'cb' ) :
                         $checked = ! in_array( $col_key, $hidden_columns );
                         $disabled = ! in_array( $col_key, $hideable_columns );
                 ?>
                 <label for="<?php echo $slug ?>-log_table_col_<?php echo $col_key ?>" class="<?php echo $disabled ? 'disabled' : '' ?>">
-                    <input type="checkbox" name="<?php echo $slug ?>-show_cols[<?php echo $col_key ?>]" id="<?php echo $slug ?>-log_table_col_<?php echo $col_key ?>" <?php checked( $checked ) ?> <?php disabled( $disabled ) ?>>
+                    <input type="checkbox" name="<?php echo $slug ?>-show_cols[<?php echo $col_key ?>]" id="<?php echo $slug ?>-log_table_col_<?php echo $col_key ?>"<?php checked( $checked ) ?> <?php disabled( $disabled ) ?>>
                     <?php echo $col_label ?>
                 </label>
                 <?php endif; endforeach ?>
-                <span class="description"> <?php esc_html_e( '(Zašedlé položky jsou zobrazeny vždy.)', DL_LOG ) ?></span>
+                <br><span class="description"> <?php _e( 'Zašedlé položky jsou zobrazeny vždy a nemohou tudíž být skryty.', DL_LOG ) ?></span>
             </p>
             <p>
                 <label for="<?php echo $slug ?>-number1">
-                    <?php esc_html_e( 'Počet řádků zobrazených na stránce: ', DL_SLUG ) ?>
+                    <?php _e( 'Počet řádků zobrazených na stránce: ', DL_SLUG ) ?>
                     <input type="number" name="<?php echo $slug ?>-per_page" id="<?php echo $slug ?>-number1" min="5" max="100" step="1" value="<?php echo $per_page ?>">
                 </label>
             </p>
-            <label for="<?php echo $slug ?>-checkbox1" title="<?php esc_html_e( 'Zobrazit typ záznamu jako ikonu?', DL_SLUG ) ?>">
-                <input type="checkbox" name="<?php echo $slug ?>-show_icons" id="<?php echo $slug ?>-checkbox1" <?php checked( $show_icons ) ?>>
-                <?php esc_html_e( 'Zaškrtněte pokud chcete mít typ záznamu (chyba, oznámení, ostatní, upozornění) jako ikonu a ne jako normální text.', DL_SLUG ) ?>
+            <label for="<?php echo $slug ?>-checkbox1" title="<?php _e( 'Zobrazit typ záznamu jako ikonu?', DL_SLUG ) ?>">
+                <input type="checkbox" name="<?php echo $slug ?>-show_icons" id="<?php echo $slug ?>-checkbox1"<?php checked( $show_icons ) ?>>
+                <?php _e( 'Zaškrtněte pokud chcete mít typ záznamu (chyba, oznámení, ostatní, upozornění) jako ikonu a ne jako normální text.', DL_SLUG ) ?>
             </label><br>
-            <label for="<?php echo $slug ?>-checkbox2" title="<?php esc_html_e( 'Zobrazit odkazy na zdrojové soubory?', DL_SLUG ) ?>">
-                <input type="checkbox" name="<?php echo $slug ?>-show_links" id="<?php echo $slug ?>-checkbox2" <?php checked( $show_links ) ?>>
-                <?php esc_html_e( 'Zaškrtněte pokud chcete zobrazit odkazy na zdrojové soubory, ve kterých se chyba vyskytla.', DL_SLUG ) ?>
+            <label for="<?php echo $slug ?>-checkbox2" title="<?php _e( 'Zobrazit odkazy na zdrojové soubory?', DL_SLUG ) ?>">
+                <input type="checkbox" name="<?php echo $slug ?>-show_links" id="<?php echo $slug ?>-checkbox2"<?php checked( $show_links ) ?>>
+                <?php _e( 'Zaškrtněte pokud chcete zobrazit odkazy na zdrojové soubory, ve kterých se chyba vyskytla.', DL_SLUG ) ?>
             </label><br>
-            <label for="<?php echo $slug ?>-checkbox3" title="<?php esc_html_e( 'Zobrazit stack trace defaultně rozbalenou?', DL_SLUG ) ?>">
-                <input type="checkbox" name="<?php echo $slug ?>-show_trace" id="<?php echo $slug ?>-checkbox3" <?php checked( $show_trace ) ?>>
+            <label for="<?php echo $slog ?>-checkbox4" title="<?php _e( 'Zobrazit názvy zdrojových souborů zkrácené?', DL_SLUG ) ?>">
+                <input type="checkbox" name="<?php echo $slug ?>-short_src_links" name="<?php echo $slug ?>-checkbox4"<?php checked( $short_src_links ) ?>>
+                <?php _e( 'Zobrazit názvy zdrojových souborů zkrácené (tzn. bez absolutní cesty <code>ABSPATH</code>)?', DL_SLUG ) ?>
+            </label><br>
+            <label for="<?php echo $slug ?>-checkbox3" title="<?php _e( 'Zobrazit stack trace defaultně rozbalenou?', DL_SLUG ) ?>">
+                <input type="checkbox" name="<?php echo $slug ?>-show_trace" id="<?php echo $slug ?>-checkbox3"<?php checked( $show_trace ) ?>>
                 <?php _e( 'Zaškrtněte pokud chcete zobrazit <em>stack trace</em> defaultně rozbalenou.', DL_SLUG ) ?>
             </label><br>
             <label for="<?php echo $slug ?>-select1">
-                <?php esc_html_e( 'Nastavte sloupec, který se bude řadit defaultně ', DL_SLUG ) ?>
+                <?php _e( 'Nastavte sloupec, který se bude řadit defaultně ', DL_SLUG ) ?>
                 <select name="<?php echo $slug ?>-sort_col" id="<?php echo $slug ?>-select1" value="<?php echo $sort_col ?>">
                     <?php foreach( $dl_log_table->get_columns() as $col_key => $col_lbl ) : 
                         if( $col_key != 'cb' ) :
                     ?>
-                    <option value="<?php echo $col_key ?>" <?php selected( $col_key, $sort_col ) ?>><?php echo $col_lbl ?></option>
+                    <option value="<?php echo $col_key ?>"<?php selected( $col_key, $sort_col ) ?>><?php echo $col_lbl ?></option>
                     <?php endif; endforeach ?>
                 </select>
-                <?php esc_html_e( ' a způsob jeho řazení ', DL_SLUG ) ?>
+                <?php _e( ' a způsob jeho řazení ', DL_SLUG ) ?>
                 <select name="<?php echo $slug ?>-sort_dir" id="<?php echo $slug ?>-select2" value="<?php echo $sort_dir ?>">
-                    <option value="asc" <?php selected( 'desc', $sort_dir ) ?>><?php esc_html_e( 'Vzestupně', DL_SLUG ) ?></option>
-                    <option value="desc" <?php selected( 'desc', $sort_dir ) ?>><?php esc_html_e( 'Sestupně', DL_SLUG ) ?></option>
+                    <option value="asc"<?php selected( 'desc', $sort_dir ) ?>><?php _e( 'Vzestupně', DL_SLUG ) ?></option>
+                    <option value="desc"<?php selected( 'desc', $sort_dir ) ?>><?php _e( 'Sestupně', DL_SLUG ) ?></option>
                 </select>
             </label>
         </fieldset>
         <p class="submit">
-            <input type="submit" name="<?php echo $slug ?>-submit" value="<?php esc_html_e( 'Použít', DL_SLUG ) ?>" class="button button-primary">
+            <input type="submit" name="<?php echo $slug ?>-submit" value="<?php _e( 'Použít', DL_SLUG ) ?>" class="button button-primary">
         </p>
     </form>
 </div>
