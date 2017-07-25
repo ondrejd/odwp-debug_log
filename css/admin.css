@@ -5,10 +5,26 @@
  * @package odwp-debug_log
  */
 
+/**
+ * Styles for screen options pane.
+ */
+.odwp-screen-options ul {
+    list-style: square;
+    padding-left: 10px;
+}
+.odwp-screen-options input[type="number"] {
+    width: 5em ! important;
+}
+.odwpdl-options input[type="number"].short {
+    width: 4em ! important;
+}
+
+
 label.disabled {
     color: #666 !important;
     cursor: default;
 }
+
 .tools_page_odwpdl-log .column-id {
     width: 60px;
 }

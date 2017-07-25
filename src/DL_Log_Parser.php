@@ -478,7 +478,17 @@ class DL_Log_Parser {
 
         // 2) Update string with HTML anchors for file links
         foreach( $file_links as $file_link ) {
-            $file_name = ( $short_src_links === true ) ? str_replace( ABSPATH, '.../', $file_link ) : $file_link;
+            $file_name = $file_link;
+
+            // Make link shorter if user wants it
+            if( $short_src_links === true ) {
+                $file_name = str_replace( WP_PLUGIN_DIR . '/' . DL_NAME, '&hellip;/' . DL_NAME, $file_name );
+                $file_name = str_replace( WP_PLUGIN_DIR, '&hellip;/[PLUGINS]', $file_name );
+                $file_name = str_replace( WPINC, '&hellip;/[INC]', $file_name );
+                $file_name = str_replace( ABSPATH, '&hellip;/', $file_name );
+            }
+
+            // Create link (all HTML)
             $url = add_query_arg( 'file', $file_link, plugins_url( 'odwpdl-show_url.php', DL_FILE ) ) .
                     "&amp;TB_iframe=true&amp;height={$src_win_height}&amp;width={$src_win_width}";
             $str = str_replace(
