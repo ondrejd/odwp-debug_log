@@ -92,6 +92,18 @@ class DL_Log_Table extends WP_List_Table {
     const DEFAULT_SHORT_SRC_LINKS = true;
 
     /**
+     * @const integer Default width of popup window with source code.
+     * @since 1.0.0
+     */
+    const DEFAULT_SRC_WIN_WIDTH = 900;
+
+    /**
+     * @const integer Default height of popup window with source code.
+     * @since 1.0.0
+     */
+    const DEFAULT_SRC_WIN_HEIGHT = 500;
+
+    /**
      * @var DL_Log_Parser $parser
      * @since 1.0.0
      */
@@ -128,6 +140,8 @@ class DL_Log_Table extends WP_List_Table {
             'sort_col'        => self::DEFAULT_SORT_COL,
             'sort_dir'        => self::DEFAULT_SORT_DIR,
             'short_src_links' => self::DEFAULT_SHORT_SRC_LINKS,
+            'src_win_width'   => self::DEFAULT_SRC_WIN_WIDTH,
+            'src_win_height'  => self::DEFAULT_SRC_WIN_HEIGHT,
         ];
     }
 
@@ -175,8 +189,18 @@ class DL_Log_Table extends WP_List_Table {
         }
 
         $short_src_links = get_user_meta( $user, DL_Log_Screen::SLUG . '-short_src_links', true );
-        if( strlen( short_src_links ) == 0 ) {
+        if( strlen( $short_src_links ) == 0 ) {
             $short_src_links = self::DEFAULT_SHORT_SRC_LINKS;
+        }
+
+        $src_win_width = get_user_meta( $user, DL_Log_Screen::SLUG . '-src_win_width', true );
+        if( strlen( $src_win_width ) == 0 ) {
+            $src_win_width = self::DEFAULT_SRC_WIN_WIDTH;
+        }
+
+        $src_win_height = get_user_meta( $user, DL_Log_Screen::SLUG . '-src_win_height', true );
+        if( strlen( $src_win_height ) == 0 ) {
+            $src_win_height = self::DEFAULT_SRC_WIN_HEIGHT;
         }
 
         $defaults = self::get_default_options();
@@ -189,6 +213,8 @@ class DL_Log_Table extends WP_List_Table {
             'sort_col'        => $sort_col,
             'sort_dir'        => $sort_dir,
             'short_src_links' => (bool) $short_src_links,
+            'src_win_width'   => (int) $src_win_width,
+            'src_win_height'  => (int) $src_win_height,
         ];
 
         return array_merge( $defaults, $currents );

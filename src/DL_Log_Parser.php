@@ -456,7 +456,11 @@ class DL_Log_Parser {
             return $str;
         }
 
+        // Variables based on user settings
         $short_src_links = (bool) $this->get_options( 'short_src_links', DL_Log_Table::DEFAULT_SHORT_SRC_LINKS );
+        $src_win_width = (int) $this->get_options( 'src_win_width', DL_Log_Table::DEFAULT_SRC_WIN_WIDTH );
+        $src_win_height = (int) $this->get_options( 'src_win_height', DL_Log_Table::DEFAULT_SRC_WIN_HEIGHT );
+        // Other variables
         $abspath = str_replace( '/', '\/', ABSPATH );
         $regexp  = '/((' . $abspath . '[a-zA-Z.\-\_\/]*))/';
 
@@ -476,7 +480,7 @@ class DL_Log_Parser {
         foreach( $file_links as $file_link ) {
             $file_name = ( $short_src_links === true ) ? str_replace( ABSPATH, '.../', $file_link ) : $file_link;
             $url = add_query_arg( 'file', $file_link, plugins_url( 'odwpdl-show_url.php', DL_FILE ) ) .
-                    '&amp;TB_iframe=true&amp;height=500&amp;width=900';
+                    "&amp;TB_iframe=true&amp;height={$src_win_height}&amp;width={$src_win_width}";
             $str = str_replace(
                     $file_link,
                     '<a class="thickbox" href="' . $url . '" title="' . $file_link . '" target="blank">' .

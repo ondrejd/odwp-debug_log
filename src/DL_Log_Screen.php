@@ -102,7 +102,8 @@ class DL_Log_Screen extends DL_Screen_Prototype {
                 '                <li class="working">které sloupce se mají zobrazit</li>' .
                 '                <li class="done">jak zobrazit sloupec s typem záznamu - jestli jako text či ikonu</li>' .
                 '                <li class="done">uživatelské nastavení pro defaultní řazení (sloupec a směr řazení)</li>' .
-                '                <li>chce uživatel zobrazit zkrácené cesty ke zdrojovým souborům nebo ne (nastavení <code>short_src_links</code>?</li>' .
+                '                <li class="done">chce uživatel zobrazit zkrácené cesty ke zdrojovým souborům nebo ne (nastavení <code>short_src_links</code>?</li>' .
+                '                <li class="done">nastavení defaultní šířky a výšky popup</li>' .
                 '            </ul>' .
                 '        </li>' .
                 '        <li>vyřešit všechny problémy, které se mohou vyskytnout při použití na nástěnce (<em>dashboard widget</em>)</li>' .
@@ -170,6 +171,17 @@ class DL_Log_Screen extends DL_Screen_Prototype {
             'default' => DL_Log_Table::DEFAULT_SORT_DIR,
             'option'  => self::SLUG . '-sort_dir',
         ];
+        $this->options[self::SLUG . '-src_win_width' ] = [
+            'label'   => __( 'Šířka okna se zdrojovým kódem', DL_SLUG ),
+            'default' => DL_Log_Table::DEFAULT_SORT_DIR,
+            'option'  => self::SLUG . '-sort_win_width',
+        ];
+        $this->options[self::SLUG . '-src_win_height' ] = [
+            'label'   => __( 'Výška okna se zdrojovým kódem', DL_SLUG ),
+            'default' => DL_Log_Table::DEFAULT_SORT_DIR,
+            'option'  => self::SLUG . '-src_win_height',
+        ];
+
         $this->enable_screen_options = true;
 
         // Finish screen constuction
@@ -257,6 +269,12 @@ class DL_Log_Screen extends DL_Screen_Prototype {
             // Sorting direction
             $sort_dir = filter_input( INPUT_POST, self::SLUG . '-sort_dir' );
             update_user_meta( $user, self::SLUG . '-sort_dir', $sort_dir );
+            // Source code window width
+            $src_win_width = filter_input( INPUT_POST, self::SLUG . '-src_win_width' );
+            update_user_meta( $user, self::SLUG . '-src_win_width', $src_win_width );
+            // Source code window height
+            $src_win_height = filter_input( INPUT_POST, self::SLUG . '-src_win_height' );
+            update_user_meta( $user, self::SLUG . '-src_win_height', $src_win_height );
         }
     }
 }
