@@ -118,7 +118,7 @@ class DL_Log_Record {
      * @return integer
      * @since 1.0.0
      */
-    public function getId() {
+    public function get_id() {
         return $this->id;
     }
 
@@ -128,7 +128,7 @@ class DL_Log_Record {
      * @return integer
      * @since 1.0.0
      */
-    public function getTime( $formatted = false ) {
+    public function get_time( $formatted = false ) {
         return ( $formatted === true ) ? date( self::DATE_FORMAT, $this->time ) : $this->time;
     }
 
@@ -137,7 +137,7 @@ class DL_Log_Record {
      * @return string
      * @since 1.0.0
      */
-    public function getMessage() {
+    public function get_message() {
         return $this->message;
     }
 
@@ -146,7 +146,7 @@ class DL_Log_Record {
      * @return array
      * @since 1.0.0
      */
-    public function getTrace() {
+    public function get_trace() {
         return $this->trace;
     }
 
@@ -155,7 +155,7 @@ class DL_Log_Record {
      * @return array
      * @since 1.0.0
      */
-    public function getType() {
+    public function get_type() {
         return $this->type;
     }
 
@@ -164,7 +164,7 @@ class DL_Log_Record {
      * @return boolean
      * @since 1.0.0
      */
-    public function getDisplay() {
+    public function get_display() {
         return $this->display;
     }
 
@@ -174,7 +174,7 @@ class DL_Log_Record {
      * @return void
      * @since 1.0.0
      */
-    public function setId( $id ) {
+    public function set_id( $id ) {
         $this->id = $id;
     }
 
@@ -184,7 +184,7 @@ class DL_Log_Record {
      * @return void
      * @since 1.0.0
      */
-    public function setTime( $time ) {
+    public function set_time( $time ) {
         $this->time = $time;
     }
 
@@ -194,7 +194,7 @@ class DL_Log_Record {
      * @return void
      * @since 1.0.0
      */
-    public function setMessage( $message ) {
+    public function set_message( $message ) {
         $this->message = $message;
     }
 
@@ -204,7 +204,7 @@ class DL_Log_Record {
      * @return void
      * @since 1.0.0
      */
-    public function setTrace( $trace = [] ) {
+    public function set_trace( $trace = [] ) {
         $this->trace = $trace;
     }
 
@@ -214,7 +214,7 @@ class DL_Log_Record {
      * @return void
      * @since 1.0.0
      */
-    public function addTrace( $trace ) {
+    public function add_trace( $trace ) {
         array_push( $this->trace, $trace );
     }
 
@@ -223,7 +223,7 @@ class DL_Log_Record {
      * @return boolean
      * @since 1.0.0
      */
-    public function hasTrace() {
+    public function has_trace() {
         return ( count( $this->trace ) > 0 );
     }
 
@@ -232,7 +232,7 @@ class DL_Log_Record {
      * @param string $type
      * @since 1.0.0
      */
-    public function setType( $type ) {
+    public function set_type( $type ) {
         $this->type = $type;
     }
 
@@ -241,7 +241,7 @@ class DL_Log_Record {
      * @param boolean $display
      * @since 1.0.0
      */
-    public function setDisplay( $display ) {
+    public function set_display( $display ) {
         $this->display = ( bool ) $display;
     }
 }

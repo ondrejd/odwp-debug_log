@@ -57,12 +57,6 @@ if( ! class_exists( 'DL_Log_Parser' ) ) :
  */
 class DL_Log_Parser {
     /**
-     * @var string $file
-     * @since 1.0.0
-     */
-    protected $file;
-
-    /**
      * @var array $options
      * @since 1.0.0
      */
@@ -269,8 +263,8 @@ class DL_Log_Parser {
 
         $this->log = [];
 
-        foreach( $this->log_raw as $log_line ) {
-            $this->parse_line( $log_line );
+        foreach( $this->log_raw as $index => $log_line ) {
+            $this->parse_line( $log_line, $index );
         }
 
         if( ( $this->_record instanceof DL_Log_Record ) ) {
@@ -283,15 +277,16 @@ class DL_Log_Parser {
 
     /**
      * @internal Parse single log line.
-     * @param string $log_line
+     * @param string $line
+     * @param integer $line_num
      * @return void
      * @since 1.0.0
      */
-    private function parse_line( $log_line ) {
+    private function parse_line( $line, $line_num ) {
         $show_links = $this->get_options( 'show_links', DL_Log_Table::DEFAULT_SHOW_LINKS );
         $matches = preg_split(
             '/(\[[0-9]{2}-[a-zA-Z]{3}-[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} [a-zA-Z]{0,3}\])/',
-            $log_line,
+            $line,
             -1,
             PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
         );
@@ -301,7 +296,8 @@ class DL_Log_Parser {
             // TODO Remove lines below!
             echo '<pre>';
             echo 'WRONG MATCHES [1]:'.PHP_EOL;
-            var_dump( $log_line );
+            var_dump( $line );
+            var_dump( $line_num );
             var_dump( $matches );
             echo '</pre>';
             return;
@@ -321,15 +317,15 @@ class DL_Log_Parser {
             }
 
             $this->_record = new DL_Log_Record( 0, '', '' );
-            $this->_record->setId( count( $this->log ) + 1 );
-            $this->_record->setTime( strtotime( trim( $matches[0], '[]' ) ) );
-            $this->_record->setType( $type );
-            $this->_record->setMessage( $msg );
+            $this->_record->set_id( $line_num );
+            $this->_record->set_time( strtotime( trim( $matches[0], '[]' ) ) );
+            $this->_record->set_type( $type );
+            $this->_record->set_message( $msg );
         }
         elseif( count( $matches ) == 1 && ( $this->_record instanceof DL_Log_Record ) ) {
             if( strpos( $matches[0], '#' ) === 0 ) {
                 // This is just continue of of previous line (debug details)
-                $this->_record->addTrace( $matches[0] );
+                $this->_record->add_trace( $matches[0] );
             }
         }
         else {
@@ -341,7 +337,8 @@ class DL_Log_Parser {
             // TODO Remove lines below!
             echo '<pre>';
             echo 'WRONG MATCHES [2]:'.PHP_EOL;
-            var_dump( $log_line );
+            var_dump( $line );
+            var_dump( $line_num );
             var_dump( $matches );
             echo '</pre>';
             return;
@@ -508,23 +505,23 @@ class DL_Log_Parser {
 
         switch( $orderby ) {
             case 'id':
-                $val1 = $a->getId();
-                $val2 = $b->getId();
+                $val1 = $a->get_id();
+                $val2 = $b->get_id();
                 break;
 
             case 'time':
-                $val1 = $a->getTime();
-                $val2 = $b->getTime();
+                $val1 = $a->get_time();
+                $val2 = $b->get_time();
                 break;
 
             case 'text':
-                $val1 = $a->getMessage();
-                $val2 = $b->getMessage();
+                $val1 = $a->get_message();
+                $val2 = $b->get_message();
                 break;
 
             case 'type':
-                $val1 = $a->getType();
-                $val2 = $b->getType();
+                $val1 = $a->get_type();
+                $val2 = $b->get_type();
                 break;
         }
 
@@ -559,7 +556,7 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     public function save() {
-        if( file_put_contents( $this->file, implode( '\n', $this->log_raw ) ) === false ) {
+        if( file_put_contents( DL_LOG, implode( '\n', $this->log_raw ) ) === false ) {
             return false;
         }
 

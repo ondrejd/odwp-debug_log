@@ -189,7 +189,7 @@ class DL_Log_Table extends WP_List_Table {
      */
     function column_cb( $item ) {
         return sprintf(
-            '<input type="checkbox" name="log_item[]" value="%s">', $item->getId()
+            '<input type="checkbox" name="log_item[]" value="%s">', $item->get_id()
         );
     }
 
@@ -203,16 +203,16 @@ class DL_Log_Table extends WP_List_Table {
     public function column_default( $item, $column_name ) {
         switch( $column_name ) { 
             case 'id':
-                return $item->getId();
+                return $item->get_id();
 
             case 'time':
-                return $item->getTime( true );
+                return $item->get_time( true );
 
             case 'text':
-                return $item->getMessage();
+                return $item->get_message();
 
             case 'type':
-                return $item->getType();
+                return $item->get_type();
 
             default:
                 return '';
@@ -228,7 +228,7 @@ class DL_Log_Table extends WP_List_Table {
     public function column_type( DL_Log_Record $item ) {
         $show_icons = self::get_options()['show_icons'];
 
-        switch( $item->getType() ) {
+        switch( $item->get_type() ) {
             case DL_Log_Record::TYPE_ERROR:
                 $lbl = __( 'Chyba', DL_SLUG );
                 return ( $show_icons === true ) ? '<span class="dashicons dashicons-warning" title="' . $lbl .'"></span>' : $lbl;
@@ -263,9 +263,8 @@ class DL_Log_Table extends WP_List_Table {
      * @todo Display also stack trace!
      */
     public function column_text( DL_Log_Record $item ) {
-        $id = ( int ) $item->getId();
-        $page = ( int ) filter_input( INPUT_GET, 'page' );
-        $text = $item->getMessage();
+        $id = ( int ) $item->get_id();
+        $text = $item->get_message();
         $options = $this->get_options();
         $show_links = $options['show_links'];
         $show_trace = $options['show_trace'];
@@ -274,7 +273,7 @@ class DL_Log_Table extends WP_List_Table {
             $text = $this->parser->make_source_links( $text );
         }
 
-        if( $item->hasTrace() === true ) {
+        if( $item->has_trace() === true ) {
             $icon = ( $show_trace === true )
                     ? '<span class="dashicons dashicons-arrow-up-alt2"></span>'
                     : '<span class="dashicons dashicons-arrow-down-alt2"></span>';
@@ -283,7 +282,7 @@ class DL_Log_Table extends WP_List_Table {
             $text .= '    <b onclick="StackTraceToggler.toggle(this)">' . $icon . ' ' . __( 'Stack trace', DL_SLUG ) . '</b>' . PHP_EOL;
             $text .= '    <ul>' . PHP_EOL;
 
-            foreach( $item->getTrace() as $trace ) {
+            foreach( $item->get_trace() as $trace ) {
                 if( $show_links === true ) {
                     $trace = $this->parser->make_source_links( $trace );
                 }
@@ -295,9 +294,7 @@ class DL_Log_Table extends WP_List_Table {
             $text .= '</div>' . PHP_EOL;
         }
 
-        $actions = [
-            'delete' => sprintf( __( '<a href="?page=%s&amp;action=%s&amp;record=%s">Smazat</a>', DL_SLUG ), $page, 'delete', $id ),
-        ];
+        $actions = $this->get_row_actions( $item );
 
         return sprintf('%1$s %2$s', $text, $this->row_actions( $actions ) );
     }
@@ -331,17 +328,57 @@ class DL_Log_Table extends WP_List_Table {
 
     /**
      * Returns array describing row actions.
+     * @param DL_Log_Record $item
      * @return array
      * @since 1.0.0
+     * @todo Base URL of the screen should be taken from method of the screen's class!
      */
-    public function get_bulk_actions() {
+    public function get_row_actions( DL_Log_Record $item ) {
         $actions = [
-            'delete' => [
-                'label' => __( 'Smaž', DL_SLUG ),
-                'url'   => '#',
-            ],
+            'delete' => sprintf(
+                    '<a href="%s">%s</a>',
+                    $this->get_current_table_url( [ 'action' => 'delete', 'record' => $item->get_id() ] ),
+                    __( 'Smazat', DL_SLUG )
+            ),
         ];
+
         return $actions;
+    }
+
+    /**
+     * Returns URL of the WP admin page where the table lives on.
+     * @param array $args (Optional.) Additional URL arguments as key => value array.
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_table_url( $args = [] ) {
+        return admin_url( 'tools.php?page=' . DL_Log_Screen::SLUG );
+    }
+
+    /**
+     * Returns current table URL (with all parameters - filter, paging etc.).
+     * @param array $args (Optional.) Additional URL arguments as key => value array.
+     * @return string
+     * @since 1.0.0
+     * @todo Use {@see add_query_arg()} - {@link https://developer.wordpress.org/reference/functions/add_query_arg/}
+     * @uses DL_Log_Table::get_table_url()
+     */
+    public function get_current_table_url( $args = [] ) {
+        $url = $this->get_table_url();
+
+        //paged
+        $paged = (int) filter_input( INPUT_GET, 'paged' );
+        if( $paged > 1 ) {
+            $url .= '&amp;paged=' . $paged;
+        }
+
+        //filter
+        $filter = filter_input( INPUT_GET, 'filter' );
+        if( ! empty( $filter ) ) {
+            $url .= '&amp;filter=' . $filter;
+        }
+
+        return $url;
     }
 
     /**
@@ -461,7 +498,7 @@ class DL_Log_Table extends WP_List_Table {
         elseif( $view == 'today' ) {
             $this->parser->filter( function( \DL_Log_Record $record ) {
                 $date_today = new DateTime();
-                $date_real = new DateTime( date( 'Y-m-d H:i:s', $record->getTime() ) );
+                $date_real = new DateTime( date( 'Y-m-d H:i:s', $record->get_time() ) );
                 return ( $date_today == $date_real );
             } );
         }
@@ -469,7 +506,7 @@ class DL_Log_Table extends WP_List_Table {
             $this->parser->filter( function( \DL_Log_Record $record ) {
                 $date_yesterday = new DateTime();
                 $date_yesterday->sub(new DateInterval( 'P1D' ) );
-                $date_real = new DateTime( date( 'Y-m-d H:i:s', $record->getTime() ) );
+                $date_real = new DateTime( date( 'Y-m-d H:i:s', $record->get_time() ) );
                 return ( $date_yesterday == $date_real );
             } );
         }
@@ -477,7 +514,7 @@ class DL_Log_Table extends WP_List_Table {
             $this->parser->filter( function( \DL_Log_Record $record ) {
                 $date_yesterday = new DateTime();
                 $date_yesterday->sub(new DateInterval( 'P1D' ) );
-                $date_real = new DateTime( date( 'Y-m-d H:i:s', $record->getTime() ) );
+                $date_real = new DateTime( date( 'Y-m-d H:i:s', $record->get_time() ) );
                 return ( $date_yesterday > $date_real );
             } );
         }
@@ -516,6 +553,7 @@ class DL_Log_Table extends WP_List_Table {
      * @param string $which
      * @return void
      * @since 1.0.0
+     * @todo That HTML source block should not be here!
      */
     protected function extra_tablenav( $which ) {
         if( $which != 'top' ) {
@@ -615,7 +653,7 @@ class DL_Log_Table extends WP_List_Table {
 
         if( ! is_null( $_filter ) ) {
             $this->parser->filter( function( \DL_Log_Record $record ) use( $_filter ) {
-                return ( $record->getType() == $_filter );
+                return ( $record->get_type() == $_filter );
             } );
         }
     }
