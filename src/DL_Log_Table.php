@@ -296,7 +296,6 @@ class DL_Log_Table extends WP_List_Table {
         }
 
         $actions = [
-            'view'   => sprintf( __( '<a href="?page=%s&amp;action=%s&amp;record=%s">Zobrazit</a>', DL_SLUG ), $page, 'view', $id ),
             'delete' => sprintf( __( '<a href="?page=%s&amp;action=%s&amp;record=%s">Smazat</a>', DL_SLUG ), $page, 'delete', $id ),
         ];
 
@@ -319,13 +318,28 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * Returns array describing bulk actions available for the table.
+     * Returns array describing bulk actions.
      * @return array
      * @since 1.0.0
      */
     public function get_bulk_actions() {
         $actions = [
             'delete' => __( 'Smaž', DL_SLUG ),
+        ];
+        return $actions;
+    }
+
+    /**
+     * Returns array describing row actions.
+     * @return array
+     * @since 1.0.0
+     */
+    public function get_bulk_actions() {
+        $actions = [
+            'delete' => [
+                'label' => __( 'Smaž', DL_SLUG ),
+                'url'   => '#',
+            ],
         ];
         return $actions;
     }
@@ -544,7 +558,8 @@ class DL_Log_Table extends WP_List_Table {
             $this->get_sortable_columns(),
         ];
 
-        // Process bulk actions
+        // Process row and bulk actions
+        $this->process_row_actions();
         $this->process_bulk_actions();
 
         // Get order arguments
@@ -638,8 +653,53 @@ class DL_Log_Table extends WP_List_Table {
      * Process bulk actions.
      * @return void
      * @since 1.0.0
+     * @todo Finish this!
      */
     public function process_bulk_actions() {
+        $action = filter_input( INPUT_POST, 'action' );
+        if( empty( $action ) ) {
+            $action = filter_input( INPUT_POST, 'action2' );
+        }
+
+        // Validate action, otherwise return
+        if( in_array( $action, ['delete'] ) ) {
+            return;
+        }
+
+        // ...
+    }
+
+    /**
+     * Process row actions. As are defined in {@see DL_Log_Table::column_text()}.
+     * @return void
+     * @since 1.0.0
+     * @todo Finish this!
+     */
+    public function process_row_actions() {
+        $action = filter_input( INPUT_GET, 'action' );
+        $record = (int) filter_input( INPUT_GET, 'record' );
+
+        // Validate action, otherwise return
+        if( in_array( $action, ['delete'] ) && ! empty( $record ) ) {
+            return;
+        }
+
+        // Perform action
+        if( $action == 'delete' ) {
+            // Delete selected log record.
+            $msg = __( 'Záznam #%d byl úspěšně odstraněn ze souboru <code>debug.log</code>.', DL_SLUG );
+            DL_Plugin::print_admin_notice( sprintf( $msg, $record ), 'info', true );
+        }
+    }
+
+    /**
+     * Removes log record from the debug.log file.
+     * @param integer $record_id
+     * @return boolean
+     * @since 1.0.0
+     * @todo Finish this!
+     */
+    public function delete_log_record( $record_id ) {
         // ...
     }
 

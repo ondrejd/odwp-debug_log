@@ -57,7 +57,7 @@ if( ! class_exists( 'DL_Log_Parser' ) ) :
  */
 class DL_Log_Parser {
     /**
-     * @var string $log_file
+     * @var string $file
      * @since 1.0.0
      */
     protected $file;
@@ -86,13 +86,13 @@ class DL_Log_Parser {
      * @var array $log_raw Prepared log.
      * @since 1.0.0
      */
-    private $log_raw = [];
+    protected $log_raw = [];
 
     /**
      * @var array $log Parsed log.
      * @since 1.0.0
      */
-    private $log = [];
+    protected $log = [];
 
     /**
      * @var array $log Parsed log (copy for canceling filters).
@@ -118,6 +118,12 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     private $_orderby;
+
+    /**
+     * @var boolean $saved
+     * @since 1.0.0
+     */
+    private $saved = true;
 
     /**
      * Constructor.
@@ -151,9 +157,7 @@ class DL_Log_Parser {
         }
 
         if( array_key_exists( 'file', $args ) ) {
-            //if( file_exists( $args['file'] ) && is_readable( $args['file'] ) ) {
-                $this->log_file = $args['file'];
-            //}
+            $this->log_file = $args['file'];
         }
     }
 
@@ -527,6 +531,48 @@ class DL_Log_Parser {
         $result = strcmp( $val1, $val2 );
 
         return ( $order === 'asc' ) ? $result : -$result;
+    }
+
+    // ====================================================================
+    // Methods added becauso of deleting selected log records.
+    // XXX We should rename this method to something like a permanent storage...
+
+    /**
+     * Deletes record at given row (but does not save the file!).
+     * @param integer $row
+     * @return boolean
+     * @since 1.0.0
+     */
+    public function delete_record( $row ) {
+        if( array_key_exists( $row, $this->log_raw ) ) {
+            unset( $this->log_raw[$row] );
+            $this->saved = false;
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Saves {@see DL_Log_Parser::$log_raw} into the {@see DL_Log_Parser::$file}.
+     * @return boolean
+     * @since 1.0.0
+     */
+    public function save() {
+        if( file_put_contents( $this->file, implode( '\n', $this->log_raw ) ) === false ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns true if log file is saved (or if there are unsaved changes).
+     * @return boolean
+     * @since 1.0.0
+     */
+    public function is_saved() {
+       return $this->saved;
     }
 }
 

@@ -51,6 +51,9 @@ h3.help-title, h4.help-title {
 .todo-list .done {
     text-decoration: line-through;
 }
+.todo-list .working {
+    text-decoration: underline;
+}
 .todo-list li code {
     font-size: 90%;
 }
