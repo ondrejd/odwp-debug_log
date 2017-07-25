@@ -99,13 +99,14 @@ class DL_Log_Screen extends DL_Screen_Prototype {
                 '            <b>Uživatelské nastavení:</b>' .
                 '            <ul>' .
                 '                <li class="done">počet položek na stránce</li>' .
-                '                <li>které sloupce se mají zobrazit</li>' .
+                '                <li class="working">které sloupce se mají zobrazit</li>' .
                 '                <li class="done">jak zobrazit sloupec s typem záznamu - jestli jako text či ikonu</li>' .
                 '                <li class="done">uživatelské nastavení pro defaultní řazení (sloupec a směr řazení)</li>' .
                 '            </ul>' .
                 '        </li>' .
                 '        <li>vyřešit všechny problémy, které se mohou vyskytnout při použití na nástěnce (<em>dashboard widget</em>)</li>' .
                 '        <li class="done"><b>FIXME</b> - nezobrazují se odkazy na zdrojové soubory</li>' .
+                '        <li><b>FIXME</b> - když smažu jednotlivý řádek (a parametry pro akci jdou tudíž přes <code>$_GET</code>, tak (pokud zrovna nemažu poslední řádek) můžu nechtěně smazat při obnovení prohlížeče (F5) další záznamy. Nejjednodušší je přidat <em>JavaScript</em> pro znovunačtení stránky na konec smazání potvrzující zprávy (prostě jen výstrahu pro uživatele a odpovídající <em>timeout</em>).</li>' .
                 '    </ul>' .
                 '</div>',
         ];

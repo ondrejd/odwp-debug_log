@@ -366,16 +366,21 @@ class DL_Log_Table extends WP_List_Table {
     public function get_current_table_url( $args = [] ) {
         $url = $this->get_table_url();
 
-        //paged
+        // Default table argument "paged"
         $paged = (int) filter_input( INPUT_GET, 'paged' );
         if( $paged > 1 ) {
-            $url .= '&amp;paged=' . $paged;
+            $url .= "&amp;paged={$paged}";
         }
 
-        //filter
+        // Default table argument "filter"
         $filter = filter_input( INPUT_GET, 'filter' );
         if( ! empty( $filter ) ) {
-            $url .= '&amp;filter=' . $filter;
+            $url .= "&amp;filter={$filter}";
+        }
+
+        // Other arguments
+        foreach( $args as $key => $val ) {
+            $url .= "&amp;{$key}={$val}";
         }
 
         return $url;
@@ -718,15 +723,24 @@ class DL_Log_Table extends WP_List_Table {
         $record = (int) filter_input( INPUT_GET, 'record' );
 
         // Validate action, otherwise return
-        if( in_array( $action, ['delete'] ) && ! empty( $record ) ) {
+        if( ! in_array( $action, ['delete'] ) || empty( $record ) ) {
             return;
         }
 
         // Perform action
         if( $action == 'delete' ) {
             // Delete selected log record.
-            $msg = __( 'Záznam #%d byl úspěšně odstraněn ze souboru <code>debug.log</code>.', DL_SLUG );
-            DL_Plugin::print_admin_notice( sprintf( $msg, $record ), 'info', true );
+            $msg_text = $msg_type = '';
+
+            if( $this->parser->delete_record( $record ) === true ) {
+                $msg_text = __( 'Záznam z řádku <b>%d</b> byl úspěšně odstraněn ze souboru <code>debug.log</code>.', DL_SLUG );
+                $msg_type = 'success';
+            } else {
+                $msg_text = __( 'Záznam z řádku <b>%d</b> souboru <code>debug.log</code> se nepodařilo smazat!', DL_SLUG );
+                $msg_type = 'error';
+            }
+
+            DL_Plugin::print_admin_notice( sprintf( $msg_text, $record ), $msg_type, true );
         }
     }
 

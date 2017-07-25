@@ -350,7 +350,7 @@ class DL_Plugin {
      * @return void
      * @since 1.0.0
      */
-    protected static function print_admin_notice( $msg, $type = 'info', $dismissible = true ) {
+    public static function print_admin_notice( $msg, $type = 'info', $dismissible = true ) {
         $class = 'notice';
 
         if( in_array( $type, ['error','info','success','warning'] ) ) {
