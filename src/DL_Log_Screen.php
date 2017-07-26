@@ -245,10 +245,11 @@ class DL_Log_Screen extends DL_Screen_Prototype {
                 // No cols are set
                 update_user_meta( $user, self::SLUG . '-shown_cols', '' );
             }
-            else if( is_array( $_show_cols_raw ) ) {
+            else if( is_array( $_shown_cols_raw ) ) {
                 // Get IDs of the cols
                 $shown_cols_arr = array_keys( $_shown_cols_raw );
                 $shown_cols_str = implode( ',', $shown_cols_arr );
+
                 // Save meta value
                 update_user_meta( $user, self::SLUG . '-shown_cols', $shown_cols_str );
             }

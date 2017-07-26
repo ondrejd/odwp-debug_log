@@ -59,15 +59,21 @@ extract( $table_options );
                     <label for="<?php echo $slug ?>-checkbox1" title="<?php _e( 'Zobrazit typ záznamu jako ikonu?', DL_SLUG ) ?>">
                         <input type="checkbox" name="<?php echo $slug ?>-show_icons" id="<?php echo $slug ?>-checkbox1"<?php checked( $show_icons ) ?>>
                         <?php _e( 'Zaškrtněte pokud chcete mít typ záznamu (chyba, oznámení, ostatní, upozornění) jako ikonu a ne jako normální text.', DL_SLUG ) ?>
-                    </label><br>
+                    </label>
+                </li>
+                <li>
                     <label for="<?php echo $slug ?>-checkbox2" title="<?php _e( 'Zobrazit odkazy na zdrojové soubory?', DL_SLUG ) ?>">
                         <input type="checkbox" name="<?php echo $slug ?>-show_links" id="<?php echo $slug ?>-checkbox2"<?php checked( $show_links ) ?>>
                         <?php _e( 'Zaškrtněte pokud chcete zobrazit odkazy na zdrojové soubory, ve kterých se chyba vyskytla.', DL_SLUG ) ?>
-                    </label><br>
+                    </label>
+                </li>
+                <li>
                     <label for="<?php echo $slug ?>-checkbox4" title="<?php _e( 'Zobrazit názvy zdrojových souborů zkrácené?', DL_SLUG ) ?>">
                         <input type="checkbox" name="<?php echo $slug ?>-short_src_links" name="<?php echo $slug ?>-checkbox4"<?php checked( $short_src_links ) ?>>
                         <?php _e( 'Zobrazit názvy zdrojových souborů zkrácené (tzn. bez absolutní cesty <code>ABSPATH</code>)?', DL_SLUG ) ?>
-                    </label><br>
+                    </label>
+                </li>
+                <li>
                     <label for="<?php echo $slug ?>-checkbox3" title="<?php _e( 'Zobrazit stack trace defaultně rozbalenou?', DL_SLUG ) ?>">
                         <input type="checkbox" name="<?php echo $slug ?>-show_trace" id="<?php echo $slug ?>-checkbox3"<?php checked( $show_trace ) ?>>
                         <?php _e( 'Zaškrtněte pokud chcete zobrazit <em>stack trace</em> defaultně rozbalenou.', DL_SLUG ) ?>
