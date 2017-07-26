@@ -95,11 +95,11 @@ class DL_Log_Screen extends DL_Screen_Prototype {
                 '        <li class="done">umožnit proklik na zdrojové kódy ve kterých se chyba vyskytne</li>' .
                 '        <li class="done">přidat základní stránkování</li>' .
                 '        <li class="done">zobrazit <em>stack trace</em> pokud je definována</li>' .
-                '        <li>' .
+                '        <li class="done">' .
                 '            <b>Uživatelské nastavení:</b>' .
                 '            <ul>' .
                 '                <li class="done">počet položek na stránce</li>' .
-                '                <li class="working">které sloupce se mají zobrazit</li>' .
+                '                <li class="done">které sloupce se mají zobrazit</li>' .
                 '                <li class="done">jak zobrazit sloupec s typem záznamu - jestli jako text či ikonu</li>' .
                 '                <li class="done">uživatelské nastavení pro defaultní řazení (sloupec a směr řazení)</li>' .
                 '                <li class="done">chce uživatel zobrazit zkrácené cesty ke zdrojovým souborům nebo ne (nastavení <code>short_src_links</code>?</li>' .
@@ -121,20 +121,20 @@ class DL_Log_Screen extends DL_Screen_Prototype {
                 '<p><a href="%s" target="blank">%s</a></p>' .
                 '<p><a href="%s" target="blank">%s</a></p>' .
                 '<p><a href="%s" target="blank">%s</a></p>',
-                __( 'Užitečné odkazy', DL_LOG ),
-                'https://ondrejd.com' .
-                __( 'Domovské stránky autora', DL_LOG ),
+                __( 'Užitečné odkazy', DL_SLUG ),
+                'https://ondrejd.com',
+                __( 'Domovské stránky autora', DL_SLUG ),
                 'https://github.com/ondrejd/odwp-debug_log',
-                __( 'GitHub - zdrojové kódy', DL_LOG ),
+                __( 'GitHub - zdrojové kódy', DL_SLUG ),
                 'https://github.com/ondrejd/odwp-debug_log/issues',
-                __( 'GitHub - ohlášení chyb', DL_LOG )
+                __( 'GitHub - ohlášení chyb', DL_SLUG )
         );
 
         // Specify screen options
-        $this->options[self::SLUG . '-hidden_cols'] = [
+        $this->options[self::SLUG . '-shown_cols'] = [
             'label'   => __( 'Zobrazené sloupce', DL_SLUG ),
-            'default' => DL_Log_Table::DEFAULT_HIDDEN_COLS,
-            'option'  => self::SLUG . '-hidden_cols',
+            'default' => DL_Log_Table::DEFAULT_SHOWN_COLS,
+            'option'  => self::SLUG . '-shown_cols',
         ];
         $this->options[self::SLUG . '-per_page'] = [
             'label'   => __( 'Počet záznamů na stránku', DL_SLUG ),
@@ -238,16 +238,21 @@ class DL_Log_Screen extends DL_Screen_Prototype {
                 filter_input( INPUT_POST, self::SLUG . '-submit' ) &&
                 (bool) wp_verify_nonce( filter_input( INPUT_POST, self::SLUG . '-nonce' ) ) === true
         ) {
-            // TODO Hidden columns
-//$show_cols   = filter_input( INPUT_POST, self::SLUG . '-show_cols', FILTER_DEFAULT , FILTER_REQUIRE_ARRAY );
-//var_dump( $show_cols );
-// 1) mame sloupce, ktere chce uzivatel zobrazit
-// 2) vyloucime ty, ktere nemohou byt skryty
-// 3) ted vyhodime ostatni zaskrtnute
-// 4) ty co zbydou ulozime jako retezec do $hidden_cols
-//exit();
-//$hidden_cols = filter_input( INPUT_POST, self::SLUG . '-hidden_cols' );
-//update_user_meta( $user, self::SLUG . '-hidden_cols', $hidden_cols );
+            // Shown columns
+            $_shown_cols_raw = filter_input( INPUT_POST, self::SLUG . '-show_cols', FILTER_DEFAULT , FILTER_REQUIRE_ARRAY );
+
+            if( is_null( $_shown_cols_raw ) || empty( $_shown_cols_raw ) ) {
+                // No cols are set
+                update_user_meta( $user, self::SLUG . '-shown_cols', '' );
+            }
+            else if( is_array( $_show_cols_raw ) ) {
+                // Get IDs of the cols
+                $shown_cols_arr = array_keys( $_shown_cols_raw );
+                $shown_cols_str = implode( ',', $shown_cols_arr );
+                // Save meta value
+                update_user_meta( $user, self::SLUG . '-shown_cols', $shown_cols_str );
+            }
+
             // Rows per page
             $per_page = filter_input( INPUT_POST, self::SLUG . '-per_page' );
             update_user_meta( $user, self::SLUG . '-per_page', ( int ) $per_page );
