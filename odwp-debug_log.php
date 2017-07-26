@@ -168,6 +168,22 @@ if( ! function_exists( 'odwpdl_write_log' ) ) :
     }
 endif;
 
+if( ! function_exists( 'readonly' ) ) :
+    /**
+     * Prints HTML readonly attribute. It's an addition to WP original
+     * functions {@see disabled()} and {@see checked()}.
+     * @param mixed $value
+     * @param mixed $current (Optional.) Defaultly TRUE.
+     * @return string
+     * @since 1.0.0
+     */
+    function readonly( $current, $value = true ) {
+        if( $current == $value ) {
+            echo ' readonly';
+        }
+    }
+endif;
+
 /**
  * Errors from the requirements check
  * @var array

@@ -283,7 +283,6 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     private function parse_line( $line, $line_num ) {
-        $show_links = $this->get_options( 'show_links', DL_Log_Table::DEFAULT_SHOW_LINKS );
         $matches = preg_split(
             '/(\[[0-9]{2}-[a-zA-Z]{3}-[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} [a-zA-Z]{0,3}\])/',
             $line,
@@ -309,12 +308,9 @@ class DL_Log_Parser {
                 array_push( $this->log, $this->_record );
             }
 
-            $msg = trim( $matches[1] );
-            $type = $this->parse_type( $msg );
-
-            if( $show_links ) {
-                $msg = str_replace( $type . ': ', '', $msg );
-            }
+            $_msg = trim( $matches[1] );
+            $type = $this->parse_type( $_msg );
+            $msg  = str_replace( $type . ': ', '', $_msg );
 
             $this->_record = new DL_Log_Record( 0, '', '' );
             $this->_record->set_id( $line_num );

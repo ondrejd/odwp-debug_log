@@ -44,10 +44,10 @@ class DL_Log_Table extends WP_List_Table {
     const DEFAULT_SORT_DIR_DESC = 'desc';
 
     /**
-     * @var string Comma-separated list of defaultly hidden columns.
+     * @var string Comma-separated list of defaultly shown columns.
      * @since 1.0.0
      */
-    const DEFAULT_HIDDEN_COLS = 'id';
+    const DEFAULT_SHOWN_COLS = 'id,type';
 
     /**
      * @var string Default per page items count.
@@ -132,7 +132,7 @@ class DL_Log_Table extends WP_List_Table {
      */
     public static function get_default_options() {
         return [
-            'hidden_cols'     => self::DEFAULT_HIDDEN_COLS,
+            'shown_cols'      => self::DEFAULT_SHOWN_COLS,
             'per_page'        => self::DEFAULT_PER_PAGE,
             'show_icons'      => self::DEFAULT_SHOW_ICONS,
             'show_links'      => self::DEFAULT_SHOW_LINKS,
@@ -153,59 +153,20 @@ class DL_Log_Table extends WP_List_Table {
     public static function get_options() {
         $user = get_current_user_id();
 
-        $hidden_cols = get_user_meta( $user, DL_Log_Screen::SLUG . '-hidden_cols', true );
-        if( strlen( $hidden_cols ) == 0 ) {
-            $hidden_cols = self::DEFAULT_HIDDEN_COLS;
-        }
-
+        $shown_cols = get_user_meta( $user, DL_Log_Screen::SLUG . '-shown_cols', true );
         $per_page = get_user_meta( $user, DL_Log_Screen::SLUG . '-per_page', true );
-        if( strlen( $per_page ) == 0 ) {
-            $per_page = self::DEFAULT_PER_PAGE;
-        }
-;
         $show_icons = get_user_meta( $user, DL_Log_Screen::SLUG . '-show_icons', true );
-        if( strlen( $show_icons ) == 0 ) {
-            $show_icons = self::DEFAULT_SHOW_ICONS;
-        }
-
         $show_links = get_user_meta( $user, DL_Log_Screen::SLUG . '-show_links', true );
-        if( strlen( $show_links ) == 0 ) {
-            $show_links = self::DEFAULT_SHOW_LINKS;
-        }
-
         $show_trace = get_user_meta( $user, DL_Log_Screen::SLUG . '-show_trace', true );
-        if( strlen( $show_trace ) == 0 ) {
-            $show_trace = self::DEFAULT_SHOW_TRACE;
-        }
-
         $sort_col = get_user_meta( $user, DL_Log_Screen::SLUG . '-sort_col', true );
-        if( strlen( $sort_col ) == 0 ) {
-            $sort_col = self::DEFAULT_SORT_COL;
-        }
-
         $sort_dir = get_user_meta( $user, DL_Log_Screen::SLUG . '-sort_dir', true );
-        if( strlen( $sort_dir ) == 0 ) {
-            $sort_dir = self::DEFAULT_SORT_DIR;
-        }
-
         $short_src_links = get_user_meta( $user, DL_Log_Screen::SLUG . '-short_src_links', true );
-        if( strlen( $short_src_links ) == 0 ) {
-            $short_src_links = self::DEFAULT_SHORT_SRC_LINKS;
-        }
-
         $src_win_width = get_user_meta( $user, DL_Log_Screen::SLUG . '-src_win_width', true );
-        if( strlen( $src_win_width ) == 0 ) {
-            $src_win_width = self::DEFAULT_SRC_WIN_WIDTH;
-        }
-
         $src_win_height = get_user_meta( $user, DL_Log_Screen::SLUG . '-src_win_height', true );
-        if( strlen( $src_win_height ) == 0 ) {
-            $src_win_height = self::DEFAULT_SRC_WIN_HEIGHT;
-        }
 
         $defaults = self::get_default_options();
         $currents = [
-            'hidden_cols'     => $hidden_cols,
+            'shown_cols'      => $shown_cols,
             'per_page'        => ( int ) $per_page,
             'show_icons'      => ( bool ) $show_icons,
             'show_links'      => ( bool ) $show_links,
@@ -307,6 +268,11 @@ class DL_Log_Table extends WP_List_Table {
         $options = $this->get_options();
         $show_links = $options['show_links'];
         $show_trace = $options['show_trace'];
+        $show_type  = ( strpos( $options['shown_cols'], 'type' ) !== false );
+
+        if( $show_type !== true ) {
+            $text = '<b>' . $item->get_type() . '</b>: ' . $text;
+        }
 
         if( $show_links === true ) {
             $text = $this->parser->make_source_links( $text );
@@ -461,19 +427,14 @@ class DL_Log_Table extends WP_List_Table {
      * @todo Get really hidden columns from user meta!
      */
     public function get_hidden_columns() {
-        // Prepare defaultly hidden columns
-        $defaults = [];
-        foreach( $this->get_hideable_columns() as $key => $spec ) {
-            if( ( bool ) $spec[1] === true ) {
-                $defaults[] = $key;
-            }
-        }
+        $all_cols        = array_keys( $this->get_columns() );
+        $hideable_cols   = array_keys( $this->get_hideable_columns() );
+        $unhideable_cols = array_diff( $all_cols, $hideable_cols );
+        $_shown_cols     = explode( ',', $this->get_options()['shown_cols'] );
+        $shown_cols      = array_merge( $unhideable_cols, $_shown_cols );
+        $hidden_cols     = array_diff( $all_cols, $shown_cols );
 
-        // Get hidden columns by user
-        $hidden   = []; // TODO Get it from user_meta!
-
-        // Returns it
-        return array_merge( $defaults, $hidden );
+        return $hidden_cols;
     }
 
     /**

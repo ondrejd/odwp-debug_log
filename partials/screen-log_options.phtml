@@ -28,12 +28,6 @@ extract( $table_options );
 
 ?>
 <div id="screen-options-wrap" class="hidden" aria-label="<?php _e( 'Screen Options Tab', DL_SLUG ) ?>">
-<?php
-echo '<pre>';
-echo WP_PLUGIN_DIR . '<br>';
-var_dump( $table_options );
-echo '</pre>';
-?>
     <form name="<?php echo $slug ?>-form" method="post" class="odwp-screen-options">
         <?php echo wp_nonce_field( -1, $slug . '-nonce', true, false); ?>
         <input type="hidden" name="screen_name" value="<?php echo $screen->id ?>">
