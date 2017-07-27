@@ -15,6 +15,10 @@ if( ! class_exists( 'DL_Log_Record' ) ) {
     require_once( DL_PATH . 'src/DL_Log_Record.php' );
 }
 
+if( ! class_exists( 'DL_Log_Highlighter' ) ) {
+    require_once( DL_PATH . 'src/DL_Log_Highlighter.php' );
+}
+
 if( ! class_exists( 'DL_Log_Parser' ) ) :
 
 /**
@@ -446,12 +450,15 @@ class DL_Log_Parser {
      * @return string
      * @see DL_Log_Parser::get_data()
      * @since 1.0.0
+     * @todo Rename to `highlight_text_line`!
      */
     public function make_source_links( $str ) {
         if ( strpos( $str, ABSPATH ) === false ) {
             return $str;
         }
 
+        /** @var string $ret Holds HTML to return. */
+        $ret = $str;
         // Variables based on user settings
         $short_src_links = (bool) $this->get_options( 'short_src_links', DL_Log_Table::DEFAULT_SHORT_SRC_LINKS );
         $src_win_width = (int) $this->get_options( 'src_win_width', DL_Log_Table::DEFAULT_SRC_WIN_WIDTH );
@@ -460,18 +467,33 @@ class DL_Log_Parser {
         $abspath = str_replace( '/', '\/', ABSPATH );
         $regexp  = '/((' . $abspath . '[a-zA-Z.\-\_\/]*))/';
 
+        // Replace some entities that occur in log
+        $ret = str_replace( '&#8217;', '’', $ret );
+
         // 1) Search for file links
         $file_links = [];
         $matches = preg_split( $regexp, $str, -1, PREG_SPLIT_DELIM_CAPTURE );
-
+echo '<pre style="font-size: 9pt;">';
+var_dump( $matches );
         foreach( $matches as $match ) {
             if( strpos( $match, ABSPATH ) === 0 ) {
+                // Array item contains file link
                 if( ! in_array( $match, $file_links ) ) {
                     $file_links[] = $match;
                 }
             }
+            else {
+                // Other text
+                // Highlight numbers
+                $ret = DL_Log_Highlighter::highlight_numbers( $match, $ret );
+                // Highlight function names
+                $ret = DL_Log_Highlighter::highlight_functions( $match, $ret );
+                // Highlight strings in brackets
+                $ret = DL_Log_Highlighter::highlight_strings( $match, $ret );
+            }
         }
-
+var_dump( $ret );
+echo '</pre>';
         // 2) Update string with HTML anchors for file links
         foreach( $file_links as $file_link ) {
             $file_name = $file_link;
@@ -487,19 +509,19 @@ class DL_Log_Parser {
             // Create link (all HTML)
             $url = add_query_arg( 'file', $file_link, plugins_url( 'odwpdl-show_url.php', DL_FILE ) ) .
                     "&amp;TB_iframe=true&amp;height={$src_win_height}&amp;width={$src_win_width}";
-            $str = str_replace(
+            $ret = str_replace(
                     $file_link,
                     '<a class="thickbox" href="' . $url . '" title="' . $file_link . '" target="blank">' .
                         '<code>' . $file_name . '</code>' .
                     '</a>',
-                    $str
+                    $ret
             );
         }
 
         // 3) Process "on line 11" or ":11" ...
         // TODO Process file line.
 
-        return $str;
+        return $ret;
     }
 
     /**
