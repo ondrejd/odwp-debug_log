@@ -56,9 +56,10 @@ class DL_Log_Highlighter {
      */
     public static function highlight_others( $part, $line ) {
         $ret = $line;
-        //$ret = str_replace( ' \']\'' , ' <span class="log--string">\']\'</span>', $ret );
-        //$ret = str_replace( ' \'[\'' , ' <span class="log--string">\'[\'</span>', $ret );
-        //$ret = str_replace( ' \'if\'', ' <span class="log--string">\'if\'</span>', $ret );
+        $ret = str_replace( ' \']\'' , ' <span class="log--string">\']\'</span>', $ret );
+        $ret = str_replace( ' \'[\'' , ' <span class="log--string">\'[\'</span>', $ret );
+        $ret = str_replace( ' \'if\'', ' <span class="log--string">\'if\'</span>', $ret );
+        $ret = str_replace( ' \'=>\'', ' <span class="log--string">\'if\'</span>', $ret );
         $ret = str_replace( ' null'  , ' <span class="log--null">null</span>', $ret);
 
         // Error,TypeError

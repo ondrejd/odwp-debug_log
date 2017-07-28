@@ -501,7 +501,7 @@ class DL_Log_Parser {
             // Make link shorter if user wants it
             if( $short_src_links === true ) {
                 $file_name = str_replace( WP_PLUGIN_DIR . '/' . DL_NAME, '&hellip;/' . DL_NAME, $file_name );
-                $file_name = str_replace( WP_PLUGIN_DIR, '&hellip;/plugins/', $file_name );
+                $file_name = str_replace( WP_PLUGIN_DIR, '&hellip;/plugins', $file_name );
                 $file_name = str_replace( ABSPATH, '&hellip;/', $file_name );
             }
 

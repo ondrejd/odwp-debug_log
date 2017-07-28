@@ -131,6 +131,7 @@ class DL_Plugin {
         add_action( 'init', [__CLASS__, 'init'] );
         add_action( 'admin_init', [__CLASS__, 'admin_init'] );
         add_action( 'admin_menu', [__CLASS__, 'admin_menu'] );
+        add_action( 'admin_bar_menu', [__CLASS__, 'admin_menu_bar'], 100 );
         add_action( 'plugins_loaded', [__CLASS__, 'plugins_loaded'] );
         add_action( 'wp_enqueue_scripts', [__CLASS__, 'enqueue_scripts'] );
         add_action( 'admin_enqueue_scripts', [__CLASS__, 'admin_enqueue_scripts'] );
@@ -231,6 +232,27 @@ class DL_Plugin {
     public static function admin_menu() {
         // Call action for `admin_menu` hook on all screens.
         self::screens_call_method( 'admin_menu' );
+    }
+
+    /**
+     * Hook for "admin_menu_bar" action.
+     * @link https://codex.wordpress.org/Class_Reference/WP_Admin_Bar/add_menu
+     * @param \WP_Admin_Bar $bar
+     * @return void
+     * @since 1.0.0
+     * @todo Add icon!
+     */
+    public static function admin_menu_bar( \WP_Admin_Bar $bar ) {
+        $slug = DL_SLUG . '-log';
+        $bar->add_menu( [
+            'id'     => $slug,
+            'title'  => /*'<span class="dashicons dashicons-menu"></span>' . */__( 'Log', DL_SLUG ),
+            'href'   => admin_url( "tools.php?page={$slug}" ),
+            'meta'   => [
+                'title'    => __( 'Zobrazit ladící informace', DL_SLUG ),
+                'class'    => DL_SLUG . '-log_menuitem',
+            ],
+        ] );
     }
 
     /**
