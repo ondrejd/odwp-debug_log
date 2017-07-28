@@ -586,6 +586,16 @@ class DL_Log_Table extends WP_List_Table {
 <?php
     }
 
+	/**
+	 * Message to be displayed when there are no items
+	 *
+	 * @since 3.1.0
+	 * @access public
+	 */
+	public function no_items() {
+        printf( '<p class="odwpdl-no_items">%s</p>', __( 'Váš soubor <code>debug.log</code> je prázdný &ndash; to znamená žádné chyby <code>:)</code>&hellip;', DL_SLUG ) );
+	}
+
     /**
      * Prepares data items for the table.
      * @return void
@@ -710,13 +720,17 @@ class DL_Log_Table extends WP_List_Table {
         }
 
         // ...
+
+        if( $this->parser->is_saved() !== true ) {
+            $this->parser->save();
+        }
     }
 
     /**
      * Process row actions. As are defined in {@see DL_Log_Table::column_text()}.
      * @return void
      * @since 1.0.0
-     * @todo Finish this!
+     * @todo Use {@see wp_redirect()} at the end?
      */
     public function process_row_actions() {
         $action = filter_input( INPUT_GET, 'action' );
@@ -742,17 +756,10 @@ class DL_Log_Table extends WP_List_Table {
 
             DL_Plugin::print_admin_notice( sprintf( $msg_text, $record ), $msg_type, true );
         }
-    }
 
-    /**
-     * Removes log record from the debug.log file.
-     * @param integer $record_id
-     * @return boolean
-     * @since 1.0.0
-     * @todo Finish this!
-     */
-    public function delete_log_record( $record_id ) {
-        // ...
+        if( $this->parser->is_saved() !== true ) {
+            $this->parser->save();
+        }
     }
 
     /**

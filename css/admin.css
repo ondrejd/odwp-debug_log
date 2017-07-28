@@ -6,7 +6,15 @@
  */
 
 /**
- * Styles for screen options pane.
+ * Common styles
+ */
+label.disabled {
+    color: #666 !important;
+    cursor: default;
+}
+
+/**
+ * Styles for plugin's options pane.
  */
 .odwp-screen-options ul {
     list-style: square;
@@ -19,22 +27,9 @@
     width: 4em ! important;
 }
 
-
-label.disabled {
-    color: #666 !important;
-    cursor: default;
-}
-
-.tools_page_odwpdl-log .column-id {
-    width: 60px;
-}
-.tools_page_odwpdl-log .column-time {
-    width: 140px;
-}
-.tools_page_odwpdl-log .column-type {
-    width: 60px;
-}
-
+/**
+ * Screen's help tab
+ */
 h3.help-title, h4.help-title {
     margin-bottom: 0px;
 }
@@ -54,26 +49,66 @@ h3.help-title, h4.help-title {
     width: 100%;
 }
 
+/**
+ * Log screen's todo help tab
+ * XXX Remove this!!!
+ */
 .todo-list--cont {}
-.todo-list, .todo-list ul {
-    padding-left: 20px;
+.todo-list, .todo-list ul { padding-left: 20px; }
+.todo-list li, .todo-list ul li { color: #f30; list-style: square !important; margin: 0 0 0 0px; padding: 0 0 0 0px; }
+.todo-list .done { text-decoration: line-through; }
+.todo-list .working { text-decoration: underline; }
+.todo-list li code { font-size: 90%; }
+/** XXX Remove this!!! */
+
+/**
+ * Log list screen
+ */
+/* Table columns */
+table.zznamy .column-id {
+    width: 60px;
 }
-.todo-list li, .todo-list ul li {
-    color: #f30;
-    list-style: square !important;
-    margin: 0 0 0 0px;
-    padding: 0 0 0 0px;
+table.zznamy .column-time {
+    width: 140px;
 }
-.todo-list .done {
-    text-decoration: line-through;
-}
-.todo-list .working {
-    text-decoration: underline;
-}
-.todo-list li code {
-    font-size: 90%;
+table.zznamy .column-type {
+    width: 60px;
 }
 
+/* No items message */
+table.zznamy tbody tr.no-items p {
+    font-size: 1.4em;
+    font-weight: 500;
+    padding: 6em 0 4em 0;
+    text-align: center;
+}
+table.zznamy tbody tr.no-items code {
+    font-size: 94%;
+}
+
+/* Type columns */
+table.zznamy .column-type .dashicons-warning {
+    /* error */
+    color: #f30;
+}
+table.zznamy .column-type .dashicons-format-status {
+    /* upozorneni */
+    color: #ccc;
+}
+table.zznamy .column-type .dashicons-editor-help {
+    /* varovani */
+}
+table.zznamy .column-type .dashicons-thumbs-down {
+    /* chyba kodu */
+    color: #06a;
+}
+table.zznamy .column-type .dashicons-flag {
+    /* varovani */
+    color: #000;
+}
+table.zznamy .column-type .dashicons-no {}
+
+/* Stack trace */
 .stack-trace {
     padding: 0.5em 0 0.5em 0;
 }
@@ -103,16 +138,24 @@ h3.help-title, h4.help-title {
     padding: 0 0 0 0px;
 }
 
-
-
-
-
-.log--numeric {
-    font-weight: bold;
-    color: darkred;
-}
-.log--string {
-    font-weight: bold;
-    color: #06a;
+/**
+ * Some other styles for log list screen
+ */
+.log--function {
+    color: #000;
+    font-family: mono, "Sans Serif";
+    font-size: 90%;
 }
 .log--link {}
+.log--null {
+    color: #f30;
+    font-weight: bold;
+}
+.log--numeric {
+    color: darkred;
+    font-weight: bold;
+}
+.log--string {
+    color: darkgreen;
+    font-weight: bold;
+}

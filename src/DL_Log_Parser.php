@@ -473,8 +473,7 @@ class DL_Log_Parser {
         // 1) Search for file links
         $file_links = [];
         $matches = preg_split( $regexp, $str, -1, PREG_SPLIT_DELIM_CAPTURE );
-echo '<pre style="font-size: 9pt;">';
-var_dump( $matches );
+
         foreach( $matches as $match ) {
             if( strpos( $match, ABSPATH ) === 0 ) {
                 // Array item contains file link
@@ -490,10 +489,11 @@ var_dump( $matches );
                 $ret = DL_Log_Highlighter::highlight_functions( $match, $ret );
                 // Highlight strings in brackets
                 $ret = DL_Log_Highlighter::highlight_strings( $match, $ret );
+                // Highlight others
+                $ret = DL_Log_Highlighter::highlight_others( $match, $ret );
             }
         }
-var_dump( $ret );
-echo '</pre>';
+
         // 2) Update string with HTML anchors for file links
         foreach( $file_links as $file_link ) {
             $file_name = $file_link;
@@ -501,8 +501,7 @@ echo '</pre>';
             // Make link shorter if user wants it
             if( $short_src_links === true ) {
                 $file_name = str_replace( WP_PLUGIN_DIR . '/' . DL_NAME, '&hellip;/' . DL_NAME, $file_name );
-                $file_name = str_replace( WP_PLUGIN_DIR, '&hellip;/[PLUGINS]', $file_name );
-                $file_name = str_replace( WPINC, '&hellip;/[INC]', $file_name );
+                $file_name = str_replace( WP_PLUGIN_DIR, '&hellip;/plugins/', $file_name );
                 $file_name = str_replace( ABSPATH, '&hellip;/', $file_name );
             }
 
