@@ -73,6 +73,7 @@ class DL_Plugin {
     public static function get_default_options() {
         return [
             'debug_mode' => 'disable', // ['enable','disable']
+            'prev_log_count' => 0,
         ];
     }
 
@@ -104,18 +105,19 @@ class DL_Plugin {
     /**
      * Returns value of option with given key.
      * @param string $key Option's key.
+     * @param mixed $value Option's value.
      * @return mixed Option's value.
      * @since 1.0.0
      * @throws Exception Whenever option with given key doesn't exist.
      */
-    public static function get_option( $key ) {
+    public static function get_option( $key, $default = null ) {
         $options = self::get_options();
 
-        if( ! array_key_exists( $key, $options ) ) {
-            throw new Exception( 'Option "'.$key.'" is not set!' );
+        if( array_key_exists( $key, $options ) ) {
+            return $options[$key];
         }
 
-        return $options[$key];
+        return $default;
     }
 
     /**
@@ -243,16 +245,57 @@ class DL_Plugin {
      * @todo Add icon!
      */
     public static function admin_menu_bar( \WP_Admin_Bar $bar ) {
-        $slug = DL_SLUG . '-log';
-        $bar->add_menu( [
-            'id'     => $slug,
-            'title'  => /*'<span class="dashicons dashicons-menu"></span>' . */__( 'Log', DL_SLUG ),
-            'href'   => admin_url( "tools.php?page={$slug}" ),
-            'meta'   => [
-                'title'    => __( 'Zobrazit ladící informace', DL_SLUG ),
-                'class'    => DL_SLUG . '-log_menuitem',
-            ],
-        ] );
+        // Get options
+        $options = self::get_options();
+
+        // Prepare arguments for new admin bar node
+        $args  = [
+            'id'     => 'dowpdl-adminbar_item',
+            'href'   => admin_url( 'tools.php?page=' . DL_SLUG . '-log' ),
+            'parent' => 'top-secondary',
+            'meta'   => [],
+        ];
+
+        // Get log records count
+        $count_prev = self::get_option( 'prev_log_count', 0 );
+        $count_current = self::get_log_count();
+
+        $args['meta']['title'] = __( 'Zobrazit ladící zprávy', DL_LOG );
+        $icon = sprintf(
+            '<img src="%s" alt="%s">',
+            plugins_url( '/images/icon-24.png', DL_FILE ),
+                __( 'DL', DL_SLUG )
+        );
+
+        if( $count_current <= $count_prev ) {
+            $display = '<span class="odwpdl-ab-log">' . $icon . '</span>';
+        } else {
+            $display = sprintf(
+                '<span class="odwpdl-ab-log odwpdl-ab-log-active">%s</span> ' .
+                '<span class="odwpdl-ab-bubble">%d</span>',
+                $icon,
+                abs( $count_current - $count_prev )
+            );
+        }
+
+        $args['title'] = $display;
+
+        // Add our admin bar item
+        $bar->add_node( $args );
+
+        // Save current log count as `prev_log_count`
+        $options['prev_log_count'] = $count_current;
+        update_option( self::SETTINGS_KEY, $options );
+    }
+
+    /**
+     * Returns count of records in the debug.log file.
+     * @return integer
+     * @since 1.0.0
+     */
+    public static function get_log_count() {
+        // This doesn't count with stack trace but it should be precise enough.
+        return count( file( DL_LOG, FILE_SKIP_EMPTY_LINES ) );;
     }
 
     /**

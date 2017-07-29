@@ -106,6 +106,7 @@ class DL_Log_Screen extends DL_Screen_Prototype {
                 '                <li class="done">nastavení defaultní šířky a výšky popup</li>' .
                 '            </ul>' .
                 '        </li>' .
+                '        <li class="done">přidat odkaz na stránku <em>Ladící informace</em> přímo do <em>adminbaru</em> a zároveň tam zobrazovat počet nových záznamů v logu (prostě se vždy uloží aktuální počet a při příštím načtení se zkontroluje rozdíl)</li>' .
                 '        <li>vyřešit všechny problémy, které se mohou vyskytnout při použití na nástěnce (<em>dashboard widget</em>)</li>' .
                 '        <li class="done"><b>FIXME</b> - nezobrazují se odkazy na zdrojové soubory</li>' .
                 '        <li><b>FIXME</b> - když smažu jednotlivý řádek (a parametry pro akci jdou tudíž přes <code>$_GET</code>, tak (pokud zrovna nemažu poslední řádek) můžu nechtěně smazat při obnovení prohlížeče (F5) další záznamy;<small> nejjednodušší je přidat <em>JavaScript</em> pro znovunačtení stránky na konec smazání potvrzující zprávy (prostě jen výstrahu pro uživatele a odpovídající <em>timeout</em>)</small></li>' .

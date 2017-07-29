@@ -159,3 +159,44 @@ table.zznamy .column-type .dashicons-no {}
     color: darkgreen;
     font-weight: bold;
 }
+
+
+/**
+ * Notification bubble in the admin bar
+ */
+span.odwpdl-ab-log {
+    display: inline-block !important;
+    height: 18px !important;
+    padding: 0 0 0 0;
+    width: 18px !important;
+    z-index: 500;
+}
+span.odwpdl-ab-log img {
+    height: 18px;
+    position: relative !important;
+    left: -4px;
+    top: 4px;
+    width: 18px;
+}
+span.odwpdl-ab-log-active {}
+span.odwpdl-ab-bubble {
+    background: darkorange;
+    border-radius: 10px !important;
+        -webkit-border-radius: 10px !important;
+        -khtml-border-radius: 10px !important;
+        -moz-border-radius: 10px !important;
+    color: #23282D;
+    display: inline-block !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
+    height: 10px !important;
+    line-height: 10px !important;
+    padding: 0.3em 0.5em 0.3em 0.25em ! important;
+    position: relative !important;
+    top: -12px;
+    left: -8px;
+    text-align: center !important;
+    text-shadow: none !important;
+    min-width: 10px !important;
+    z-index: 1000;
+}
