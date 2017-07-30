@@ -78,6 +78,16 @@ class DL_Plugin {
     }
 
     /**
+     * Returns count of records in the debug.log file.
+     * @return integer
+     * @since 1.0.0
+     */
+    public static function get_log_count() {
+        // This doesn't count with stack trace but it should be precise enough.
+        return count( file( DL_LOG, FILE_SKIP_EMPTY_LINES ) );;
+    }
+
+    /**
      * @return array Settings of the plugin.
      * @since 1.0.0
      */
@@ -242,7 +252,6 @@ class DL_Plugin {
      * @param \WP_Admin_Bar $bar
      * @return void
      * @since 1.0.0
-     * @todo Add icon!
      */
     public static function admin_menu_bar( \WP_Admin_Bar $bar ) {
         // Get options
@@ -283,19 +292,7 @@ class DL_Plugin {
         // Add our admin bar item
         $bar->add_node( $args );
 
-        // Save current log count as `prev_log_count`
-        $options['prev_log_count'] = $count_current;
-        update_option( self::SETTINGS_KEY, $options );
-    }
-
-    /**
-     * Returns count of records in the debug.log file.
-     * @return integer
-     * @since 1.0.0
-     */
-    public static function get_log_count() {
-        // This doesn't count with stack trace but it should be precise enough.
-        return count( file( DL_LOG, FILE_SKIP_EMPTY_LINES ) );;
+        // Note: Current log count is saved in file `partials/screen-log.phtml`.
     }
 
     /**
@@ -405,6 +402,17 @@ class DL_Plugin {
         }
 
         // Nothing to do...
+    }
+
+    /**
+     * Updates user option `prev_log_count`.
+     * @return void
+     * @since 1.0.0
+     */
+    public static function updates_prev_log_count() {
+        $options = self::get_options();
+        $options['prev_log_count'] = self::get_log_count();
+        update_option( self::SETTINGS_KEY, $options );
     }
 
     /**

@@ -16,9 +16,19 @@ if( ! class_exists( 'DL_Log_Table' ) ) {
     require_once( DL_PATH . 'src/DL_Log_Table.php' );
 }
 
+/**
+ * @var \DL_Log_Table $dl_log_table
+ */
 $dl_log_table = new DL_Log_Table();
 $dl_log_table->prepare_items();
 
+// Save current count of log records
+DL_Plugin::updates_prev_log_count();
+
+/**
+ * Add ThickBox support.
+ * @link https://developer.wordpress.org/reference/functions/add_thickbox/
+ */
 add_thickbox();
 ?>
 <div class="wrap">
