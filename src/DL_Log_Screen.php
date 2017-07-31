@@ -89,7 +89,14 @@ class DL_Log_Screen extends DL_Screen_Prototype {
                 '<div class="todo-list--cont">' .
                 '    <ul class="todo-list">' .
                 '        <li class="done">přidat sloupec s typem chyby a hlavní text chyby o tento typ zkrátit (bude zkrácen jen, když je sloupec zobrazen)</li>' .
-                '        <li>přidat filtrování - zobrazit jen dnešní chyby, chyby za poslední hodinu<span class="done">, zobrazit chyby určitého typu (<em>PHP Parse Error</em>, <em>PHP Warning</em>, <em>PHP Fatal Error</em>)</span></li>' .
+                '        <li>' .
+                '            <b>filtrování u <code>DL_Log_Table</code>:</b>' .
+                '            <ul>' .
+                '                <li class="done">filtrování dle typu (<em>PHP Parse Error</em>, <em>PHP Warning</em>, <em>PHP Fatal Error</em> atd.)</li>' .
+                '                <li>filtrování dle času (za poslední hodinu, dnešní, včerejší, tento týden/měsíc, vše)</li>' .
+                '                <li>ukládat nastavení filtru do uživatelského nastavení a obnovovat</li>' .
+                '            </ul>' .
+                '        </li>' .
                 '        <li class="working">dokončit hromadné úpravy (<b>smazat vybrané záznamy</b>)</li>' .
                 '        <li class="done">opravit/dokončit řazení dat</li>' .
                 '        <li class="done">umožnit proklik na zdrojové kódy ve kterých se chyba vyskytne</li>' .
