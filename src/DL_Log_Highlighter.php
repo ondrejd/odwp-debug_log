@@ -82,5 +82,20 @@ class DL_Log_Highlighter {
 
         return str_replace( $part, $highlighted, $line );
     }
+
+    /**
+     * Highlights "undefined variable: *".
+     * @param string $part
+     * @param string $line
+     * @return string
+     * @since 1.0.0
+     */
+    public static function highlight_undefined_variable( $part, $line ) {
+        $regexp      = '/(Undefined\svariable:\s)([a-zA-Z_]*)/';
+        $replacement = '${1}<span class="log--variable">${2}</span>';
+        $highlighted = preg_replace( $regexp, $replacement, $part );
+
+        return str_replace( $part, $highlighted, $line );
+    }
 }
 endif;

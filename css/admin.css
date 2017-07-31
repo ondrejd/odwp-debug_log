@@ -141,7 +141,8 @@ table.zznamy .column-type .dashicons-no {}
 /**
  * Some other styles for log list screen
  */
-.log--function {
+.log--function,
+.log--variable {
     color: #000;
     font-family: mono, "Sans Serif";
     font-size: 90%;
