@@ -489,6 +489,8 @@ class DL_Log_Parser {
                 $ret = DL_Log_Highlighter::highlight_functions( $match, $ret );
                 // Highlight strings in brackets
                 $ret = DL_Log_Highlighter::highlight_strings( $match, $ret );
+                // Highlight "undefined variable: *"
+                $ret = DL_Log_Highlighter::highlight_undefined_variable( $match, $ret );
                 // Highlight others
                 $ret = DL_Log_Highlighter::highlight_others( $match, $ret );
             }
@@ -568,19 +570,41 @@ class DL_Log_Parser {
     // XXX We should rename this method to something like a permanent storage...
 
     /**
-     * Deletes record at given row (but does not save the file!).
-     * @param integer $row
+     * Deletes record at given row (but does not save the file).
+     * @param integer $line
      * @return boolean
      * @since 1.0.0
+     * @todo This is wrong! It should consider <em>stack trace</em>!
      */
-    public function delete_record( $row ) {
-        if( array_key_exists( $row, $this->log_raw ) ) {
+    public function delete_record( $line ) {
+        // It should be, but just for case...
+        if( $this->is_parsed() !== false ) {
+            return false;
+        }
+
+        // Check if given line number is
+        $record = $this->log[$line];
+        if( array_key_exists( $line, $this->log_raw ) ) {
             unset( $this->log_raw[$row] );
             $this->saved = false;
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Đeletes records at given rows (but does not save the file).
+     * @param integer $lines
+     * @return mixed Returns FALSE if something went wrong otherwise count of deleted lines.
+     * @since 1.0.0
+     */
+    public function delete_records( $lines ) {
+        $ret = false;
+
+        //...
+
+        return $ret;
     }
 
     /**

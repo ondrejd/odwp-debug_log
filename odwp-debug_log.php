@@ -2,13 +2,13 @@
 /**
  * Plugin Name: Debug Log Viewer
  * Plugin URI: https://github.com/ondrejd/odwp-debug_log
- * Description: Small <a href="https://wordpress.org/" target="blank">WordPress</a> plugin especially for developers that allows better work with debug.log file. 
+ * Description: Small <a href="https://wordpress.org/" target="blank">WordPress</a> plugin especially for developers that allows better work with <code>debug.log</code> file.
  * Version: 1.0.0
  * Author: Ondřej Doněk
  * Author URI: https://ondrejd.com/
  * License: GPLv3
  * Requires at least: 4.7
- * Tested up to: 4.8
+ * Tested up to: 4.8.1
  * Tags: debug,log,development
  * Donate link: https://www.paypal.me/ondrejd
  *

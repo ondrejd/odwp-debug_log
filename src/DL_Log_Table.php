@@ -536,21 +536,27 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * 
-     * @return integer
+     * Get current filter settings.
+     * @return array
+     * @since 1.0.0
      */
     public function get_filter() {
-        $filter = filter_input( INPUT_POST, 'filter-by-type' );
+        $filter = ['time' => 0, 'type' => 0];
+        $_time = filter_input( INPUT_POST, 'filter-by-time' );
+        $_type = filter_input( INPUT_POST, 'filter-by-type' );
 
-        if( empty( $filter ) ) {
-            $filter = filter_input( INPUT_GET, 'filter-by-type' );
+        if( empty( $_time ) ) {
+            $_time = filter_input( INPUT_GET, 'filter-by-time' );
         }
 
-        if( empty( $filter ) ) {
-            return 0;
+        if( empty( $_type ) ) {
+            $_type = filter_input( INPUT_GET, 'filter-by-type' );
         }
 
-        return ( int ) $filter;
+        $filter['time'] = empty( $_time ) ? 0 : ( int ) $_time;
+        $filter['type'] = empty( $_type ) ? 0 : ( int ) $_type;
+
+        return $filter;
     }
 
     /**
@@ -559,6 +565,8 @@ class DL_Log_Table extends WP_List_Table {
      * @return void
      * @since 1.0.0
      * @todo That HTML source block should not be here!
+     * @todo Implement filtering by time (just new, last hour, today, yesterday etc.).
+     * @todo Remember filtering for the next session (save it as user preferences and renew it).
      */
     protected function extra_tablenav( $which ) {
         if( $which != 'top' ) {
@@ -569,17 +577,31 @@ class DL_Log_Table extends WP_List_Table {
             return;
         }
 
+        /**
+         * @var array $filter Contains array with filter settings (e.g. <code>['time' => 0, 'type' => 0]</code>).
+         */
         $filter = $this->get_filter();
+        $time   = $filter['time'];
+        $type   = $filter['type'];
 ?>
 <div class="alignleft actions">
-    <label for="filter_by_type" class="screen-reader-text"><?php _e( 'Typ záznamu', DL_SLUG ) ?></label>
-    <select name="filter-by-type" id="filter_by_type">
-        <option<?php selected( $filter, 0 ) ?> value="0"><?php _e( '— Typ záznamu —', DL_SLUG ) ?></option>
-        <option<?php selected( $filter, 1 ) ?> value="1"><?php _e( 'Chyba', DL_SLUG ) ?></option>
-        <option<?php selected( $filter, 2 ) ?> value="2"><?php _e( 'Oznámení', DL_SLUG ) ?></option>
-        <option<?php selected( $filter, 3 ) ?> value="3"><?php _e( 'Chyba PHP parseru', DL_SLUG ) ?></option>
-        <option<?php selected( $filter, 4 ) ?> value="4"><?php _e( 'Varování', DL_SLUG ) ?></option>
-        <option<?php selected( $filter, 5 ) ?> value="5"><?php _e( 'Jiný', DL_SLUG ) ?></option>
+    <label for="filter_by_time" class="screen-reader-text"><?php _e( 'Dle času', DL_SLUG ) ?></label>
+    <select name="filter-by-time" id="filter_by_time" title="<?php _e( 'Filtrovat dle času', DL_SLUG ) ?>">
+        <option<?php selected( $time, 0 ) ?> value="0"><?php _e( '—— Vše ——', DL_SLUG ) ?></option>
+        <option<?php selected( $time, 1 ) ?> value="1"><?php _e( 'Posl. hodina', DL_SLUG ) ?></option>
+        <option<?php selected( $time, 2 ) ?> value="2"><?php _e( 'Dnes', DL_SLUG ) ?></option>
+        <option<?php selected( $time, 3 ) ?> value="3"><?php _e( 'Včera', DL_SLUG ) ?></option>
+        <option<?php selected( $time, 4 ) ?> value="4"><?php _e( 'Posl. týden', DL_SLUG ) ?></option>
+        <option<?php selected( $time, 5 ) ?> value="5"><?php _e( 'Posl. měsíc', DL_SLUG ) ?></option>
+    </select>
+    <label for="filter_by_type" class="screen-reader-text"><?php _e( 'Dle typu', DL_SLUG ) ?></label>
+    <select name="filter-by-type" id="filter_by_type" title="<?php _e( 'Filtrovat dle typu', DL_SLUG ) ?>">
+        <option<?php selected( $type, 0 ) ?> value="0"><?php _e( '—— Vše ——', DL_SLUG ) ?></option>
+        <option<?php selected( $type, 1 ) ?> value="1"><?php _e( 'Chyba', DL_SLUG ) ?></option>
+        <option<?php selected( $type, 2 ) ?> value="2"><?php _e( 'Oznámení', DL_SLUG ) ?></option>
+        <option<?php selected( $type, 3 ) ?> value="3"><?php _e( 'Chyba parseru', DL_SLUG ) ?></option>
+        <option<?php selected( $type, 4 ) ?> value="4"><?php _e( 'Varování', DL_SLUG ) ?></option>
+        <option<?php selected( $type, 5 ) ?> value="5"><?php _e( 'Jiný', DL_SLUG ) ?></option>
     </select>
     <input name="<?php echo DL_SLUG . '-filter_submit' ?>" id="<?php echo DL_SLUG . '-filter_submit' ?>" class="button" value="<?php _e( 'Filtrovat', DL_SLUG ) ?>" type="submit">
 </div>
@@ -625,11 +647,8 @@ class DL_Log_Table extends WP_List_Table {
         // Prepare data
         $this->parser->reset();
 
-        // Apply filters
-        $filter = $this->get_filter();
-        if( ! empty( $filter ) ) {
-            $this->apply_filter( $filter );
-        }
+        // Apply filtering
+        $this->apply_filter( $this->get_filter() );
 
         // Apply sorting
         $this->parser->sort( [
@@ -651,24 +670,37 @@ class DL_Log_Table extends WP_List_Table {
 
     /**
      * Applies filter on parser data.
-     * @param string $filter
+     * @param array $filter Array with filter settings (e.g. <code>['time' => 0, 'type' => 0]</code>).
      * @return void
      * @since 1.0.0
+     * @todo Add filtering by time.
      */
-    private function apply_filter( $filter ) {
-        $_filter = null;
+    private function apply_filter( array $filter ) {
+        // Filter by time
+        $time = null;
 
-        switch( $filter ) {
-            case 1 : $_filter = DL_Log_Record::TYPE_ERROR; break;
-            case 2 : $_filter = DL_Log_Record::TYPE_NOTICE; break;
-            case 3 : $_filter = DL_Log_Record::TYPE_PARSER; break;
-            case 4 : $_filter = DL_Log_Record::TYPE_WARNING; break;
-            case 5 : $_filter = DL_Log_Record::TYPE_OTHER; break;
+        switch( ( int ) $filter['time'] ) {
+            // ...
         }
 
-        if( ! is_null( $_filter ) ) {
-            $this->parser->filter( function( \DL_Log_Record $record ) use( $_filter ) {
-                return ( $record->get_type() == $_filter );
+        // ...
+
+        // Filter by type
+        $type = null;
+
+        switch( ( int ) $filter['type'] ) {
+            case 1 : $type = DL_Log_Record::TYPE_ERROR; break;
+            case 2 : $type = DL_Log_Record::TYPE_NOTICE; break;
+            case 3 : $type = DL_Log_Record::TYPE_PARSER; break;
+            case 4 : $type = DL_Log_Record::TYPE_WARNING; break;
+            case 5 : $type = DL_Log_Record::TYPE_OTHER; break;
+            case 0 :
+            default: $type = null; break;
+        }
+
+        if( ! is_null( $type ) ) {
+            $this->parser->filter( function( \DL_Log_Record $record ) use( $type ) {
+                return ( $record->get_type() == $type );
             } );
         }
     }
@@ -709,17 +741,81 @@ class DL_Log_Table extends WP_List_Table {
      * @todo Finish this!
      */
     public function process_bulk_actions() {
+        // If request's method is not POST return
+        if( strtolower( filter_input( INPUT_SERVER, 'method' ) ) !== 'post' ){
+            return;
+        }
+
+        /**
+         * Name of bulk action we should perform.
+         * @var string $action
+         */
         $action = filter_input( INPUT_POST, 'action' );
+
+        // There are top and bottom toolbars submit buttons...
         if( empty( $action ) ) {
             $action = filter_input( INPUT_POST, 'action2' );
         }
 
+echo '<pre>';
+echo "{$action}\n";
+var_dump( $_POST );
+//print_r( $log_items );
+echo '</pre>';
+exit();
+
         // Validate action, otherwise return
-        if( in_array( $action, ['delete'] ) ) {
+        if( ! in_array( $action, ['delete'] ) ) {
+            DL_Plugin::print_admin_notice(
+                __( 'Zadaná akce "<b>%s</b>" nebyla rozpoznána!', DL_SLUG ),
+                'warning',
+                true
+            );
+            return;
+        }
+
+        /**
+         * IDs (or line numbers) of log records to process with action.
+         * @var array $log_items
+         */
+        $log_items = filter_input( INPUT_POST, 'log_item', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+
+        // There are no items to delete
+        if( count( $log_items ) == 0 ) {
+            DL_Plugin::print_admin_notice(
+                __( 'Mazání nebylo provedeno - nebyly vybrány žádné položky logu ke smazání.', DL_SLUG ),
+                'info',
+                true
+            );
             return;
         }
 
         // ...
+        //$res = $this->parser->delete_records( $log_items );
+
+        // Print output message
+        if( $res === false ) {
+            DL_Plugin::print_admin_notice(
+                __( 'Při mazání položek ze souboru <code>debug.log</code> nastala chyba.', DL_SLUG ),
+                'error'
+            );
+        }
+        else if( $res === 0 ) {
+            DL_Plugin::print_admin_notice(
+                __( 'Žádné položky souboru <code>debug.log</code> nebyly smazány.', DL_SLUG ),
+                'info'
+            );
+        }
+        else {
+            // bylo smazano X polozek
+            DL_Plugin::print_admin_notice(
+                sprintf(
+                    __( 'Mazání položek bylo úspěšné (smazaných položek %d).', DL_SLUG ),
+                    $res
+                ),
+                'success'
+            );
+        }
 
         if( $this->parser->is_saved() !== true ) {
             $this->parser->save();
@@ -733,11 +829,21 @@ class DL_Log_Table extends WP_List_Table {
      * @todo Use {@see wp_redirect()} at the end?
      */
     public function process_row_actions() {
+        // If request's method is not GET return
+        if( strtolower( filter_input( INPUT_SERVER, 'method' ) ) !== 'get' ){
+            return;
+        }
+
         $action = filter_input( INPUT_GET, 'action' );
         $record = (int) filter_input( INPUT_GET, 'record' );
 
         // Validate action, otherwise return
         if( ! in_array( $action, ['delete'] ) || empty( $record ) ) {
+            DL_Plugin::print_admin_notice(
+                __( 'Zadaná akce "<b>%s</b>" nebyla rozpoznána!', DL_SLUG ),
+                'warning',
+                true
+            );
             return;
         }
 
