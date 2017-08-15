@@ -177,7 +177,7 @@ class DL_Plugin {
         $section1 = self::SETTINGS_KEY . '_section_1';
         add_settings_section(
                 $section1,
-                __( 'Nastavení ladícího módu' ),
+                __( 'Nastavení ladícího módu', DL_SLUG ),
                 [__CLASS__, 'render_settings_section_1'],
                 DL_SLUG
         );
@@ -380,7 +380,7 @@ class DL_Plugin {
     }
 
     /**
-     * @internal Renders setting `notice_borders`.
+     * @internal Renders setting `debug_mode`.
      * @return void
      * @since 1.0.0
      */
@@ -456,7 +456,7 @@ class DL_Plugin {
     private static function screens_call_method( $method ) {
         foreach ( self::$admin_screens as $slug => $screen ) {
             if( method_exists( $screen, $method ) ) {
-                    call_user_func( [ $screen, $method ] );
+                call_user_func( [ $screen, $method ] );
             }
         }
     }
