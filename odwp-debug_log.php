@@ -23,11 +23,13 @@
  */
 
 /**
- * This file is just a bootstrap. It checks if requirements of plugins are met
- * and accordingly either initializes the plugin or halts the process.
+ * This file is just a bootstrap. It checks if requirements of plugins
+ * are met and accordingly either allow activating the plugin or stops
+ * the activation process.
  *
- * Requirements can be specified for PHP and the WordPress self - version
- * for both, required extensions for PHP and requireds plugins for WP.
+ * Requirements can be specified either for PHP interperter or for
+ * the WordPress self. In both cases you can specify minimal required
+ * version and required extensions/plugins.
  *
  * If you are using copy of original file in your plugin you shoud change
  * prefix "odwpdl" and name "odwp-debug_log" to your own values.
@@ -40,16 +42,18 @@ if( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Some widely used constants
+// Some constants
 defined( 'DL_SLUG' ) || define( 'DL_SLUG', 'odwpdl' );
 defined( 'DL_NAME' ) || define( 'DL_NAME', 'odwp-debug_log' );
 defined( 'DL_PATH' ) || define( 'DL_PATH', dirname( __FILE__ ) . '/' );
 defined( 'DL_FILE' ) || define( 'DL_FILE', __FILE__ );
 defined( 'DL_LOG' )  || define( 'DL_LOG', WP_CONTENT_DIR . '/debug.log' );
 
+
 if( ! function_exists( 'odwpdl_check_requirements' ) ) :
     /**
      * Checks requirements of our plugin.
+     * @global string $wp_version
      * @param array $requirements
      * @return array
      * @since 1.0.0
@@ -114,6 +118,7 @@ if( ! function_exists( 'odwpdl_check_requirements' ) ) :
     }
 endif;
 
+
 if( ! function_exists( 'odwpdl_deactivate_raw' ) ) :
     /**
      * Deactivate plugin by the raw way.
@@ -152,6 +157,7 @@ if( ! function_exists( 'odwpdl_error_log' ) ) :
     }
 endif;
 
+
 if( ! function_exists( 'odwpdl_write_log' ) ) :
     /**
      * Write record to the `wp-content/debug.log` file.
@@ -167,6 +173,7 @@ if( ! function_exists( 'odwpdl_write_log' ) ) :
         }
     }
 endif;
+
 
 if( ! function_exists( 'readonly' ) ) :
     /**

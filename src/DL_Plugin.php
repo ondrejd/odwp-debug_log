@@ -222,13 +222,8 @@ class DL_Plugin {
     public static function admin_init() {
         register_setting( DL_SLUG, self::SETTINGS_KEY );
 
-        // Check environment
         self::check_environment();
-
-        // Initialize Settings API
         self::init_settings();
-
-        // Initialize admin screens
         self::screens_call_method( 'admin_init' );
 
         // Initialize dashboard widgets
@@ -259,7 +254,7 @@ class DL_Plugin {
 
         // Prepare arguments for new admin bar node
         $args  = [
-            'id'     => 'dowpdl-adminbar_item',
+            'id'     => 'odwpdl-adminbar_item',
             'href'   => admin_url( 'tools.php?page=' . DL_SLUG . '-log' ),
             'parent' => 'top-secondary',
             'meta'   => [],
@@ -268,31 +263,32 @@ class DL_Plugin {
         // Get log records count
         $count_prev = self::get_option( 'prev_log_count', 0 );
         $count_current = self::get_log_count();
+        $addition = abs( $count_current - $count_prev );
+        $css_class = '';
 
-        $args['meta']['title'] = __( 'Zobrazit ladící zprávy', DL_LOG );
-        $icon = sprintf(
-            '<img src="%s" alt="%s">',
-            plugins_url( '/images/icon-24.png', DL_FILE ),
-                __( 'DL', DL_SLUG )
-        );
-
-        if( $count_current <= $count_prev ) {
-            $display = '<span class="odwpdl-ab-log">' . $icon . '</span>';
-        } else {
-            $display = sprintf(
-                '<span class="odwpdl-ab-log odwpdl-ab-log-active">%s</span> ' .
-                '<span class="odwpdl-ab-bubble">%d</span>',
-                $icon,
-                abs( $count_current - $count_prev )
-            );
+        if( $addition == 0 ) {
+            $css_class = ' count-0';
+            $m_title = __( 'Přejít na zobrazení ladících informací.', DL_LOG );
+        }
+        elseif( $addition == 1 ) {
+            $m_title = __( 'Je zde %d nová ladící informace.', DL_LOG );
+        }
+        elseif( $addition > 1 || $addition < 5 ) {
+            $m_title = __( 'Jsou zde %d nové ladící informace.', DL_LOG );
+        }
+        elseif( $addition >= 5 ) {
+            $m_title = __( 'Je zde %d nových ladících informací.', DL_LOG );
         }
 
+        $display = sprintf(
+            '<span class="ab-icon"></span><span class="ab-label %s">%d</span>',
+            $css_class, $addition
+        );
+
         $args['title'] = $display;
+        $args['meta']['title'] = $m_title;
 
-        // Add our admin bar item
         $bar->add_node( $args );
-
-        // Note: Current log count is saved in file `partials/screen-log.phtml`.
     }
 
     /**
@@ -338,11 +334,15 @@ class DL_Plugin {
         );
 
         if( ! defined( 'WP_DEBUG' ) || ! defined( 'WP_DEBUG_LOG' ) ) {
-            self::print_admin_notice( $err_msg, 'error' );
+            add_action( 'admin_notices', function() use ( $err_msg ) {
+                self::print_admin_notice( $err_msg, 'error' );
+            } );
         }
 
         if( ! defined( 'WP_DEBUG' ) || ! defined( 'WP_DEBUG_LOG' ) ) {
-            self::print_admin_notice( $err_msg, 'error' );
+            add_action( 'admin_notices', function() use ( $err_msg ) {
+                self::print_admin_notice( $err_msg, 'error' );
+            } );
         }
     }
 
@@ -459,6 +459,24 @@ class DL_Plugin {
                 call_user_func( [ $screen, $method ] );
             }
         }
+    }
+
+    /**
+     * @param string $file (Optional.) Relative path to a file.
+     * @return string Path to the specified file inside plugin's folder or to the folder self.
+     * @since 1.0.0
+     */
+    public static function get_path( $file = null ) {
+        //...
+    }
+
+    /**
+     * @param string $file (Optional.) Relative path to a file.
+     * @return string URL to the specified file inside plugin's folder or to the folder self.
+     * @since 1.0.0
+     */
+    public static function get_url( $file = null ) {
+        //...
     }
 }
 

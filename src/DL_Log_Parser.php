@@ -317,7 +317,7 @@ class DL_Log_Parser {
             $msg  = str_replace( $type . ': ', '', $_msg );
 
             $this->_record = new DL_Log_Record( 0, '', '' );
-            $this->_record->set_id( $line_num );
+            $this->_record->set_id( $line_num + 1 );
             $this->_record->set_time( strtotime( trim( $matches[0], '[]' ) ) );
             $this->_record->set_type( $type );
             $this->_record->set_message( $msg );
