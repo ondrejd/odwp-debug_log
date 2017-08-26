@@ -162,9 +162,33 @@ class DL_Plugin {
         // Initialize options
         $options = self::get_options();
 
+        // Initialize custom post types
+        self::init_custom_post_types();
+
+        // Initialize shortcodes
+        self::init_shortcodes();
+
         // Initialize admin screens
         self::init_screens();
         self::screens_call_method( 'init' );
+    }
+
+    /**
+     * Initialize custom post types.
+     * @return void
+     * @since 1.0.0
+     */
+    public static function init_custom_post_types() {
+        //...
+    }
+
+    /**
+     * Registers our shortcodes.
+     * @return void
+     * @since 1.0.O
+     */
+    public static function init_shortcodes() {
+        //...
     }
 
     /**
@@ -339,7 +363,7 @@ class DL_Plugin {
             } );
         }
 
-        if( ! defined( 'WP_DEBUG' ) || ! defined( 'WP_DEBUG_LOG' ) ) {
+        if( WP_DEBUG !== true || WP_DEBUG_LOG !== true ) {
             add_action( 'admin_notices', function() use ( $err_msg ) {
                 self::print_admin_notice( $err_msg, 'error' );
             } );
@@ -362,7 +386,7 @@ class DL_Plugin {
      */
     public static function enqueue_scripts() {
         //wp_enqueue_script( DL_SLUG, plugins_url( 'js/public.js', DL_FILE ), ['jquery'] );
-        //wp_localize_script( DL_SLUG, 'odwpng', [
+        //wp_localize_script( DL_SLUG, 'odwpdl', [
         //    //...
         //] );
         //wp_enqueue_style( DL_SLUG, plugins_url( 'css/public.css', DL_FILE ) );
@@ -459,24 +483,6 @@ class DL_Plugin {
                 call_user_func( [ $screen, $method ] );
             }
         }
-    }
-
-    /**
-     * @param string $file (Optional.) Relative path to a file.
-     * @return string Path to the specified file inside plugin's folder or to the folder self.
-     * @since 1.0.0
-     */
-    public static function get_path( $file = null ) {
-        //...
-    }
-
-    /**
-     * @param string $file (Optional.) Relative path to a file.
-     * @return string URL to the specified file inside plugin's folder or to the folder self.
-     * @since 1.0.0
-     */
-    public static function get_url( $file = null ) {
-        //...
     }
 }
 

@@ -219,7 +219,6 @@ abstract class DL_Screen_Prototype {
      * @since 1.0.0
      */
     public function init() {
-        //add_action( 'admin_init', [$this, 'save_screen_options'] );
         // ...
     }
 

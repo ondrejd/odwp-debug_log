@@ -62,7 +62,7 @@ if( ! function_exists( 'odwpdl_check_requirements' ) ) :
         global $wp_version;
 
         // Initialize locales
-        load_plugin_textdomain( DL_SLUG, false, dirname( __FILE__ ) . '/languages' );
+        load_plugin_textdomain( DL_SLUG, false, DL_PATH . 'languages' );
 
         /**
          * @var array Hold requirement errors
@@ -121,7 +121,7 @@ endif;
 
 if( ! function_exists( 'odwpdl_deactivate_raw' ) ) :
     /**
-     * Deactivate plugin by the raw way.
+     * Deactivate plugin by the raw way (it updates directly WP options).
      * @return void
      * @since 1.0.0
      */
@@ -136,6 +136,7 @@ if( ! function_exists( 'odwpdl_deactivate_raw' ) ) :
         update_option( 'active_plugins', $out );
     }
 endif;
+
 
 if( ! function_exists( 'odwpdl_error_log' ) ) :
     /**
@@ -191,13 +192,14 @@ if( ! function_exists( 'readonly' ) ) :
     }
 endif;
 
+
 /**
  * Errors from the requirements check
  * @var array
  */
 $odwpdl_errs = odwpdl_check_requirements( [
     'php' => [
-        // Enter minimum PHP version you needs.
+        // Enter minimum PHP version you needs
         'version' => '5.6',
         // Enter extensions that your plugin needs
         'extensions' => [
