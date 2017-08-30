@@ -18,11 +18,6 @@ if( ! class_exists( 'DL_Plugin' ) ) :
  * @since 1.0.0
  */
 class DL_Plugin {
-    /**
-     * @const string Plugin's version.
-     * @since 1.0.0
-     */
-    const VERSION = '1.0.0';
 
     /**
      * @const string
@@ -75,16 +70,6 @@ class DL_Plugin {
             'debug_mode' => 'disable', // ['enable','disable']
             'prev_log_count' => 0,
         ];
-    }
-
-    /**
-     * Returns count of records in the debug.log file.
-     * @return integer
-     * @since 1.0.0
-     */
-    public static function get_log_count() {
-        // This doesn't count with stack trace but it should be precise enough.
-        return count( file( DL_LOG, FILE_SKIP_EMPTY_LINES ) );;
     }
 
     /**
@@ -279,46 +264,15 @@ class DL_Plugin {
      * @since 1.0.0
      */
     public static function admin_menu_bar( \WP_Admin_Bar $bar ) {
-        // Get options
-        $options = self::get_options();
-
-        // Prepare arguments for new admin bar node
-        $args  = [
+        $bar->add_node( [
             'id'     => 'odwpdl-adminbar_item',
             'href'   => admin_url( 'tools.php?page=' . DL_SLUG . '-log' ),
             'parent' => 'top-secondary',
-            'meta'   => [],
-        ];
-
-        // Get log records count
-        $count_prev = self::get_option( 'prev_log_count', 0 );
-        $count_current = self::get_log_count();
-        $addition = abs( $count_current - $count_prev );
-        $css_class = '';
-
-        if( $addition == 0 ) {
-            $css_class = ' count-0';
-            $m_title = __( 'Přejít na zobrazení ladících informací.', DL_LOG );
-        }
-        elseif( $addition == 1 ) {
-            $m_title = __( 'Je zde %d nová ladící informace.', DL_LOG );
-        }
-        elseif( $addition > 1 || $addition < 5 ) {
-            $m_title = __( 'Jsou zde %d nové ladící informace.', DL_LOG );
-        }
-        elseif( $addition >= 5 ) {
-            $m_title = __( 'Je zde %d nových ladících informací.', DL_LOG );
-        }
-
-        $display = sprintf(
-            '<span class="ab-icon"></span><span class="ab-label %s">%d</span>',
-            $css_class, $addition
-        );
-
-        $args['title'] = $display;
-        $args['meta']['title'] = $m_title;
-
-        $bar->add_node( $args );
+            'title'  => '<span class="ab-icon"></span>',
+            'meta'   => [
+                'title' => __( 'Přejít na zobrazení ladících informací.', DL_LOG ),
+            ],
+        ] );
     }
 
     /**
@@ -442,17 +396,6 @@ class DL_Plugin {
         }
 
         //...
-    }
-
-    /**
-     * Updates user option `prev_log_count`.
-     * @return void
-     * @since 1.0.0
-     */
-    public static function updates_prev_log_count() {
-        $options = self::get_options();
-        $options['prev_log_count'] = self::get_log_count();
-        update_option( self::SETTINGS_KEY, $options );
     }
 
     /**
