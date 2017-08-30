@@ -70,7 +70,7 @@ class DL_Log_Dashboard_Widget {
      * @since 1.0.0
      */
     public static function widget() {
-        DL_Plugin::load_template( 'dashboard_widget-log', [] );
+        echo DL_Plugin::load_template( 'dashboard_widget-log', [] );
     }
 
     /**
@@ -80,7 +80,7 @@ class DL_Log_Dashboard_Widget {
      * @since 1.0.0
      */
     public static function config() {
-        DL_Plugin::load_template( 'dashboard_widget-log_config', [] );
+        echo DL_Plugin::load_template( 'dashboard_widget-log_config', [] );
     }
 
     /**
