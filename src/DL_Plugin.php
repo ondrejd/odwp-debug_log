@@ -328,11 +328,11 @@ class DL_Plugin {
      * @since 1.0.0
      */
     public static function admin_enqueue_scripts( $hook ) {
-        wp_enqueue_script( DL_SLUG, plugins_url( 'js/admin.js', DL_FILE ), ['jquery'] );
+        wp_enqueue_script( DL_SLUG, plugins_url( 'assets/js/admin.js', DL_FILE ), ['jquery'] );
         wp_localize_script( DL_SLUG, 'odwpdl', [
             //...
         ] );
-        wp_enqueue_style( DL_SLUG, plugins_url( 'css/admin.css', DL_FILE ) );
+        wp_enqueue_style( DL_SLUG, plugins_url( 'assets/css/admin.css', DL_FILE ) );
     }
 
     /**
@@ -377,6 +377,21 @@ class DL_Plugin {
     }
 
     /**
+     * Loads specified template with given arguments.
+     * @param string $template
+     * @param array  $args (Optional.)
+     * @return string Output created by rendering template.
+     * @since 1.0.0
+     */
+    public static function load_template( $template, array $args = [] ) {
+        extract( $args );
+        $path = sprintf( '%spartials/%s.phtml', DL_PATH, $template );
+        ob_start( function() {} );
+        include( $path );
+        return ob_get_flush();
+    }
+
+    /**
      * Hook for "plugins_loaded" action.
      * @return void
      * @since 1.0.0
@@ -391,11 +406,11 @@ class DL_Plugin {
      * @since 1.0.0
      */
     public static function enqueue_scripts() {
-        //wp_enqueue_script( DL_SLUG, plugins_url( 'js/public.js', DL_FILE ), ['jquery'] );
+        //wp_enqueue_script( DL_SLUG, plugins_url( 'assets/js/public.js', DL_FILE ), ['jquery'] );
         //wp_localize_script( DL_SLUG, 'odwpdl', [
         //    //...
         //] );
-        //wp_enqueue_style( DL_SLUG, plugins_url( 'css/public.css', DL_FILE ) );
+        //wp_enqueue_style( DL_SLUG, plugins_url( 'assets/css/public.css', DL_FILE ) );
     }
 
     /**
@@ -484,21 +499,6 @@ class DL_Plugin {
                 call_user_func( [ $screen, $method ] );
             }
         }
-    }
-
-    /**
-     * @internal Loads specified template with given arguments.
-     * @param string $template
-     * @param array  $args (Optional.)
-     * @return string Output created by rendering template.
-     * @since 1.0.0
-     */
-    protected static function load_template( $template, array $args = [] ) {
-        extract( $args );
-        $path = sprintf( '%spartials/%s.phtml', DL_PATH, $template );
-        ob_start( function() {} );
-        include( $path );
-        return ob_get_flush();
     }
 }
 

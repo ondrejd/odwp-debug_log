@@ -70,9 +70,7 @@ class DL_Log_Dashboard_Widget {
      * @since 1.0.0
      */
     public static function widget() {
-        ob_start( function() {} );
-        include( DL_PATH . 'partials/dashboard_widget-log.phtml' );
-        echo ob_get_flush();
+        DL_Plugin::load_template( 'dashboard_widget-log', [] );
     }
 
     /**
@@ -82,9 +80,7 @@ class DL_Log_Dashboard_Widget {
      * @since 1.0.0
      */
     public static function config() {
-        ob_start( function() {} );
-        include( DL_PATH . 'partials/dashboard_widget-log_config.phtml' );
-        echo ob_get_flush();
+        DL_Plugin::load_template( 'dashboard_widget-log_config', [] );
     }
 
     /**
@@ -145,7 +141,7 @@ class DL_Log_Dashboard_Widget {
      */
     public static function update_dashboard_widget_options( $widget_id , $args = [], $add_only = false ) {
         // Fetch ALL dashboard widget options from the db...
-        $opts = get_option( 'dashboard_widget_options' );
+        $opts = get_option( DL_SLUG . '-dashboard_widget_options' );
 
         // Get just our widget's options, or set empty array
         $w_opts = ( isset( $opts[$widget_id] ) ) ? $opts[$widget_id] : [];
@@ -160,7 +156,7 @@ class DL_Log_Dashboard_Widget {
         }
 
         // Save the entire widgets array back to the db
-        return update_option( 'dashboard_widget_options', $opts );
+        return update_option( DL_SLUG . '-dashboard_widget_options', $opts );
     }
 }
 
