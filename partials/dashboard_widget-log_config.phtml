@@ -1,19 +1,24 @@
 <?php
 /**
- * ...
+ * @author Ondrej Donek <ondrejd@gmail.com>
+ * @link https://github.com/ondrejd/odwp-debug_log for the canonical source repository
+ * @license https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License 3.0
+ * @package odwp-debug_log
+ * @see DL_Log_Dashboard_Widget::config()
+ * @since 1.0.0
  */
 
 if( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-$number = ( isset( $_POST['number'] ) ) ? stripslashes( $_POST['number'] ) : '';
-self::update_dashboard_widget_options(
-        DL_Log_Dashboard_Widget::WID,
-        self::get_default_options()
-);
+/**
+ * @var integer $number
+ */
+$number = int_val( filter_input( INPUT_POST, 'number' ) );
+
+// Updates widget options
+self::update_dashboard_widget_options( DL_Log_Dashboard_Widget::WID, self::get_default_options() );
 
 ?>
-<p>This is an example dashboard widget!</p>
-<p>This is the configuration part of the widget, and can be found and edited from <tt><?php echo __FILE__ ?></tt></p>
-<input type="text" name="number" />
+<input type="text" name="number" value="<?php echo $value ?>">

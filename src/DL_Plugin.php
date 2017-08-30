@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Ondřej Doněk <ondrejd@gmail.com>
+ * @author Ondrej Donek <ondrejd@gmail.com>
  * @link https://github.com/ondrejd/odwp-debug_log for the canonical source repository
  * @license https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License 3.0
  * @package odwp-debug_log
@@ -115,10 +115,9 @@ class DL_Plugin {
     /**
      * Returns value of option with given key.
      * @param string $key Option's key.
-     * @param mixed $value Option's value.
+     * @param mixed $default Option's default value.
      * @return mixed Option's value.
      * @since 1.0.0
-     * @throws Exception Whenever option with given key doesn't exist.
      */
     public static function get_option( $key, $default = null ) {
         $options = self::get_options();
@@ -249,8 +248,15 @@ class DL_Plugin {
         self::check_environment();
         self::init_settings();
         self::screens_call_method( 'admin_init' );
+        self::admin_init_widgets();
+    }
 
-        // Initialize dashboard widgets
+    /**
+     * @internal Initializes WP admin dashboard widgets.
+     * @return void
+     * @since 1.0.0
+     */
+    public static function admin_init_widgets() {
         include( DL_PATH . 'src/DL_Log_Dashboard_Widget.php' );
         add_action( 'wp_dashboard_setup', ['DL_Log_Dashboard_Widget', 'init'] );
     }
@@ -398,9 +404,7 @@ class DL_Plugin {
      * @since 1.0.0
      */
     public static function render_settings_section_1() {
-        ob_start( function() {} );
-        include( DL_PATH . 'partials/settings-section_1.phtml' );
-        echo ob_get_flush();
+        echo self::load_template( 'setting-section_1' );
     }
 
     /**
@@ -409,10 +413,7 @@ class DL_Plugin {
      * @since 1.0.0
      */
     public static function render_setting_debug_mode() {
-        $debug_mode = self::get_option( 'debug_mode' );
-        ob_start( function() {} );
-        include( DL_PATH . '/partials/setting-debug_mode.phtml' );
-        echo ob_get_flush();
+        echo self::load_template( 'setting-debug_mode' );
     }
 
     /**
@@ -425,7 +426,7 @@ class DL_Plugin {
             return;
         }
 
-        // Nothing to do...
+        //...
     }
 
     /**
@@ -483,6 +484,21 @@ class DL_Plugin {
                 call_user_func( [ $screen, $method ] );
             }
         }
+    }
+
+    /**
+     * @internal Loads specified template with given arguments.
+     * @param string $template
+     * @param array  $args (Optional.)
+     * @return string Output created by rendering template.
+     * @since 1.0.0
+     */
+    protected static function load_template( $template, array $args = [] ) {
+        extract( $args );
+        $path = sprintf( '%spartials/%s.phtml', DL_PATH, $template );
+        ob_start( function() {} );
+        include( $path );
+        return ob_get_flush();
     }
 }
 
