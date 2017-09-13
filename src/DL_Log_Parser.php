@@ -465,7 +465,7 @@ class DL_Log_Parser {
         $src_win_height = (int) $this->get_options( 'src_win_height', DL_Log_Table::DEFAULT_SRC_WIN_HEIGHT );
         // Other variables
         $abspath = str_replace( '/', '\/', ABSPATH );
-        $regexp  = '/((' . $abspath . '[a-zA-Z.\-\_\/]*))/';
+        $regexp  = '/((' . $abspath . '[a-zA-Z0-9.\-\_\/]*))/';
 
         // Replace some entities that occur in log
         $ret = str_replace( '&#8217;', '’', $ret );

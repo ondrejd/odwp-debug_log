@@ -12,6 +12,13 @@ Small [WordPress][1] plugin especially for developers that allows better work wi
 * stack trace (if present) is displayed as collapsable pane
 * Czech ~~and English~~ locales
 
+## TODO
+
+* group log messages (if there are same messages below themself).
+* when opening dialog with file sources the editor should scroll to the correct line
+* finish English locales
+* publish on official [WP plugins site](3)
+
 ## Screenshots
 
 Here are some screenshots:
@@ -39,5 +46,6 @@ For source code highlightning is used [GeSHi][2].
 ~~![Popup with source file](screenshot-03.png "Popup with source file")~~
 
 
-[1]: https://wordpress.org/plugins
+[1]: https://wordpress.org/
 [2]: http://qbnz.com/highlighter/
+[3]: https://wordpress.org/plugins/
