@@ -33,7 +33,7 @@ class DL_Log_Highlighter {
         return str_replace( $part, $highlighted, $line );
     }
     /**
-     * Highlights numbers in given part of the line.
+     * Highlights PHP function names.
      * @param string $part
      * @param string $line
      * @return string
