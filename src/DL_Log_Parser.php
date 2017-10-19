@@ -295,14 +295,13 @@ class DL_Log_Parser {
         );
 
         if( ! is_array( $matches ) ) {
-            // TODO odwpdl_write_log( 'ODWPDL Log Parse error: ' . print_r( $matches, true ) );
-            // TODO Remove lines below!
-            echo '<pre>';
+            odwpdl_write_log( 'DL_Log_Parser: Parser error (1).' );
+            /*echo '<pre>';
             echo 'WRONG MATCHES [1]:'.PHP_EOL;
             var_dump( $line );
             var_dump( $line_num );
             var_dump( $matches );
-            echo '</pre>';
+            echo '</pre>';*/
             return;
         }
 
@@ -333,14 +332,13 @@ class DL_Log_Parser {
                 return;
             }
 
-            // TODO odwpdl_write_log( 'ODWPDL Log Parse error: ' . print_r( $matches, true ) );
-            // TODO Remove lines below!
-            echo '<pre>';
+            odwpdl_write_log( 'DL_Log_Parser: Parser error (2).' );
+            /*echo '<pre>';
             echo 'WRONG MATCHES [2]:'.PHP_EOL;
             var_dump( $line );
             var_dump( $line_num );
             var_dump( $matches );
-            echo '</pre>';
+            echo '</pre>';*/
             return;
         }
     }
@@ -410,7 +408,7 @@ class DL_Log_Parser {
             $current  = array_key_exists( 'page', $options ) ? $options['page'] : 1;
             $data     = array_slice( $this->log, ( ( $current - 1 ) * $per_page ), $per_page );
         }
-        
+
         return $data;
     }
 

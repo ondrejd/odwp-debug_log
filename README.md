@@ -2,6 +2,14 @@
 
 Small [WordPress][1] plugin especially for developers that allows better work with `debug.log` file.
 
+__This plugin is still under development and is not finished yet - see sections [Features](#features) and [TODO](#todo) for more details.__
+
+## Donations
+
+If your like this plugin and you want to be maintained and improved more frequently consider donation:
+
+[![Make donation](https://www.paypalobjects.com/webstatic/paypalme/images/pp_logo_small.png "PayPal.Me, your link to getting paid")][3]
+
 ## Features
 
 * enabling/disabling _WP_ debug mode directly from _WP_ administration
@@ -14,10 +22,11 @@ Small [WordPress][1] plugin especially for developers that allows better work wi
 
 ## TODO
 
-* group log messages (if there are same messages below themself).
-* __when opening dialog with file sources the editor should scroll to the correct line__
-* finish English locales
-* publish on official [WP plugins site](3)
+* [ ] group log messages (if there are same messages below themself)
+* [ ] __when opening dialog with file sources the editor should scroll to the correct line__
+* [ ] finish English locales
+* [ ] publish on official [WP plugins site](3)
+* [ ] plugin still does not automatically udpates `wp-config.php` file as is needed
 
 ## Screenshots
 
@@ -37,15 +46,16 @@ __TODO__ ~~![Dashboard widget](screenshot-05.png "Dashboard widget")~~
 
 #### Screen options for the log page
 
-~~![Screen options](screenshot-02.png "Screen options for the log page")~~
+![Screen options](screenshot-02.png "Screen options for the log page")
 
 #### Shown popup with corresponding source file
 
 For source code highlightning is used [GeSHi][2].
 
-~~![Popup with source file](screenshot-03.png "Popup with source file")~~
+![Popup with source file](screenshot-03.png "Popup with source file")
 
 
 [1]: https://wordpress.org/
 [2]: http://qbnz.com/highlighter/
 [3]: https://wordpress.org/plugins/
+[4]: https://www.paypal.me/ondrejd

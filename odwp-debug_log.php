@@ -31,10 +31,10 @@
  * the WordPress self. In both cases you can specify minimal required
  * version and required extensions/plugins.
  *
- * If you are using copy of original file in your plugin you shoud change
+ * If you are using copy of original file in your plugin you should change
  * prefix "odwpdl" and name "odwp-debug_log" to your own values.
  *
- * To set the requirements go down to line 133 and define array that
+ * To set the requirements go down to line 200 and define array that
  * is used as a parameter for `odwpdl_check_requirements` function.
  */
 
@@ -169,7 +169,11 @@ if( ! function_exists( 'odwpdl_write_log' ) ) :
     function odwpdl_write_log( $log ) {
         if( is_array( $log ) || is_object( $log ) ) {
             odwpdl_error_log( print_r( $log, true ) );
-        } else {
+        }
+        elseif( is_null( $log ) ) {
+            odwpdl_error_log( 'NULL' );
+        }
+        else {
             odwpdl_error_log( $log );
         }
     }

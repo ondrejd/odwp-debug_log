@@ -282,11 +282,24 @@ class DL_Plugin {
      * @since 1.0.0
      */
     public static function admin_enqueue_scripts( $hook ) {
-        wp_enqueue_script( DL_SLUG, plugins_url( 'assets/js/admin.js', DL_FILE ), ['jquery'] );
-        wp_localize_script( DL_SLUG, 'odwpdl', [
-            //...
-        ] );
-        wp_enqueue_style( DL_SLUG, plugins_url( 'assets/css/admin.css', DL_FILE ) );
+        $js_file = 'assets/js/admin.js';
+        $js_path = DL_PATH . $js_file;
+
+        if( file_exists( $js_path ) && is_readable( $js_path ) ) {
+	    wp_enqueue_script( DL_SLUG, plugins_url( $js_file, DL_FILE ), ['jquery'] );
+            wp_localize_script( DL_SLUG, 'odwpdl', [
+                // Put variables you want to pass into JS here...
+            ] );
+        }
+
+        $css_file = 'assets/css/admin.css';
+        $css_path = DL_PATH . $css_file;
+
+        if( file_exists( $css_path ) && is_readable( $css_path ) ) {
+            wp_enqueue_style( DL_SLUG, plugins_url( $css_file, DL_FILE ) );
+        }
+
+        self::screens_call_method( 'admin_enqueue_scripts' );
     }
 
     /**
@@ -360,11 +373,22 @@ class DL_Plugin {
      * @since 1.0.0
      */
     public static function enqueue_scripts() {
-        //wp_enqueue_script( DL_SLUG, plugins_url( 'assets/js/public.js', DL_FILE ), ['jquery'] );
-        //wp_localize_script( DL_SLUG, 'odwpdl', [
-        //    //...
-        //] );
-        //wp_enqueue_style( DL_SLUG, plugins_url( 'assets/css/public.css', DL_FILE ) );
+        $js_file = 'assets/js/public.js';
+        $js_path = DL_FILE . $js_file;
+
+        if( file_exists( $js_path ) && is_readable( $js_path ) ) {
+            wp_enqueue_script( DL_SLUG, plugins_url( $js_file, DL_FILE ), ['jquery'] );
+            wp_localize_script( DL_SLUG, 'odwpwcchp', [
+                // Put variables you want to pass into JS here...
+            ] );
+        }
+
+        $css_file = 'assets/css/public.css';
+        $css_path = DL_FILE . $css_file;
+
+        if( file_exists( $css_path ) && is_readable( $css_path ) ) {
+            wp_enqueue_style( DL_SLUG, plugins_url( $css_file, DL_FILE ) );
+        }
     }
 
     /**
@@ -382,7 +406,9 @@ class DL_Plugin {
      * @since 1.0.0
      */
     public static function render_setting_debug_mode() {
-        echo self::load_template( 'setting-debug_mode' );
+        echo self::load_template( 'setting-debug_mode', [
+            'debug_mode' => self::get_option( 'debug_mode' ),
+        ] );
     }
 
     /**
@@ -418,7 +444,7 @@ class DL_Plugin {
         if( $dismissible === true) {
             $class .= ' s-dismissible';
         }
-        
+
         printf( '<div class="%s"><p>%s</p></div>', $class, $msg );
     }
 
