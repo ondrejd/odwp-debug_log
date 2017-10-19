@@ -138,6 +138,36 @@ if( ! function_exists( 'odwpdl_deactivate_raw' ) ) :
 endif;
 
 
+if( ! function_exists( 'odwpdl_write_log' ) ) :
+    /**
+     * Write record to the `wp-content/debug.log` file.
+     * @param mixed $log
+     * @return void
+     * @since 1.0.0
+     */
+    function odwpdl_write_log( $log ) {
+        if( ! file_exists( DL_LOG ) || ! is_writable( DL_LOG ) ) {
+            return;
+        }
+
+        if( is_null( $log ) ) {
+            $message = 'NULL';
+        }
+        elseif( is_array( $log ) || is_object( $log ) ) {
+            $message = print_r( $log, true );
+        }
+        else {
+            $message = $log;
+        }
+
+        $datetime = date( 'd-M-Y H:i:s', time() );
+        $record = '[' . $datetime . ' UTC] ' . trim( $message ) . PHP_EOL;
+
+        file_put_contents( DL_LOG, $record, FILE_APPEND );
+    }
+endif;
+
+
 if( ! function_exists( 'odwpdl_error_log' ) ) :
     /**
      * @internal Write message to the `wp-content/debug.log` file.
@@ -149,33 +179,9 @@ if( ! function_exists( 'odwpdl_error_log' ) ) :
      * @since 1.0.0
      */
     function odwpdl_error_log( string $message, int $message_type = 0, string $destination = null, string $extra_headers = '' ) {
-        if( ! file_exists( DL_LOG ) || ! is_writable( DL_LOG ) ) {
-            return;
-        }
+        _deprecated_function( __FUNCTION__, '1.0.0', __( 'Use function `odwpdl_write_log` instead.', DL_SLUG ) );
 
-        $record = '[' . date( 'd-M-Y H:i:s', time() ) . ' UTC] ' . $message;
-        file_put_contents( DL_LOG, PHP_EOL . $record, FILE_APPEND );
-    }
-endif;
-
-
-if( ! function_exists( 'odwpdl_write_log' ) ) :
-    /**
-     * Write record to the `wp-content/debug.log` file.
-     * @param mixed $log
-     * @return void
-     * @since 1.0.0
-     */
-    function odwpdl_write_log( $log ) {
-        if( is_array( $log ) || is_object( $log ) ) {
-            odwpdl_error_log( print_r( $log, true ) );
-        }
-        elseif( is_null( $log ) ) {
-            odwpdl_error_log( 'NULL' );
-        }
-        else {
-            odwpdl_error_log( $log );
-        }
+        odwpdl_write_log( $message );
     }
 endif;
 
