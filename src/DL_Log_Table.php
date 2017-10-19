@@ -201,7 +201,7 @@ class DL_Log_Table extends WP_List_Table {
      * @since 1.0.0
      */
     public function column_default( $item, $column_name ) {
-        switch( $column_name ) { 
+        switch( $column_name ) {
             case 'id':
                 return $item->get_id();
 
@@ -673,14 +673,14 @@ class DL_Log_Table extends WP_List_Table {
      * @param array $filter Array with filter settings (e.g. <code>['time' => 0, 'type' => 0]</code>).
      * @return void
      * @since 1.0.0
-     * @todo Add filtering by time.
+     * @todo Finish filtering by time!
      */
     private function apply_filter( array $filter ) {
         // Filter by time
         $time = null;
 
         switch( ( int ) $filter['time'] ) {
-            // ...
+            // TODO Finish filtering by time!
         }
 
         // ...

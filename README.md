@@ -27,6 +27,12 @@ If your like this plugin and you want to be maintained and improved more frequen
 * [ ] finish English locales
 * [ ] publish on official [WP plugins site](3)
 * [ ] plugin still does not automatically udpates `wp-config.php` file as is needed
+* [ ] finish sorting log table items by its datetime
+* [ ] __finish method `DL_Log_Table::process_bulk_actions`__
+* [ ] finish screen help tabs of `DL_Log_Screen`:
+  - [ ] remove _TODO_ tab
+  - [ ] enable localization of other tabs
+  - [ ] contents of these tabs should be loaded from partials (now is code inline)
 
 ## Screenshots
 

@@ -139,6 +139,9 @@ class DL_Log_Screen extends DL_Screen_Prototype {
                 __( 'GitHub - ohlášení chyb', DL_SLUG )
         );
 
+        // Enable screen options
+        $this->enable_screen_options = true;
+
         // Specify screen options
         $this->options[self::SLUG . '-shown_cols'] = [
             'label'   => __( 'Zobrazené sloupce', DL_SLUG ),
@@ -151,7 +154,7 @@ class DL_Log_Screen extends DL_Screen_Prototype {
             'option'  => self::SLUG . '-per_page',
         ];
         $this->options[self::SLUG . '-short_src_links'] = [
-            'label'   => __( '', DL_SLUG ),
+            'label'   => __( 'Zkracovat odkazy na zdrojové kódy?', DL_SLUG ),
             'default' => DL_Log_Table::DEFAULT_SHORT_SRC_LINKS,
             'option'  => self::SLUG . '-short_src_links',
         ];
@@ -190,8 +193,6 @@ class DL_Log_Screen extends DL_Screen_Prototype {
             'default' => DL_Log_Table::DEFAULT_SORT_DIR,
             'option'  => self::SLUG . '-src_win_height',
         ];
-
-        $this->enable_screen_options = true;
 
         // Finish screen constuction
         parent::__construct( $screen );
