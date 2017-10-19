@@ -12,7 +12,7 @@
  * Tags: debug,log,development
  * Donate link: https://www.paypal.me/ondrejd
  *
- * Text Domain: odwp-debug_log
+ * Text Domain: odwpdl
  * Domain Path: /languages/
  *
  * @author Ondřej Doněk <ondrejd@gmail.com>
@@ -62,7 +62,7 @@ if( ! function_exists( 'odwpdl_check_requirements' ) ) :
         global $wp_version;
 
         // Initialize locales
-        load_plugin_textdomain( DL_SLUG, false, DL_PATH . 'languages' );
+        load_plugin_textdomain( DL_SLUG, false, DL_NAME . '/languages' );
 
         /**
          * @var array Hold requirement errors

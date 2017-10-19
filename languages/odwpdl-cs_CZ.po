@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: odwp-debug_log\n"
 "POT-Creation-Date: 2017-10-19 13:18+0200\n"
-"PO-Revision-Date: 2017-10-19 13:21+0200\n"
+"PO-Revision-Date: 2017-10-19 14:20+0200\n"
 "Last-Translator: \n"
 "Language-Team: Ondřej Doněk <ondrejd@gmail.com>\n"
 "Language: cs_CZ\n"
@@ -90,7 +90,7 @@ msgstr ""
 
 #: src/DL_Log_Screen.php:133
 msgid "Užitečné odkazy"
-msgstr "Užitečné odkazy X"
+msgstr ""
 
 #: src/DL_Log_Screen.php:135
 msgid "Domovské stránky autora"

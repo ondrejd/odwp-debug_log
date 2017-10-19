@@ -140,8 +140,7 @@ class DL_Plugin {
      */
     public static function init() {
         // Initialize locales
-        $path = DL_PATH . 'languages';
-        load_plugin_textdomain( DL_SLUG, false, $path );
+        load_plugin_textdomain( DL_SLUG, false, DL_NAME . '/languages' );
 
         // Initialize options
         $options = self::get_options();
