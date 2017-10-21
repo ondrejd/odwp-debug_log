@@ -27,7 +27,7 @@ If your like this plugin and you want to be maintained and improved more frequen
 * [ ] publish on official [WP plugins site](3)
 * [ ] plugin still does not automatically udpates `wp-config.php` file as is needed
 * [ ] __`DL_Log_Table`__:
-  - [ ] finish _subsubsub_ __-> for this we will implement new methods inside `DL_Log_Record` - `is_today` and `is_yesterday`__
+  - [ ] finish _subsubsub_ __-> for this we will implement new methods inside `DL_Log_Record` - `was_today` and `was_yesterday`__
   - [ ] finish filtering by type
   - [ ] finish bulk actions (just delete selected items)
   - [ ] group log messages (if there are same messages below themself)

@@ -97,6 +97,18 @@ class DL_Log_Record {
     protected $display = true;
 
     /**
+     * @var boolean Was record created today?
+     * @since 1.0.0
+     */
+    protected $was_today = false;
+
+    /**
+     * @var boolean Was record created yesterday?
+     * @since 1.0.0
+     */
+    protected $was_yesterday = false;
+
+    /**
      * Construct.
      * @param integer $id
      * @param integer $time
@@ -106,11 +118,11 @@ class DL_Log_Record {
      * @since 1.0.0
      */
     public function __construct( $id, $time, $message, $trace = [], $type = self::TYPE_OTHER ) {
-        $this->id      = $id;
-        $this->time    = $time;
-        $this->message = $message;
-        $this->trace   = $trace;
-        $this->type    = $type;
+        $this->set_id( $id );
+        $this->set_time( $time );
+        $this->set_message( $message );
+        $this->set_trace( $trace );
+        $this->set_type( $type );
     }
 
     /**
@@ -186,6 +198,13 @@ class DL_Log_Record {
      */
     public function set_time( $time ) {
         $this->time = $time;
+
+        // Re-calculate values of `was_today`/`was_yesterday`
+        // Note: We calculate this boolean values here because of performance...
+        $today     = strtotime( '00:00:01' );
+        $yesterday = strtotime( '-1day', $today );
+        $this->was_today     = ( $time >= $today );
+        $this->was_yesterday = ( ( $time < $today) && ( $time >= $yesterday ) );
     }
 
     /**
@@ -230,6 +249,7 @@ class DL_Log_Record {
     /**
      * Sets log record type.
      * @param string $type
+     * @return void
      * @since 1.0.0
      */
     public function set_type( $type ) {
@@ -239,10 +259,29 @@ class DL_Log_Record {
     /**
      * Sets if record should be displayed.
      * @param boolean $display
+     * @return void
      * @since 1.0.0
      */
     public function set_display( $display ) {
         $this->display = ( bool ) $display;
+    }
+
+    /**
+     * Was the log record created today?
+     * @return boolean
+     * @since 1.0.0
+     */
+    public function was_today() {
+        return $this->was_today;
+    }
+
+    /**
+     * Was the log record created yesterday?
+     * @return boolean
+     * @since 1.0.0
+     */
+    public function was_yesterday() {
+        return $this->was_yesterday;
     }
 }
 

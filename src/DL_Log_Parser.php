@@ -11,6 +11,10 @@ if( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+if( ! class_exists( 'DL_Log_Records' ) ) {
+    require_once( DL_PATH . 'src/DL_Log_Records.php' );
+}
+
 if( ! class_exists( 'DL_Log_Record' ) ) {
     require_once( DL_PATH . 'src/DL_Log_Record.php' );
 }
