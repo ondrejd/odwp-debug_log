@@ -82,47 +82,6 @@ class DL_Log_Screen extends DL_Screen_Prototype {
                     plugins_url( 'screenshot-02.png', DL_FILE )
             ),
         ];
-        $this->help_tabs[] = [
-            'id' => self::SLUG . '-todo_tab',
-            'title' => 'TODO',
-            'content' =>
-                '<div class="todo-list--cont">' .
-                '    <ul class="todo-list">' .
-                '        <li class="done">přidat sloupec s typem chyby a hlavní text chyby o tento typ zkrátit (bude zkrácen jen, když je sloupec zobrazen)</li>' .
-                '        <li>' .
-                '            <b>filtrování u <code>DL_Log_Table</code>:</b>' .
-                '            <ul>' .
-                '                <li class="done">filtrování dle typu (<em>PHP Parse Error</em>, <em>PHP Warning</em>, <em>PHP Fatal Error</em> atd.)</li>' .
-                '                <li>filtrování dle času (za poslední hodinu, dnešní, včerejší, tento týden/měsíc, vše)</li>' .
-                '                <li>ukládat nastavení filtru do uživatelského nastavení a obnovovat</li>' .
-                '            </ul>' .
-                '        </li>' .
-                '        <li class="working">dokončit hromadné úpravy (<b>smazat vybrané záznamy</b>)</li>' .
-                '        <li class="done">opravit/dokončit řazení dat</li>' .
-                '        <li class="done">umožnit proklik na zdrojové kódy ve kterých se chyba vyskytne</li>' .
-                '        <li class="done">přidat základní stránkování</li>' .
-                '        <li class="done">zobrazit <em>stack trace</em> pokud je definována</li>' .
-                '        <li class="done">' .
-                '            <b>Uživatelské nastavení:</b>' .
-                '            <ul>' .
-                '                <li class="done">počet položek na stránce</li>' .
-                '                <li class="done">které sloupce se mají zobrazit</li>' .
-                '                <li class="done">jak zobrazit sloupec s typem záznamu - jestli jako text či ikonu</li>' .
-                '                <li class="done">uživatelské nastavení pro defaultní řazení (sloupec a směr řazení)</li>' .
-                '                <li class="done">chce uživatel zobrazit zkrácené cesty ke zdrojovým souborům nebo ne (nastavení <code>short_src_links</code>?</li>' .
-                '                <li class="done">nastavení defaultní šířky a výšky popup</li>' .
-                '            </ul>' .
-                '        </li>' .
-                '        <li class="done">přidat odkaz na stránku <em>Ladící informace</em> přímo do <em>adminbaru</em> a zároveň tam zobrazovat počet nových záznamů v logu (prostě se vždy uloží aktuální počet a při příštím načtení se zkontroluje rozdíl)</li>' .
-                '        <li>vyřešit všechny problémy, které se mohou vyskytnout při použití na nástěnce (<em>dashboard widget</em>)</li>' .
-                '        <li>Přidat nástroj (v tom samém stylu <em>button</em>) pro smazání duplicitních záznamů v logu</li>' .
-                '        <li class="done"><b>FIXME</b> - nezobrazují se odkazy na zdrojové soubory</li>' .
-                '        <li><b>FIXME</b> - když smažu jednotlivý řádek (a parametry pro akci jdou tudíž přes <code>$_GET</code>, tak (pokud zrovna nemažu poslední řádek) můžu nechtěně smazat při obnovení prohlížeče (F5) další záznamy;<small> nejjednodušší je přidat <em>JavaScript</em> pro znovunačtení stránky na konec smazání potvrzující zprávy (prostě jen výstrahu pro uživatele a odpovídající <em>timeout</em>)</small></li>' .
-                '        <li>znovu zkontrolovat všechno nastavení na hlavní stránce s výpisem logu</li>' .
-                '        <li>smazat tuto záložku (<b>TODO</b>) a aktualizovat záložku <b>Nastavení</b> a <b>Obecné</b></li>' .
-                '    </ul>' .
-                '</div>',
-        ];
 
         // Specify help sidebars
         $this->help_sidebars[] = sprintf(
@@ -227,6 +186,7 @@ class DL_Log_Screen extends DL_Screen_Prototype {
             return [];
         }
 
+        // XXX This is not correct - it should be screen options not table options!
         return DL_Log_Table::get_options();
     }
 
@@ -245,8 +205,8 @@ class DL_Log_Screen extends DL_Screen_Prototype {
         $user = get_current_user_id();
 
         if(
-                filter_input( INPUT_POST, self::SLUG . '-submit' ) &&
-                (bool) wp_verify_nonce( filter_input( INPUT_POST, self::SLUG . '-nonce' ) ) === true
+            filter_input( INPUT_POST, self::SLUG . '-submit' ) &&
+            (bool) wp_verify_nonce( filter_input( INPUT_POST, self::SLUG . '-nonce' ) ) === true
         ) {
             // Shown columns
             $_shown_cols_raw = filter_input( INPUT_POST, self::SLUG . '-show_cols', FILTER_DEFAULT , FILTER_REQUIRE_ARRAY );

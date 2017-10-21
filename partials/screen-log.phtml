@@ -29,13 +29,18 @@ $dl_log_table->prepare_items();
 add_thickbox();
 ?>
 <div class="wrap">
-    <h1><?php _e( 'Prohlížeč ladících informací', DL_LOG ) ?></h1>
-    <form method="post">
+    <h1><?php _e( 'Prohlížeč ladících informací', DL_LOG ) ?></h1> <a class="page-title-action" href="#"><?php _e( 'Vymazat log', DL_LOG ) ?></a>
+    <hr class="wp-header-end">
+    <h2 class="screen-reader-text"><?php _e( 'Filtrovat položky', DL_LOG ) ?></h2>
+    <?php $dl_log_table->views() ?>
+    <form id="odwpdl-log_table" method="get">
+        <?php $dl_log_table->search_box( 'search', 'search_id' ) ?>
         <input type="hidden" name="page" value="<?php echo DL_Log_Screen::SLUG ?>">
-        <?php
-            $dl_log_table->search_box( 'search', 'search_id' );
-            //$dl_log_table->views();
-            $dl_log_table->display();
-        ?>
+        <?php /**
+         * @todo Add hidden intput "_wpnonce"!
+         * @todo Add hidden input "_wp_http_referer"!
+         */ ?>
+        <h2 class="screen-reader-text"><?php _e( 'Položky logu', DL_LOG ) ?></h2>
+        <?php $dl_log_table->display() ?>
     </form>
 </div>

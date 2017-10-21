@@ -74,7 +74,6 @@ table.zznamy .column-time {
 table.zznamy .column-type {
     width: 60px;
 }
-
 /* No items message */
 table.zznamy tbody tr.no-items p {
     font-size: 1.4em;
@@ -85,7 +84,17 @@ table.zznamy tbody tr.no-items p {
 table.zznamy tbody tr.no-items code {
     font-size: 94%;
 }
-
+table.zznamy tbody tr.no-items .noitems-smiley {
+    background: #52c62a;
+    border-radius: 50%;
+    display: inline-block;
+    height: 1.4em;
+    letter-spacing: .05em;
+    font-size: 1.2em;
+    font-weight: 900;
+    color: #fff;
+    width: 1.4em;
+}
 /* Type columns */
 table.zznamy .column-type .dashicons-warning {
     /* error */
@@ -161,15 +170,10 @@ table.zznamy .column-type .dashicons-no {}
     font-weight: bold;
 }
 
-
 /**
  * Notification bubble in the admin bar
  */
-
-
-
-
-#wp-admin-bar-odwpdl-adminbar_item .ab-icon::before {
+wp-admin-bar-odwpdl-adminbar_item .ab-icon::before {
     content: "\f534";
     top: 2px;
 }

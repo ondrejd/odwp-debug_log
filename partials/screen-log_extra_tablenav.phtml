@@ -1,0 +1,30 @@
+<?php
+/**
+ * @author Ondrej Donek <ondrejd@gmail.com>
+ * @link https://github.com/ondrejd/odwp-debug_log for the canonical source repository
+ * @license https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License 3.0
+ * @package odwp-debug_log
+ * @see DL_Log_Table::extra_tablenav()
+ * @since 1.0.0
+ */
+
+if( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+?>
+<div class="alignleft actions">
+    <label for="filter_by_time" class="screen-reader-text"><?php _e( 'Dle času', DL_SLUG ) ?></label>
+    <select name="filter-by-time" id="filter_by_time" title="<?php _e( 'Filtrovat dle času', DL_SLUG ) ?>">
+        <?php foreach( $time_filters as $val => $lbl ) : ?>
+        <option value="<?php echo $val ?>" <?php selected( $time, $val ) ?>><?php echo $lbl ?></option>
+        <?php endforeach ?>
+    </select>
+    <label for="filter_by_type" class="screen-reader-text"><?php _e( 'Dle typu', DL_SLUG ) ?></label>
+    <select name="filter-by-type" id="filter_by_type" title="<?php _e( 'Filtrovat dle typu', DL_SLUG ) ?>">
+        <?php foreach( $type_filters as $val => $lbl ) : ?>
+        <option value="<?php echo $val ?>" <?php selected( $type, $val ) ?>><?php echo $lbl ?></option>
+        <?php endforeach ?>
+    </select>
+    <input name="<?php echo DL_SLUG . '-filter_submit' ?>" id="<?php echo DL_SLUG . '-filter_submit' ?>" class="button" value="<?php _e( 'Filtrovat', DL_SLUG ) ?>" type="submit">
+</div>

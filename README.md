@@ -22,17 +22,22 @@ If your like this plugin and you want to be maintained and improved more frequen
 
 ## TODO
 
-* [ ] group log messages (if there are same messages below themself)
 * [ ] __when opening dialog with file sources the editor should scroll to the correct line__
 * [ ] finish English locales
 * [ ] publish on official [WP plugins site](3)
 * [ ] plugin still does not automatically udpates `wp-config.php` file as is needed
-* [ ] finish sorting log table items by its datetime
-* [ ] __finish method `DL_Log_Table::process_bulk_actions`__
-* [ ] finish screen help tabs of `DL_Log_Screen`:
+* [ ] __`DL_Log_Table`__:
+  - [ ] finish _subsubsub_ __-> for this we will implement new methods inside `DL_Log_Record` - `is_today` and `is_yesterday`__
+  - [ ] finish filtering by type
+  - [ ] finish bulk actions (just delete selected items)
+  - [ ] group log messages (if there are same messages below themself)
+  - [ ] __we have to chech _wpnonce_!__
+* [ ] __`DL_Log_Screen`__ - finish screen help tabs:
   - [ ] remove _TODO_ tab
   - [ ] enable localization of other tabs
   - [ ] contents of these tabs should be loaded from partials (now is code inline)
+* [ ] __FIXME__: the last row of the `debug.log` file is not displayed
+* [ ] __FIXME__: add `@access` documentation attribute to the all methods
 
 ## Screenshots
 

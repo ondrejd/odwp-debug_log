@@ -37,7 +37,7 @@ extract( $table_options );
             <ul>
                 <li>
                     <label><?php _e( 'Zobrazené sloupce: ', DL_SLUG ) ?></label>
-                    <?php foreach( $all_columns as $col_key => $col_label ) : 
+                    <?php foreach( $all_columns as $col_key => $col_label ) :
                         if( $col_key != 'cb' ) :
                             $checked = ! in_array( $col_key, $hidden_columns );
                             $disabled = ! in_array( $col_key, $hideable_columns );
@@ -69,7 +69,7 @@ extract( $table_options );
                 </li>
                 <li>
                     <label for="<?php echo $slug ?>-checkbox4" title="<?php _e( 'Zobrazit názvy zdrojových souborů zkrácené?', DL_SLUG ) ?>">
-                        <input type="checkbox" name="<?php echo $slug ?>-short_src_links" name="<?php echo $slug ?>-checkbox4"<?php checked( $short_src_links ) ?>>
+                        <input type="checkbox" name="<?php echo $slug ?>-short_src_links" id="<?php echo $slug ?>-checkbox4"<?php checked( $short_src_links ) ?>>
                         <?php _e( 'Zobrazit názvy zdrojových souborů zkrácené (tzn. bez absolutní cesty <code>ABSPATH</code>)?', DL_SLUG ) ?>
                     </label>
                 </li>
@@ -92,7 +92,7 @@ extract( $table_options );
                     <label for="<?php echo $slug ?>-select1">
                         <?php _e( 'Nastavte sloupec, který se bude řadit defaultně ', DL_SLUG ) ?>
                         <select name="<?php echo $slug ?>-sort_col" id="<?php echo $slug ?>-select1" value="<?php echo $sort_col ?>">
-                            <?php foreach( $dl_log_table->get_columns() as $col_key => $col_lbl ) : 
+                            <?php foreach( $dl_log_table->get_columns() as $col_key => $col_lbl ) :
                                 if( $col_key != 'cb' ) :
                             ?>
                             <option value="<?php echo $col_key ?>"<?php selected( $col_key, $sort_col ) ?>><?php echo $col_lbl ?></option>

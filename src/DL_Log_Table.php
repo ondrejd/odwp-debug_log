@@ -149,6 +149,7 @@ class DL_Log_Table extends WP_List_Table {
      * Returns options for the table.
      * @return array
      * @since 1.0.0
+     * @todo This should be located in {@see DL_Log_Screen}!
      */
     public static function get_options() {
         $user = get_current_user_id();
@@ -487,6 +488,22 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
+     * Display the list of views available on this table - but only when
+     * there are some table items.
+     * @access public
+     * @return void
+     * @see WP_List_Table::views
+     * @since 1.0.0
+     */
+    public function views() {
+        if( count( $this->items ) <= 0 ) {
+            return;
+        }
+
+        parent::views();
+    }
+
+    /**
      * @internal Returns count of items for given view.
      * @param string $view
      * @return integer
@@ -541,18 +558,13 @@ class DL_Log_Table extends WP_List_Table {
      * @since 1.0.0
      */
     public function get_filter() {
-        $filter = ['time' => 0, 'type' => 0];
-        $_time = filter_input( INPUT_POST, 'filter-by-time' );
-        $_type = filter_input( INPUT_POST, 'filter-by-type' );
+        $_time = filter_input( INPUT_GET, 'filter-by-time' );
+        $_type = filter_input( INPUT_GET, 'filter-by-type' );
 
-        if( empty( $_time ) ) {
-            $_time = filter_input( INPUT_GET, 'filter-by-time' );
-        }
-
-        if( empty( $_type ) ) {
-            $_type = filter_input( INPUT_GET, 'filter-by-type' );
-        }
-
+        /**
+         * @var array $filter
+         */
+        $filter = [];
         $filter['time'] = empty( $_time ) ? 0 : ( int ) $_time;
         $filter['type'] = empty( $_type ) ? 0 : ( int ) $_type;
 
@@ -564,8 +576,6 @@ class DL_Log_Table extends WP_List_Table {
      * @param string $which
      * @return void
      * @since 1.0.0
-     * @todo That HTML source block should not be here!
-     * @todo Implement filtering by time (just new, last hour, today, yesterday etc.).
      * @todo Remember filtering for the next session (save it as user preferences and renew it).
      */
     protected function extra_tablenav( $which ) {
@@ -579,33 +589,39 @@ class DL_Log_Table extends WP_List_Table {
 
         /**
          * @var array $filter Contains array with filter settings (e.g. <code>['time' => 0, 'type' => 0]</code>).
-         */
+        */
         $filter = $this->get_filter();
-        $time   = $filter['time'];
-        $type   = $filter['type'];
-?>
-<div class="alignleft actions">
-    <label for="filter_by_time" class="screen-reader-text"><?php _e( 'Dle času', DL_SLUG ) ?></label>
-    <select name="filter-by-time" id="filter_by_time" title="<?php _e( 'Filtrovat dle času', DL_SLUG ) ?>">
-        <option<?php selected( $time, 0 ) ?> value="0"><?php _e( '—— Vše ——', DL_SLUG ) ?></option>
-        <option<?php selected( $time, 1 ) ?> value="1"><?php _e( 'Posl. hodina', DL_SLUG ) ?></option>
-        <option<?php selected( $time, 2 ) ?> value="2"><?php _e( 'Dnes', DL_SLUG ) ?></option>
-        <option<?php selected( $time, 3 ) ?> value="3"><?php _e( 'Včera', DL_SLUG ) ?></option>
-        <option<?php selected( $time, 4 ) ?> value="4"><?php _e( 'Posl. týden', DL_SLUG ) ?></option>
-        <option<?php selected( $time, 5 ) ?> value="5"><?php _e( 'Posl. měsíc', DL_SLUG ) ?></option>
-    </select>
-    <label for="filter_by_type" class="screen-reader-text"><?php _e( 'Dle typu', DL_SLUG ) ?></label>
-    <select name="filter-by-type" id="filter_by_type" title="<?php _e( 'Filtrovat dle typu', DL_SLUG ) ?>">
-        <option<?php selected( $type, 0 ) ?> value="0"><?php _e( '—— Vše ——', DL_SLUG ) ?></option>
-        <option<?php selected( $type, 1 ) ?> value="1"><?php _e( 'Chyba', DL_SLUG ) ?></option>
-        <option<?php selected( $type, 2 ) ?> value="2"><?php _e( 'Oznámení', DL_SLUG ) ?></option>
-        <option<?php selected( $type, 3 ) ?> value="3"><?php _e( 'Chyba parseru', DL_SLUG ) ?></option>
-        <option<?php selected( $type, 4 ) ?> value="4"><?php _e( 'Varování', DL_SLUG ) ?></option>
-        <option<?php selected( $type, 5 ) ?> value="5"><?php _e( 'Jiný', DL_SLUG ) ?></option>
-    </select>
-    <input name="<?php echo DL_SLUG . '-filter_submit' ?>" id="<?php echo DL_SLUG . '-filter_submit' ?>" class="button" value="<?php _e( 'Filtrovat', DL_SLUG ) ?>" type="submit">
-</div>
-<?php
+        $time   = intval( $filter['time'] );
+        $type   = intval( $filter['type'] );
+
+        $time_filters = [
+            0 => __( '—— Vše ——', DL_SLUG ),
+            1 => __( 'Posl. hodina', DL_SLUG ),
+            2 => __( 'Dnes', DL_SLUG ),
+            3 => __( 'Včera', DL_SLUG ),
+            4 => __( 'Posl. týden', DL_SLUG ),
+            5 => __( 'Posl. měsíc', DL_SLUG ),
+        ];
+
+        $type_filters = [
+            0 => __( '—— Vše ——', DL_SLUG ),
+            1 => __( 'Chyba', DL_SLUG ),
+            2 => __( 'Oznámení', DL_SLUG ),
+            3 => __( 'Chyba parseru', DL_SLUG ),
+            4 => __( 'Varování', DL_SLUG ),
+            5 => __( 'Jiný', DL_SLUG ),
+        ];
+
+        // Print the filters
+        echo DL_Plugin::load_template(
+            'screen-log_extra_tablenav', [
+                'filter'       => $filter,
+                'time'         => $time,
+                'type'         => $type,
+                'time_filters' => $time_filters,
+                'type_filters' => $type_filters,
+            ]
+        );
     }
 
 	/**
@@ -615,7 +631,10 @@ class DL_Log_Table extends WP_List_Table {
 	 * @access public
 	 */
 	public function no_items() {
-        printf( '<p class="odwpdl-no_items">%s</p>', __( 'Váš soubor <code>debug.log</code> je prázdný &ndash; to znamená žádné chyby <code>:)</code>&hellip;', DL_SLUG ) );
+        printf(
+            '<p class="odwpdl-no_items">%s</p>',
+            __( 'Váš soubor <code>debug.log</code> je prázdný &ndash; to znamená žádné chyby <strong class="noitems-smiley">:-)</strong>&hellip;', DL_SLUG )
+        );
 	}
 
     /**
@@ -712,8 +731,8 @@ class DL_Log_Table extends WP_List_Table {
      */
     private function get_order_args() {
         $options  = self::get_options();
-        $orderby = filter_input( INPUT_POST, DL_Log_Screen::SLUG . '-sort_col' );
-        $order = filter_input( INPUT_POST, DL_Log_Screen::SLUG . '-sort_dir' );
+        $orderby = filter_input( INPUT_GET, DL_Log_Screen::SLUG . '-sort_col' );
+        $order = filter_input( INPUT_GET, DL_Log_Screen::SLUG . '-sort_dir' );
 
         if( empty( $orderby ) ) {
             $orderby = filter_input( INPUT_GET, 'orderby' );
@@ -741,33 +760,26 @@ class DL_Log_Table extends WP_List_Table {
      * @todo Finish this!
      */
     public function process_bulk_actions() {
-        // If request's method is not POST return
-        if( strtolower( filter_input( INPUT_SERVER, 'method' ) ) !== 'post' ){
-            return;
-        }
-
         /**
          * Name of bulk action we should perform.
          * @var string $action
          */
-        $action = filter_input( INPUT_POST, 'action' );
+        $action = filter_input( INPUT_GET, 'action' );
 
         // There are top and bottom toolbars submit buttons...
         if( empty( $action ) ) {
-            $action = filter_input( INPUT_POST, 'action2' );
+            $action = filter_input( INPUT_GET, 'action2' );
         }
 
-echo '<pre>';
-echo "{$action}\n";
-var_dump( $_POST );
-//print_r( $log_items );
-echo '</pre>';
-exit();
+        // But no one was pressed
+        if( empty( $action ) ) {
+            return;
+        }
 
         // Validate action, otherwise return
         if( ! in_array( $action, ['delete'] ) ) {
             DL_Plugin::print_admin_notice(
-                __( 'Zadaná akce "<b>%s</b>" nebyla rozpoznána!', DL_SLUG ),
+                sprintf( __( 'Zadaná akce "<b>%s</b>" nebyla rozpoznána!', DL_SLUG ), $action ),
                 'warning',
                 true
             );
@@ -778,7 +790,7 @@ exit();
          * IDs (or line numbers) of log records to process with action.
          * @var array $log_items
          */
-        $log_items = filter_input( INPUT_POST, 'log_item', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+        $log_items = filter_input( INPUT_GET, 'log_item', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 
         // There are no items to delete
         if( count( $log_items ) == 0 ) {
@@ -790,8 +802,8 @@ exit();
             return;
         }
 
-        // ...
-        //$res = $this->parser->delete_records( $log_items );
+        // Delete records
+        $res = $this->parser->delete_records( $log_items );
 
         // Print output message
         if( $res === false ) {

@@ -138,6 +138,17 @@ class DL_Log_Parser {
     }
 
     /**
+     * @internal Destructor - ensures that log file is saved.
+     * @return void
+     * @since 1.0.0
+     */
+    public function __destruct() {
+        if( $this->is_saved() ) {
+            $this->save();
+        }
+    }
+
+    /**
      * @internal Parse constructor arguments
      * @param array $args
      * @return void
@@ -576,7 +587,7 @@ class DL_Log_Parser {
      */
     public function delete_record( $line ) {
         // It should be, but just for case...
-        if( $this->is_parsed() !== false ) {
+        if( $this->is_parsed !== false ) {
             return false;
         }
 
@@ -598,9 +609,16 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     public function delete_records( $lines ) {
-        $ret = false;
+        $ret = true;
+        odwpdl_write_log( $lines ); // XXX Remove this!
+        sort( $lines, SORT_NUMERIC );
+        odwpdl_write_log( $lines ); // XXX Remove this!
+        $lines = array_reverse( $lines );
+        odwpdl_write_log( $lines ); // XXX Remove this!
 
-        //...
+        foreach( $lines as $line ) {
+            $ret = $this->delete_record( $line );
+        }
 
         return $ret;
     }
