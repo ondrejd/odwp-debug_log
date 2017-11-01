@@ -8,7 +8,7 @@ __This plugin is still under development and is not finished yet - see sections 
 
 If your like this plugin and you want to be maintained and improved more frequently consider donation:
 
-[![Make donation](https://www.paypalobjects.com/webstatic/paypalme/images/pp_logo_small.png "PayPal.Me, your link to getting paid")][3]
+[![Make donation](https://www.paypalobjects.com/webstatic/paypalme/images/pp_logo_small.png "PayPal.Me, your link to getting paid")][4]
 
 ## Features
 
