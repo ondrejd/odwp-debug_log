@@ -91,16 +91,16 @@ class DL_Log_Parser {
     protected $log_raw = [];
 
     /**
-     * @var array $log Parsed log.
+     * @var DL_Log_Records $log Parsed log.
      * @since 1.0.0
      */
-    protected $log = [];
+    protected $log;
 
     /**
-     * @var array $log Parsed log (copy for canceling filters).
+     * @var DL_Log_Records $log Parsed log (copy for canceling filters).
      * @since 1.0.0
      */
-    private $log_unfiltered = [];
+    private $log_unfiltered;
 
     /**
      * @internal Used as temporary variable when parsing data.
@@ -280,14 +280,14 @@ class DL_Log_Parser {
             $this->prepare();
         }
 
-        $this->log = [];
+        $this->log = new DL_Log_Records();
 
         foreach( $this->log_raw as $index => $log_line ) {
             $this->parse_line( $log_line, $index );
         }
 
         if( ( $this->_record instanceof DL_Log_Record ) ) {
-            array_push( $this->log, $this->_record );
+            $this->log[] = $this->_record;
         }
 
         $this->log_unfiltered = $this->log;
@@ -323,7 +323,7 @@ class DL_Log_Parser {
         if( count( $matches ) == 2 ) {
             // This is normal log row (date and details)
             if( ( $this->_record instanceof DL_Log_Record ) ) {
-                array_push( $this->log, $this->_record );
+                $this->log[] = $this->_record;
             }
 
             $_msg = trim( $matches[1] );
@@ -414,7 +414,7 @@ class DL_Log_Parser {
             $this->parse();
         }
 
-        $data     = [];
+        $data = [];
 
         if( $options['page'] == -1 ) {
             $data = $this->log;
@@ -577,10 +577,6 @@ class DL_Log_Parser {
 
         return ( $order === 'asc' ) ? $result : -$result;
     }
-
-    // ====================================================================
-    // Methods added becauso of deleting selected log records.
-    // XXX We should rename this method to something like a permanent storage...
 
     /**
      * Deletes record at given row (but does not save the file).

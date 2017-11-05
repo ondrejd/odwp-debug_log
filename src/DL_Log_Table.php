@@ -652,9 +652,13 @@ class DL_Log_Table extends WP_List_Table {
             $this->get_sortable_columns(),
         ];
 
+        // Prepare data
+        $this->parser->reset();
+
         // Process row and bulk actions
-        $this->process_row_actions();
-        $this->process_bulk_actions();
+        // XXX In this moment is log not parsed so it can't work!
+        // XXX $this->process_row_actions();
+        // XXX $this->process_bulk_actions();
 
         // Get order arguments
         extract( $this->get_order_args() );
@@ -662,9 +666,6 @@ class DL_Log_Table extends WP_List_Table {
         // in table head not displayed correctly).
         $_GET['orderby'] = $orderby;
         $_GET['order'] = $order;
-
-        // Prepare data
-        $this->parser->reset();
 
         // Apply filtering
         $this->apply_filter( $this->get_filter() );
