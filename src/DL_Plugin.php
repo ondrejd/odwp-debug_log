@@ -67,7 +67,6 @@ class DL_Plugin {
      */
     public static function get_default_options() {
         return [
-            'debug_mode' => 'disable', // ['enable','disable']
             'prev_log_count' => 0,
         ];
     }
@@ -181,21 +180,7 @@ class DL_Plugin {
      * @since 1.0.0
      */
     protected static function init_settings() {
-        $section1 = self::SETTINGS_KEY . '_section_1';
-        add_settings_section(
-                $section1,
-                __( 'Nastavení ladícího módu', DL_SLUG ),
-                [__CLASS__, 'render_settings_section_1'],
-                DL_SLUG
-        );
-
-        add_settings_field(
-                'debug_mode',
-                __( 'Povolit ladící mód', DL_SLUG ),
-                [__CLASS__, 'render_setting_debug_mode'],
-                DL_SLUG,
-                $section1
-        );
+        //...
     }
 
     /**
@@ -205,14 +190,7 @@ class DL_Plugin {
      */
     protected static function init_screens() {
         include( DL_PATH . 'src/DL_Screen_Prototype.php' );
-        include( DL_PATH . 'src/DL_Options_Screen.php' );
         include( DL_PATH . 'src/DL_Log_Screen.php' );
-
-        /**
-         * @var DL_Options_Screen $options_screen
-         */
-        $options_screen = new DL_Options_Screen();
-        self::$admin_screens[$options_screen->get_slug()] = $options_screen;
 
         /**
          * @var DL_Log_Screen $log_screen
@@ -302,31 +280,62 @@ class DL_Plugin {
     }
 
     /**
+     * @private Creates `debug.log` file.
+     * @return boolean
+     * @since 1.0.0
+     */
+    private static function create_log_file() {
+        return ( file_put_contents( DL_LOG, '' ) !== false );
+    }
+
+    /**
      * Checks environment we're running and prints admin messages if needed.
      * @return void
      * @since 1.0.0
      */
     public static function check_environment() {
-        if( ! file_exists( DL_LOG ) || ! is_writable( DL_LOG ) ) {
+        // Firstly we check if `debug.log` file exists
+        if ( ! file_exists( DL_LOG ) ) {
+            // File doesn't exist. We will try create it.
+            if ( self::create_log_file() === true ) {
+                add_action( 'admin_notices', function() {
+                    $msg = sprintf(
+                            __( '<strong>Debug Log Viewer</strong>: Soubor (<code>%s</code>) určený k zápisu ladících informací byl úspěšně vytvořen.', DL_SLUG ),
+                            DL_LOG
+                    );
+                    DL_Plugin::print_admin_notice( $msg, 'success' );
+                } );
+            } else {
+                add_action( 'admin_notices', function() {
+                    $msg = sprintf(
+                            __( '<strong>Debug Log Viewer</strong>: Soubor (<code>%s</code>) určený k zápisu ladících informací není vytvořen a jeho vytvoření se nezdařilo. Vytvořte jej proto ručně.', DL_SLUG ),
+                            DL_LOG
+                    );
+                    DL_Plugin::print_admin_notice( $msg, 'warning', true );
+                } );
+            }
+        }
+        else if ( ! is_writable( DL_LOG ) ) {
+            // File exists but is not writable
             add_action( 'admin_notices', function() {
                 $msg = sprintf(
-                        __( '<strong>Debug Log Viewer</strong>: Soubor (<code>%s</code>) k zápisu ladících informací není vytvořen nebo není zapisovatelný. Pro více informací přejděte na <a href="%s">nastavení tohoto pluginu</a>.', DL_SLUG ),
-                        DL_LOG,
-                        admin_url( 'options-general.php?page=' . DL_SLUG . '-plugin_options' )
+                        __( '<strong>Debug Log Viewer</strong>: Soubor (<code>%s</code>) k zápisu ladících informací sice existuje ale není zapisovatelný.', DL_SLUG ),
+                        DL_LOG
                 );
                 DL_Plugin::print_admin_notice( $msg );
             } );
+        }
+        else {
+            // File exists and is writable
+            // ... nothing to do ...
         }
 
         /**
          * @var string $err_msg Error message about setting WP_DEBUG and WP_DEBUG_LOG constants.
          */
         $err_msg = sprintf(
-                __( 'Pro umožnění zápisu ladících informací do logovacího souboru (<code>%s</code>) musí být konstanty <code>%s</code> a <code>%s</code> nastaveny na hodnotu <code>TRUE</code>. Pro více informací přejděte na <a href="%s">nastavení tohoto pluginu</a>.', DL_SLUG ),
-                DL_LOG,
-                'WP_DEBUG',
-                'WP_DEBUG_LOG',
-                admin_url( 'options-general.php?page=' . DL_SLUG . '-plugin_options' )
+                __( 'Pro umožnění zápisu ladících informací do logovacího souboru (<code>%s</code>) musí být konstanty <code>WP_DEBUG</code> a <code>WP_DEBUG_LOG</code> nastaveny na hodnotu <code>TRUE</code>.', DL_SLUG ),
+                DL_LOG
         );
 
         if( ! defined( 'WP_DEBUG' ) || ! defined( 'WP_DEBUG_LOG' ) ) {
@@ -377,7 +386,7 @@ class DL_Plugin {
 
         if( file_exists( $js_path ) && is_readable( $js_path ) ) {
             wp_enqueue_script( DL_SLUG, plugins_url( $js_file, DL_FILE ), ['jquery'] );
-            wp_localize_script( DL_SLUG, 'odwpwcchp', [
+            wp_localize_script( DL_SLUG, 'odwpdl', [
                 // Put variables you want to pass into JS here...
             ] );
         }
