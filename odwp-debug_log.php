@@ -178,7 +178,7 @@ if( ! function_exists( 'odwpdl_error_log' ) ) :
      * @return void
      * @since 1.0.0
      */
-    function odwpdl_error_log( string $message, int $message_type = 0, string $destination = null, string $extra_headers = '' ) {
+    function odwpdl_error_log( string $message, int $message_type = null, string $destination = null, string $extra_headers = null ) {
         _deprecated_function( __FUNCTION__, '1.0.0', __( 'Use function `odwpdl_write_log` instead.', DL_SLUG ) );
 
         odwpdl_write_log( $message );

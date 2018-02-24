@@ -405,6 +405,7 @@ class DL_Log_Table extends WP_List_Table {
             'type' => __( 'Typ', DL_LOG ),
             'text' => __( 'Záznam', DL_LOG ),
         ];
+
         return $columns;
     }
 
@@ -418,6 +419,7 @@ class DL_Log_Table extends WP_List_Table {
             'id'   => ['id', true],
             'type' => ['type', false],
         ];
+
         return $columns;
     }
 
@@ -450,6 +452,7 @@ class DL_Log_Table extends WP_List_Table {
             'text' => ['text', false],
             'type' => ['type', false],
         ];
+
         return $columns;
     }
 
@@ -624,18 +627,18 @@ class DL_Log_Table extends WP_List_Table {
         );
     }
 
-	/**
-	 * Message to be displayed when there are no items
-	 *
-	 * @since 3.1.0
-	 * @access public
-	 */
-	public function no_items() {
+    /**
+     * Message to be displayed when there are no items
+     *
+     * @since 3.1.0
+     * @access public
+     */
+    public function no_items() {
         printf(
             '<p class="odwpdl-no_items">%s</p>',
             __( 'Váš soubor <code>debug.log</code> je prázdný &ndash; to znamená žádné chyby <strong class="noitems-smiley">:-)</strong>&hellip;', DL_SLUG )
         );
-	}
+    }
 
     /**
      * Prepares data items for the table.

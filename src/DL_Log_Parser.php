@@ -287,7 +287,8 @@ class DL_Log_Parser {
         }
 
         if( ( $this->_record instanceof DL_Log_Record ) ) {
-            $this->log[] = $this->_record;
+            $this->log->offsetSet( null, $this->_record );
+            //$this->log[] = $this->_record;
         }
 
         $this->log_unfiltered = $this->log;
@@ -378,6 +379,7 @@ class DL_Log_Parser {
      * @param array $args (Optional.) Sorting arguments ('sort_col' and 'sort_dir').
      * @return void
      * @since 1.0.0
+     * @todo Ordering should be done directly in `DL_Log_Records` not in here.
      */
     public function sort( $args = [] ) {
         if( $this->is_parsed !== true ) {
@@ -392,7 +394,8 @@ class DL_Log_Parser {
             $this->_order = $args['sort_dir'];
         }
 
-        usort( $this->log, [$this, 'usort_reorder'] );
+        $records = $this->log->getRecords();
+        usort( $records, [$this, 'usort_reorder'] );
     }
 
     /**
@@ -408,6 +411,7 @@ class DL_Log_Parser {
      * Returns data from the log.
      * @return array
      * @since 1.0.0
+     * @todo Using `array_slice` on l. 427 is wrong because it cann't be applied on array!
      */
     public function get_data( $options = ['page' => -1] ) {
         if( $this->is_parsed !== true ) {
@@ -421,7 +425,7 @@ class DL_Log_Parser {
         } else {
             $per_page = $this->get_options( 'per_page', DL_Log_Table::DEFAULT_PER_PAGE );
             $current  = array_key_exists( 'page', $options ) ? $options['page'] : 1;
-            $data     = array_slice( $this->log, ( ( $current - 1 ) * $per_page ), $per_page );
+            $data     = array_slice( $this->log->getRecords(), ( ( $current - 1 ) * $per_page ), $per_page );
         }
 
         return $data;

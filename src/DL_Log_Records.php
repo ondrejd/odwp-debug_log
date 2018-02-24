@@ -67,12 +67,12 @@ class DL_Log_Records implements ArrayAccess, Countable {
      * @since 1.0.0
      */
     public function offsetSet( $offset, $value ) {
-        if( ( $value instanceof DL_Log_Record ) ) {
+        if( ! ( $value instanceof DL_Log_Record ) ) {
             // TODO Throw an error?
             return;
         }
 
-        if( is_empty( $offset ) ) {
+        if( empty( $offset ) ) {
             $this->records[] = $value;
         } else {
             $this->records[$offset] = $value;
@@ -98,5 +98,13 @@ class DL_Log_Records implements ArrayAccess, Countable {
      */
     public function count() {
         return count( $this->records );
+    }
+
+    /**
+     * @return array Returns array with data.
+     * @since 1.0.0
+     */
+    public function getRecords() {
+        return $this->records;
     }
 }
