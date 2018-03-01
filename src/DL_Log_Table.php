@@ -481,7 +481,7 @@ class DL_Log_Table extends WP_List_Table {
         $ret = [];
 
         foreach( $views as $view => $view_lbl ) {
-            $url = add_query_arg( 'view', $view, plugins_url() );
+            $url = add_query_arg( [ 'page' => 'odwpdl-log', 'view' => $view ], admin_url( 'tools.php') );
             $cls = ( $view == $current_view ) ? ' class="current"' : '';
             $cnt = $this->get_view_items_count( $view );
             $ret[$view] = sprintf( '<a href="%s"%s>%s (%s)</a>', $url, $cls, $view_lbl, $cnt );
@@ -522,25 +522,17 @@ class DL_Log_Table extends WP_List_Table {
         }
         elseif( $view == 'today' ) {
             $this->parser->filter( function( \DL_Log_Record $record ) {
-                $date_today = new DateTime();
-                $date_real = new DateTime( date( 'Y-m-d H:i:s', $record->get_time() ) );
-                return ( $date_today == $date_real );
+                return $record->was_today();
             } );
         }
         elseif( $view == 'yesterday' ) {
             $this->parser->filter( function( \DL_Log_Record $record ) {
-                $date_yesterday = new DateTime();
-                $date_yesterday->sub(new DateInterval( 'P1D' ) );
-                $date_real = new DateTime( date( 'Y-m-d H:i:s', $record->get_time() ) );
-                return ( $date_yesterday == $date_real );
+                return $record->was_yesterday();
             } );
         }
         elseif( $view == 'earlier' ) {
             $this->parser->filter( function( \DL_Log_Record $record ) {
-                $date_yesterday = new DateTime();
-                $date_yesterday->sub(new DateInterval( 'P1D' ) );
-                $date_real = new DateTime( date( 'Y-m-d H:i:s', $record->get_time() ) );
-                return ( $date_yesterday > $date_real );
+                return ( ! $record->was_today() && ! $record->was_yesterday() );
             } );
         }
 
@@ -662,6 +654,12 @@ class DL_Log_Table extends WP_List_Table {
         // XXX In this moment is log not parsed so it can't work!
         // XXX $this->process_row_actions();
         // XXX $this->process_bulk_actions();
+
+        // Use view
+        $view = filter_input( INPUT_GET, 'view' );
+        if( in_array( $view, [ 'today', 'yesterday', 'earlier', 'all' ] ) ) {
+            $this->parser->set_view( $view );
+        }
 
         // Get order arguments
         extract( $this->get_order_args() );

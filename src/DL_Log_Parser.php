@@ -118,6 +118,12 @@ class DL_Log_Parser {
     private $_orderby;
 
     /**
+     * @var string View name.
+     * @since 1.0.0
+     */
+    private $_view;
+
+    /**
      * @var boolean $saved
      * @since 1.0.0
      */
@@ -237,6 +243,15 @@ class DL_Log_Parser {
         }
 
         return 0;
+    }
+
+    /**
+     * Returns name of used view.
+     * @return string
+     * @since 1.0.0
+     */
+    public function get_view() {
+        return $this->view;
     }
 
     /**
@@ -367,6 +382,41 @@ class DL_Log_Parser {
 
         $temp = array_filter( $this->log, $filter_func );
         $this->log = $temp;
+    }
+
+    /**
+     * Sets view.
+     * @param string $view
+     * @return void
+     * @since 1.0.0
+     */
+    public function set_view( $view ) {
+        if( $this->_view === $view ) {
+            return;
+        }
+
+        if( $this->is_parsed !== true ) {
+            $this->parse();
+        }
+
+        $log_by_view = [];
+
+        foreach( $this->log as $item ) {
+            if( $view === 'today' && $item->was_today() ) {
+                $log_by_view[] = $item;
+            }
+            elseif( $view === 'yesterday' && $item->was_yesterday() ) {
+                $log_by_view[] = $item;
+            }
+            elseif( $view === 'earlier' && ( ! $item->was_today() && ! $item->was_yesterday() ) ) {
+                $log_by_view[] = $item;
+            }
+            elseif( $view === 'all' ) {
+                $log_by_view[] = $item;
+            }
+        }
+
+        $this->log = $log_by_view;
     }
 
     /**
