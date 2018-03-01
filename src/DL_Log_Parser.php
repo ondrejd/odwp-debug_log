@@ -11,10 +11,6 @@ if( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if( ! class_exists( 'DL_Log_Records' ) ) {
-    require_once( DL_PATH . 'src/DL_Log_Records.php' );
-}
-
 if( ! class_exists( 'DL_Log_Record' ) ) {
     require_once( DL_PATH . 'src/DL_Log_Record.php' );
 }
@@ -91,13 +87,13 @@ class DL_Log_Parser {
     protected $log_raw = [];
 
     /**
-     * @var DL_Log_Records $log Parsed log.
+     * @var array $log Parsed log.
      * @since 1.0.0
      */
     protected $log;
 
     /**
-     * @var DL_Log_Records $log Parsed log (copy for canceling filters).
+     * @var array $log Parsed log (copy for canceling filters).
      * @since 1.0.0
      */
     private $log_unfiltered;
@@ -280,15 +276,14 @@ class DL_Log_Parser {
             $this->prepare();
         }
 
-        $this->log = new DL_Log_Records();
+        $this->log = array();
 
         foreach( $this->log_raw as $index => $log_line ) {
             $this->parse_line( $log_line, $index );
         }
 
         if( ( $this->_record instanceof DL_Log_Record ) ) {
-            $this->log->offsetSet( null, $this->_record );
-            //$this->log[] = $this->_record;
+            $this->log[] = $this->_record;
         }
 
         $this->log_unfiltered = $this->log;
@@ -311,13 +306,13 @@ class DL_Log_Parser {
         );
 
         if( ! is_array( $matches ) ) {
-            odwpdl_write_log( 'DL_Log_Parser: Parser error (1).' );
-            /*echo '<pre>';
+            //odwpdl_write_log( 'DL_Log_Parser: Parser error (1).' );
+            /**/echo '<pre>';
             echo 'WRONG MATCHES [1]:'.PHP_EOL;
             var_dump( $line );
             var_dump( $line_num );
             var_dump( $matches );
-            echo '</pre>';*/
+            echo '</pre>';
             return;
         }
 
@@ -348,13 +343,13 @@ class DL_Log_Parser {
                 return;
             }
 
-            odwpdl_write_log( 'DL_Log_Parser: Parser error (2).' );
-            /*echo '<pre>';
+            //odwpdl_write_log( 'DL_Log_Parser: Parser error (2).' );
+            /**/echo '<pre>';
             echo 'WRONG MATCHES [2]:'.PHP_EOL;
             var_dump( $line );
             var_dump( $line_num );
             var_dump( $matches );
-            echo '</pre>';*/
+            echo '</pre>';
             return;
         }
     }
@@ -379,7 +374,6 @@ class DL_Log_Parser {
      * @param array $args (Optional.) Sorting arguments ('sort_col' and 'sort_dir').
      * @return void
      * @since 1.0.0
-     * @todo Ordering should be done directly in `DL_Log_Records` not in here.
      */
     public function sort( $args = [] ) {
         if( $this->is_parsed !== true ) {
@@ -394,8 +388,7 @@ class DL_Log_Parser {
             $this->_order = $args['sort_dir'];
         }
 
-        $records = $this->log->getRecords();
-        usort( $records, [$this, 'usort_reorder'] );
+        usort( $this->log, [$this, 'usort_reorder'] );
     }
 
     /**
@@ -411,7 +404,6 @@ class DL_Log_Parser {
      * Returns data from the log.
      * @return array
      * @since 1.0.0
-     * @todo Using `array_slice` on l. 427 is wrong because it cann't be applied on array!
      */
     public function get_data( $options = ['page' => -1] ) {
         if( $this->is_parsed !== true ) {
@@ -425,7 +417,7 @@ class DL_Log_Parser {
         } else {
             $per_page = $this->get_options( 'per_page', DL_Log_Table::DEFAULT_PER_PAGE );
             $current  = array_key_exists( 'page', $options ) ? $options['page'] : 1;
-            $data     = array_slice( $this->log->getRecords(), ( ( $current - 1 ) * $per_page ), $per_page );
+            $data     = array_slice( $this->log, ( ( $current - 1 ) * $per_page ), $per_page );
         }
 
         return $data;
@@ -633,7 +625,8 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     public function save() {
-        if( file_put_contents( DL_LOG, implode( '\n', $this->log_raw ) ) === false ) {
+        //if( file_put_contents( DL_LOG, implode( PHP_EOL, $this->log_raw ) ) === false ) {
+        if( file_put_contents( DL_LOG, $this->log_raw ) === false ) {
             return false;
         }
 
