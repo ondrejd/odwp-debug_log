@@ -28,12 +28,13 @@ If your like this plugin and you want to be maintained and improved more frequen
 * [ ] plugin still does not automatically udpates `wp-config.php` file as is needed
 * [ ] __`DL_Log_Table`__:
   - [x] ~~finish _subsubsub_ - Today/Yesterday/Earlier/All items~~
-  - [ ] finish filtering by type
+  - [x] finish filtering by log record type
+  - [ ] add filtering by time when were log records created
   - [ ] finish bulk actions (just delete selected items)
   - [ ] group log messages (if there are same messages below themself)
   - [ ] __we have to chech _wpnonce_!__
 * [ ] __`DL_Log_Screen`__ - finish screen help tabs:
-  - [ ] remove _TODO_ tab
+  - [x] remove _TODO_ tab
   - [ ] enable localization of other tabs
   - [ ] contents of these tabs should be loaded from partials (now is code inline)
 * [ ] __FIXME__: the last row of the `debug.log` file is not displayed
