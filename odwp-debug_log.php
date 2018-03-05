@@ -233,10 +233,13 @@ if( count( $odwpdl_errs ) > 0 ) {
 
     // In administration print errors
     if( is_admin() ) {
-        $err_head = __( '<b>Debug Log Viewer</b>: ', DL_SLUG );
-        foreach( $odwpdl_errs as $err ) {
-            printf( '<div class="error"><p>%s</p></div>', $err_head . $err );
-        }
+        add_action( 'admin_notices', function() use ( $odwpdl_errs ) {
+            $err_head = __( '<b>Debug Log Viewer</b>: ', DL_SLUG );
+
+            foreach( $odwpdl_errs as $err ) {
+                printf( '<div class="error"><p>%s</p></div>', $err_head . $err );
+            }
+        } );
     }
 } else {
     // Requirements are met so initialize the plugin.
