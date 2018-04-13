@@ -247,7 +247,7 @@ class DL_Plugin {
             'parent' => 'top-secondary',
             'title'  => '<span class="ab-icon"></span>',
             'meta'   => [
-                'title' => __( 'Show Debug Log Viewer', DL_LOG ),
+                'title' => __( 'Show Debug Log Viewer', DL_SLUG ),
             ],
         ] );
     }
