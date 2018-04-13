@@ -52,12 +52,6 @@ class DL_Log_Record {
      * @var string
      * @since 1.0.0
      */
-    const TYPE_ODWPDL  = 'Log Parser error';
-
-    /**
-     * @var string
-     * @since 1.0.0
-     */
     const TYPE_WARNING = 'PHP Warning';
 
     /**

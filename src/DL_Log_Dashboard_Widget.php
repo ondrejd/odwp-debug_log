@@ -45,7 +45,7 @@ class DL_Log_Dashboard_Widget {
         // Register the widget
         wp_add_dashboard_widget(
             self::WID,
-            __( 'Ladící informace', DL_SLUG ),
+            __( 'Debug Log', DL_SLUG ),
             [__CLASS__, 'widget'],
             [__CLASS__, 'config']
         );
@@ -161,4 +161,3 @@ class DL_Log_Dashboard_Widget {
 }
 
 endif;
-

@@ -27,8 +27,8 @@ class DL_Options_Screen extends DL_Screen_Prototype {
     public function __construct( \WP_Screen $screen = null ) {
         // Main properties
         $this->slug = DL_SLUG . '-plugin_options';
-        $this->menu_title = __( 'Ladící informace', DL_SLUG );
-        $this->page_title = __( 'Nastavení pro plugin <em>Prohlížeč ladících informací</em>', DL_SLUG );
+        $this->menu_title = __( 'Debug Log', DL_SLUG );
+        $this->page_title = __( 'Settings for plugin <em>Debug Log Viewer</em>', DL_SLUG );
 
         // Specify help tabs
         $this->help_tabs = [];

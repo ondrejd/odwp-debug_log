@@ -50,41 +50,29 @@ h3.help-title, h4.help-title {
 }
 
 /**
- * Log screen's todo help tab
- * XXX Remove this!!!
- */
-.todo-list--cont {}
-.todo-list, .todo-list ul { padding-left: 20px; }
-.todo-list li, .todo-list ul li { color: #f30; list-style: square !important; margin: 0 0 0 0px; padding: 0 0 0 0px; }
-.todo-list .done { text-decoration: line-through; }
-.todo-list .working { text-decoration: underline; }
-.todo-list li code { font-size: 90%; }
-/** XXX Remove this!!! */
-
-/**
  * Log list screen
  */
 /* Table columns */
-table.zznamy .column-id {
+#odwpdl-log_table .wp-list-table .column-id {
     width: 60px;
 }
-table.zznamy .column-time {
+#odwpdl-log_table .wp-list-table .column-time {
     width: 140px;
 }
-table.zznamy .column-type {
-    width: 60px;
+#odwpdl-log_table .wp-list-table .column-type {
+    width: 80px;
 }
 /* No items message */
-table.zznamy tbody tr.no-items p {
+#odwpdl-log_table .wp-list-table tbody tr.no-items p {
     font-size: 1.4em;
     font-weight: 500;
     padding: 6em 0 4em 0;
     text-align: center;
 }
-table.zznamy tbody tr.no-items code {
+#odwpdl-log_table .wp-list-table tbody tr.no-items code {
     font-size: 94%;
 }
-table.zznamy tbody tr.no-items .noitems-smiley {
+#odwpdl-log_table .wp-list-table tbody tr.no-items .noitems-smiley {
     background: #52c62a;
     border-radius: 50%;
     display: inline-block;
@@ -96,52 +84,52 @@ table.zznamy tbody tr.no-items .noitems-smiley {
     width: 1.4em;
 }
 /* Type columns */
-table.zznamy .column-type .dashicons-warning {
+#odwpdl-log_table .wp-list-table .column-type .dashicons-warning {
     /* error */
     color: #f30;
 }
-table.zznamy .column-type .dashicons-format-status {
+#odwpdl-log_table .wp-list-table .column-type .dashicons-format-status {
     /* upozorneni */
     color: #ccc;
 }
-table.zznamy .column-type .dashicons-editor-help {
+#odwpdl-log_table .wp-list-table .column-type .dashicons-editor-help {
     /* varovani */
 }
-table.zznamy .column-type .dashicons-thumbs-down {
+#odwpdl-log_table .wp-list-table .column-type .dashicons-thumbs-down {
     /* chyba kodu */
     color: #06a;
 }
-table.zznamy .column-type .dashicons-flag {
+#odwpdl-log_table .wp-list-table .column-type .dashicons-flag {
     /* varovani */
     color: #000;
 }
-table.zznamy .column-type .dashicons-no {}
+#odwpdl-log_table .wp-list-table .column-type .dashicons-no {}
 
 /* Stack trace */
-.stack-trace {
+#odwpdl-log_table .wp-list-table .stack-trace {
     padding: 0.5em 0 0.5em 0;
 }
-.stack-trace > b {
+#odwpdl-log_table .wp-list-table .stack-trace > b {
     cursor: pointer;
 }
-.stack-trace > b > span.dashicons {
+#odwpdl-log_table .wp-list-table .stack-trace > b > span.dashicons {
     position: relative;
 }
-.stack-trace > b:hover > span.dashicons, .stack-trace > b > span.dashicons:hover {
+#odwpdl-log_table .wp-list-table .stack-trace > b:hover > span.dashicons, .stack-trace > b > span.dashicons:hover {
     color: #f30;
     top: -1px;
 }
-.stack-trace ul {
+#odwpdl-log_table .wp-list-table .stack-trace ul {
     background-color: #f2dede;
     border: 1px solid #f2dede;
     border-radius: 7px 7px 7px 7px;
     padding: 1em;
     margin: 0 0 0 0;
 }
-.stack-trace--collapsed ul {
+#odwpdl-log_table .wp-list-table .stack-trace--collapsed ul {
     display: none;
 }
-.stack-trace ul li {
+#odwpdl-log_table .wp-list-table .stack-trace ul li {
     list-style: none !important;
     margin: 0 0 0 0px;
     padding: 0 0 0 0px;

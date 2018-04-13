@@ -1,497 +1,546 @@
+# Blank WordPress Pot
+# Copyright 2014 ...
+# This file is distributed under the GNU General Public License v3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: odwp-debug_log\n"
-"POT-Creation-Date: 2018-02-21 22:09+0100\n"
-"PO-Revision-Date: 2018-02-21 22:10+0100\n"
+"Project-Id-Version: odwp-debug_log 1.0.0\n"
+"Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
+"POT-Creation-Date: 2018-04-13 13:38+0200\n"
+"PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Ondřej Doněk <ondrejd@gmail.com>\n"
 "Language: cs_CZ\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.4\n"
-"X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Textdomain-Support: yesX-Generator: Poedit 1.6.4\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;esc_html;esc_html_e;"
-"esc_html_x:1,2c;esc_attr;esc_attr_e;esc_attr_x:1,2c\n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: .git\n"
-"X-Poedit-SearchPathExcluded-1: assets\n"
+"X-Poedit-KeywordsList: __;_e;esc_html_e;esc_html_x:1,2c;esc_html__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;"
+"_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Generator: Poedit 2.0.4\n"
+"X-Poedit-SearchPath-0: partials\n"
+"X-Poedit-SearchPath-1: src\n"
+"X-Poedit-SearchPath-2: odwp-debug_log.php\n"
+"X-Poedit-SearchPath-3: odwpdl-show_url.php\n"
+"X-Poedit-SearchPathExcluded-0: assets\n"
+"X-Poedit-SearchPathExcluded-1: lib\n"
 "X-Poedit-SearchPathExcluded-2: languages\n"
-"X-Poedit-SearchPathExcluded-3: lib\n"
 
-#: odwp-debug_log.php:76
+#: odwp-debug_log.php:75
 #, php-format
 msgid ""
-"PHP nesplňuje nároky pluginu na minimální verzi (vyžadována nejméně <b>%s</"
-"b>)!"
+"Used PHP interpreter doesn't meet requirements of this plugin (is required "
+"version <b>%1$s</b> at least)!"
 msgstr ""
+"Použitý PHP interpretr nesplňuje nároky tohoto pluginu (je vyžadována "
+"alespoň verze <b>%1$s</b>)!"
 
-#: odwp-debug_log.php:87
+#: odwp-debug_log.php:86
 #, php-format
-msgid "Je vyžadováno rozšíření PHP <b>%s</b>, to ale není nainstalováno!"
-msgstr ""
+msgid "PHP extension <b>%1$s</b> is required but not installed!"
+msgstr "Je vyžadováno PHP rozšíření <b>%1$s</b>, to ale není nainstalováno!"
 
-#: odwp-debug_log.php:98
+#: odwp-debug_log.php:97
 #, php-format
 msgid ""
-"Plugin vyžaduje vyšší verzi platformy <b>WordPress</b> (minimálně <b>%s</b>)!"
+"This plugin requires higher version of <b>WordPress</b> (at least version <b>"
+"%1$s</b>)!"
 msgstr ""
+"Tento plugin vyžaduje vyšší verzi platformy <b>WordPress</b> (alespoň <b>"
+"%1$s</b>)!"
 
-#: odwp-debug_log.php:110
+#: odwp-debug_log.php:109
 #, php-format
-msgid "Je vyžadován plugin <b>%s</b>, ten ale není nainstalován!"
-msgstr ""
+msgid "The plugin <b>%1$s</b> is required but not installed!"
+msgstr "Plugin <b>%1$s</b> je vyžadován, ale není aktivován!"
 
-#: odwp-debug_log.php:182
-msgid "Use function `odwpdl_write_log` instead."
-msgstr ""
+#: odwp-debug_log.php:181
+msgid "Use function `odwpdl_write_log` instead!"
+msgstr "Použijte místo této funkce funkci `odwpdl_write_log`!"
 
 #: odwp-debug_log.php:236
 msgid "<b>Debug Log Viewer</b>: "
-msgstr ""
+msgstr "<b>Prohlížeč ladících informací</b>: "
+
+#: odwpdl-show_url.php:62
+#, php-format
+msgid "Source file [\"%1$s\"] was not found!"
+msgstr "Nemůžu nalézt soubor se zdrojovými kódy (\"%1$s\")!"
+
+#: odwpdl-show_url.php:64
+#, php-format
+msgid "Source file [\"%1$s\"] can not be read!"
+msgstr "Nemůžu přečíst soubor se zdrojovými kódy (\"%1$s\")!"
 
 #: src/DL_Log_Dashboard_Widget.php:48 src/DL_Log_Screen.php:40
 #: src/DL_Options_Screen.php:30
-msgid "Ladící informace"
-msgstr ""
+msgid "Debug Log"
+msgstr "Ladící informace"
 
 #: src/DL_Log_Screen.php:41 partials/screen-log.phtml:32
-msgid "Prohlížeč ladících informací"
-msgstr ""
+msgid "Debug Log Viewer"
+msgstr "Prohlížeč ladících informací"
 
 #: src/DL_Log_Screen.php:46
-msgid "Obecné"
-msgstr ""
+msgid "General"
+msgstr "Obecné"
 
-#: src/DL_Log_Screen.php:50
-msgid ""
-"<p>Tabulka obsahuje seznam <strong>chybových zpráv</strong>, které vznikly "
-"během běhu vaší instalace systému <a href=\"$s\" target=\"blank\">WordPress</"
-"a>. Tyto chyby jsou uloženy v souboru <code>debug.log</code>. Tuto tabulku "
-"si můžete přidat ve formě widgetu i na <a href=\"$s\">nástěnku</a>.</p><h4 "
-"class=\"help-title\">Sloupce tabulky</h4><ul class=\"help-list"
-"\"><li><strong>Pořadové číslo</strong>&nbsp;&ndash;&nbsp;Pořadové číslo "
-"chyby</li><li><strong>Datum a čas</strong>&nbsp;&ndash;&nbsp;Datum a čas ve "
-"kterém se chyba vyskytla</li><li><strong>Typ chyby</strong>&nbsp;&ndash;"
-"&nbsp;Typ chyby (viz. přehled níže)</li><li><strong>Záznam</strong>&nbsp;"
-"&ndash;&nbsp;Text chyby (včetně <em>stack trace</em>)</li></ul><h4 class="
-"\"help-title\">Typy chyb</h4><ul class=\"help-list\"><li><span class="
-"\"dashicons dashicons-warning\"></span><em>"
+#: src/DL_Log_Screen.php:64
+msgid "Debug log table contains all records from <code>debug.log</code> file."
 msgstr ""
+"Tabulka s ladícími informacemi obsahuje všechny záznamy ze souboru "
+"<code>debug.log</code>."
+
+#: src/DL_Log_Screen.php:65
+msgid "Table columns"
+msgstr "Sloupce tabulky"
+
+#: src/DL_Log_Screen.php:66
+msgid "Record number"
+msgstr "Číslo záznamu"
+
+#: src/DL_Log_Screen.php:67
+msgid "Record (line) number of the record"
+msgstr "Číslo záznamu (řádku)"
+
+#: src/DL_Log_Screen.php:68 src/DL_Log_Table.php:400
+msgid "Date and time"
+msgstr "Datum a čas"
+
+#: src/DL_Log_Screen.php:69
+msgid "Date and time when was record added"
+msgstr "Datum a čas, kdy byl záznam přidán"
+
+#: src/DL_Log_Screen.php:70
+msgid "Record type"
+msgstr "Typ záznamu"
+
+#: src/DL_Log_Screen.php:71
+msgid "Type of record (see table below)"
+msgstr "Typ záznamu (podívejte se na tabulku níže)"
+
+#: src/DL_Log_Screen.php:72 src/DL_Log_Table.php:120 src/DL_Log_Table.php:402
+msgid "Record"
+msgstr "Záznam"
+
+#: src/DL_Log_Screen.php:73
+#, fuzzy
+msgid "Text of record (including <em>stack trace</em>)"
+msgstr "Text záznamu (včetně <em>stack trace</em>)"
+
+#: src/DL_Log_Screen.php:74
+msgid "Types of records"
+msgstr "Typy záznamu"
 
 #: src/DL_Log_Screen.php:75
-msgid "Nastavení"
-msgstr ""
+msgid "Fatal error"
+msgstr "Chyba"
+
+#: src/DL_Log_Screen.php:76
+msgid "Error notice"
+msgstr "Oznámení"
+
+#: src/DL_Log_Screen.php:77
+msgid "Other errors"
+msgstr "Jiné chyby"
 
 #: src/DL_Log_Screen.php:78
-#, php-format
-msgid ""
-"<p>Zobrazení tabulky se záznamem logu může být ovlivněna nastavením.</"
-"p><p><img src=\"%s\" alt=\"Nastavení pluginu\" title=\"Nastavení pluginu\" "
-"class=\"help_tab_img\"></p>"
-msgstr ""
+msgid "PHP parser error"
+msgstr "Chyba parseru"
 
-#: src/DL_Log_Screen.php:92
-msgid "Užitečné odkazy"
-msgstr ""
+#: src/DL_Log_Screen.php:79
+msgid "Warning notice"
+msgstr "Varování"
 
 #: src/DL_Log_Screen.php:94
-msgid "Domovské stránky autora"
-msgstr ""
+msgid "Usefull links"
+msgstr "Užitečné odkazy"
 
 #: src/DL_Log_Screen.php:96
-msgid "GitHub - zdrojové kódy"
-msgstr ""
+msgid "Author's homepage"
+msgstr "Domovská stránka autora"
 
 #: src/DL_Log_Screen.php:98
-msgid "GitHub - ohlášení chyb"
-msgstr ""
+msgid "GitHub - source codes"
+msgstr "GitHub - zdrojové kódy"
 
-#: src/DL_Log_Screen.php:106
-msgid "Zobrazené sloupce"
-msgstr ""
+#: src/DL_Log_Screen.php:100
+msgid "GitHub - issues"
+msgstr "GitHub - chyby"
 
-#: src/DL_Log_Screen.php:111
-msgid "Počet záznamů na stránku"
-msgstr ""
+#: src/DL_Log_Screen.php:108
+msgid "Displayed columns"
+msgstr "Zobrazené sloupce"
 
-#: src/DL_Log_Screen.php:116
-msgid "Zkracovat odkazy na zdrojové kódy?"
-msgstr ""
+#: src/DL_Log_Screen.php:113
+msgid "Count of records per page"
+msgstr "Počet záznamů na stránku"
 
-#: src/DL_Log_Screen.php:121 partials/screen-log_options.phtml:59
-msgid "Zobrazit typ záznamu jako ikonu?"
-msgstr ""
+#: src/DL_Log_Screen.php:118
+msgid "Make links to source files shorter?"
+msgstr "Zkracovat názvy souborů se zdrojovými kódy?"
 
-#: src/DL_Log_Screen.php:126 partials/screen-log_options.phtml:65
-msgid "Zobrazit odkazy na zdrojové soubory?"
-msgstr ""
+#: src/DL_Log_Screen.php:123 partials/screen-log_options.phtml:58
+msgid "Show record type as an icon?"
+msgstr "Zobrazit typy záznamů jako ikonu?"
 
-#: src/DL_Log_Screen.php:131
-msgid "Zobrazit <em>stack trace</em> defaultně rozbalenou?"
-msgstr ""
+#: src/DL_Log_Screen.php:128
+msgid "Show links to source files?"
+msgstr "Zobrazit odkazy na soubory se zdrojovými kódy?"
 
-#: src/DL_Log_Screen.php:136
-msgid "Defaultní sloupec k řazení"
-msgstr ""
+#: src/DL_Log_Screen.php:133
+#, fuzzy
+msgid "Show <em>stack trace</em> defaultly unfolded?"
+msgstr "Zobrazit <em>stack trace</em> defaultně rozbalenou?"
 
-#: src/DL_Log_Screen.php:141
-msgid "Defaultní směr řazení"
-msgstr ""
+#: src/DL_Log_Screen.php:138
+msgid "Defaultly sorted column"
+msgstr "Defaultně seřazený sloupec"
 
-#: src/DL_Log_Screen.php:146
-msgid "Šířka okna se zdrojovým kódem"
-msgstr ""
+#: src/DL_Log_Screen.php:143
+msgid "Default sort direction"
+msgstr "Defaultní směr řazení"
 
-#: src/DL_Log_Screen.php:151
-msgid "Výška okna se zdrojovým kódem"
-msgstr ""
+#: src/DL_Log_Screen.php:148
+msgid "Width of modal window with source codes"
+msgstr "Šířka okna se zdrojovými kódy"
 
-#: src/DL_Log_Table.php:120 src/DL_Log_Table.php:406
-msgid "Záznam"
-msgstr ""
+#: src/DL_Log_Screen.php:153
+msgid "Height of modal window with source codes"
+msgstr "Výška okna se zdrojovými kódy"
 
 #: src/DL_Log_Table.php:121
-msgid "Záznamy"
-msgstr ""
+msgid "Records"
+msgstr "Záznamy"
 
-#: src/DL_Log_Table.php:234 src/DL_Log_Table.php:608
-msgid "Chyba"
-msgstr ""
+#: src/DL_Log_Table.php:234 src/DL_Log_Table.php:599
+msgid "Error"
+msgstr "Chyba"
 
-#: src/DL_Log_Table.php:238
-msgid "Upozornění"
-msgstr ""
+#: src/DL_Log_Table.php:238 src/DL_Log_Table.php:600
+msgid "Notice"
+msgstr "Oznámení"
 
-#: src/DL_Log_Table.php:242
-msgid "Ostatní"
-msgstr ""
+#: src/DL_Log_Table.php:242 src/DL_Log_Table.php:603
+msgid "Other"
+msgstr "Ostatní"
 
-#: src/DL_Log_Table.php:246
-msgid "Chyba kódu"
-msgstr ""
+#: src/DL_Log_Table.php:246 src/DL_Log_Table.php:601
+msgid "Parser error"
+msgstr "Chyba parseru"
 
-#: src/DL_Log_Table.php:250 src/DL_Log_Table.php:611
-msgid "Varování"
-msgstr ""
+#: src/DL_Log_Table.php:250 src/DL_Log_Table.php:602
+msgid "Warning"
+msgstr "Varování"
 
-#: src/DL_Log_Table.php:254
-msgid "Chyba log parseru"
-msgstr ""
-
-#: src/DL_Log_Table.php:288
+#: src/DL_Log_Table.php:284
+#, fuzzy
 msgid "Stack trace"
-msgstr ""
+msgstr "Stack trace"
 
-#: src/DL_Log_Table.php:330
-msgid "Smaž"
-msgstr ""
+#: src/DL_Log_Table.php:326 src/DL_Log_Table.php:343
+msgid "Delete"
+msgstr "Smazat"
 
-#: src/DL_Log_Table.php:347
-msgid "Smazat"
-msgstr ""
+#: src/DL_Log_Table.php:399
+msgid "<abbr title=\"Record Number\">ID</abbr>"
+msgstr "<abbr title=\"Pořadové číslo\">P.Č.</abbr>"
 
-#: src/DL_Log_Table.php:403
-msgid "<abbr title=\"Pořadové číslo\">P.č.</abbr>"
-msgstr ""
+#: src/DL_Log_Table.php:401
+msgid "Type"
+msgstr "Typ"
 
-#: src/DL_Log_Table.php:404
-msgid "Datum a čas"
-msgstr ""
+#: src/DL_Log_Table.php:466 src/DL_Log_Table.php:591
+msgid "Today"
+msgstr "Dnes"
 
-#: src/DL_Log_Table.php:405
-msgid "Typ"
-msgstr ""
-
-#: src/DL_Log_Table.php:467
-msgid "Dnešní"
-msgstr ""
+#: src/DL_Log_Table.php:467 src/DL_Log_Table.php:592
+msgid "Yesterday"
+msgstr "Včera"
 
 #: src/DL_Log_Table.php:468
-msgid "Včerejší"
-msgstr ""
+msgid "Earlier"
+msgstr "Dříve"
 
 #: src/DL_Log_Table.php:469
-msgid "Dřívější"
-msgstr ""
+msgid "All"
+msgstr "Vše"
 
-#: src/DL_Log_Table.php:470
-msgid "Všechny"
-msgstr ""
+#: src/DL_Log_Table.php:589 src/DL_Log_Table.php:598
+msgid "—— All ——"
+msgstr "—— Vše ——"
 
-#: src/DL_Log_Table.php:598 src/DL_Log_Table.php:607
-msgid "—— Vše ——"
-msgstr ""
+#: src/DL_Log_Table.php:590
+msgid "Last hour"
+msgstr "Poslední hodina"
 
-#: src/DL_Log_Table.php:599
-msgid "Posl. hodina"
-msgstr ""
+#: src/DL_Log_Table.php:593
+msgid "Last week"
+msgstr "Poslední týden"
 
-#: src/DL_Log_Table.php:600
-msgid "Dnes"
-msgstr ""
+#: src/DL_Log_Table.php:594
+msgid "Last month"
+msgstr "Poslední měsíc"
 
-#: src/DL_Log_Table.php:601
-msgid "Včera"
-msgstr ""
-
-#: src/DL_Log_Table.php:602
-msgid "Posl. týden"
-msgstr ""
-
-#: src/DL_Log_Table.php:603
-msgid "Posl. měsíc"
-msgstr ""
-
-#: src/DL_Log_Table.php:609
-msgid "Oznámení"
-msgstr ""
-
-#: src/DL_Log_Table.php:610
-msgid "Chyba parseru"
-msgstr ""
-
-#: src/DL_Log_Table.php:612
-msgid "Jiný"
-msgstr ""
-
-#: src/DL_Log_Table.php:636
+#: src/DL_Log_Table.php:627
 msgid ""
-"Váš soubor <code>debug.log</code> je prázdný &ndash; to znamená žádné chyby "
+"Your file <code>debug.log</code> is empty &ndash; that means no errors "
 "<strong class=\"noitems-smiley\">:-)</strong>&hellip;"
 msgstr ""
+"Váš soubor <code>debug.log</code> je prázdný &ndash; to znamená žádné chyby "
+"<strong class=\"noitems-smiley\">:-)</strong>&hellip;"
 
-#: src/DL_Log_Table.php:783 src/DL_Log_Table.php:856
+#: src/DL_Log_Table.php:780 src/DL_Log_Table.php:853
 #, php-format
-msgid "Zadaná akce \"<b>%s</b>\" nebyla rozpoznána!"
-msgstr ""
+msgid "Requested action \"<b>%s</b>\" was not recognized!"
+msgstr "Vyžádaná akce \"<b>%s</b>\" nebyla rozpoznána!"
 
-#: src/DL_Log_Table.php:799
-msgid "Mazání nebylo provedeno - nebyly vybrány žádné položky logu ke smazání."
-msgstr ""
+#: src/DL_Log_Table.php:796
+msgid "Nothing deleted - no records were selected."
+msgstr "Protože žádné záznamy nebyly vybrány, nebylo nic smazáno."
 
-#: src/DL_Log_Table.php:812
-msgid "Při mazání položek ze souboru <code>debug.log</code> nastala chyba."
-msgstr ""
+#: src/DL_Log_Table.php:809
+msgid "Error occured during deleting records from <code>debug.log</code> file."
+msgstr "Při mazání záznamů ze souboru <code>debug.log</code> nastala chyba."
 
-#: src/DL_Log_Table.php:818
-msgid "Žádné položky souboru <code>debug.log</code> nebyly smazány."
-msgstr ""
+#: src/DL_Log_Table.php:815
+msgid "No records from <code>debug.log</code> file were deleted."
+msgstr "Žádné záznamy ze souboru <code>debug.log</code> nebyly smazány."
 
-#: src/DL_Log_Table.php:826
+#: src/DL_Log_Table.php:823
 #, php-format
-msgid "Mazání položek bylo úspěšné (smazaných položek %d)."
+msgid "Deleting were successfull (deleted %1$d records)."
+msgstr "Mazání bylo úspěšné (smazáno %1$d záznamů)."
+
+#: src/DL_Log_Table.php:866
+#, php-format
+msgid ""
+"Record on line <b>%d</b> was successfully removed from <code>debug.log</"
+"code> file."
 msgstr ""
+"Ze souboru <code>debug.log</code> byl úspěšně smazán záznam na řádku <b>%d</"
+"b>."
 
 #: src/DL_Log_Table.php:869
 #, php-format
 msgid ""
-"Záznam z řádku <b>%d</b> byl úspěšně odstraněn ze souboru <code>debug.log</"
-"code>."
+"Record on line <b>%d</b> from <code>debug.log</code> file was not deleted!"
 msgstr ""
+"Ze souboru <code>debug.log</code> nebyl úspěšně smazán záznam na řádku <b>"
+"%d</b>!"
 
-#: src/DL_Log_Table.php:872
-#, php-format
-msgid ""
-"Záznam z řádku <b>%d</b> souboru <code>debug.log</code> se nepodařilo smazat!"
-msgstr ""
-
-#: src/DL_Log_Table.php:907
+#: src/DL_Log_Table.php:905
 #, php-format
 msgid "%s item"
 msgid_plural "%s items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%s položka"
+msgstr[1] "%s položky"
+msgstr[2] "%s položek"
 
-#: src/DL_Log_Table.php:949
+#: src/DL_Log_Table.php:948
 msgid "First page"
-msgstr ""
+msgstr "První stránka"
 
-#: src/DL_Log_Table.php:959
+#: src/DL_Log_Table.php:958
 msgid "Previous page"
-msgstr ""
+msgstr "Předchozí stránka"
 
-#: src/DL_Log_Table.php:966 src/DL_Log_Table.php:969
+#: src/DL_Log_Table.php:965 src/DL_Log_Table.php:968
 msgid "Current Page"
-msgstr ""
+msgstr "Aktuální stránka"
 
-#: src/DL_Log_Table.php:975
+#: src/DL_Log_Table.php:974
 #, php-format
 msgctxt "paging"
 msgid "%1$s of %2$s"
-msgstr ""
+msgstr "%1$s z %2$s"
 
-#: src/DL_Log_Table.php:982
+#: src/DL_Log_Table.php:981
 msgid "Next page"
-msgstr ""
+msgstr "Další stránka"
 
-#: src/DL_Log_Table.php:992
+#: src/DL_Log_Table.php:991
 msgid "Last page"
-msgstr ""
+msgstr "Poslední stránka"
 
 #: src/DL_Log_Table.php:1046
 msgid "Select All"
-msgstr ""
+msgstr "Vybrat vše"
 
 #: src/DL_Options_Screen.php:31
-msgid "Nastavení pro plugin <em>Prohlížeč ladících informací</em>"
-msgstr ""
+msgid "Settings for plugin <em>Debug Log Viewer</em>"
+msgstr "Nastavení pro plugin <em>Prohlížeč ladících informací</em>"
 
 #: src/DL_Plugin.php:250
-msgid "Přejít na zobrazení ladících informací."
-msgstr ""
+msgid "Show Debug Log Viewer"
+msgstr "Zobrazit Prohlížeč ladících informací"
 
 #: src/DL_Plugin.php:303
 #, php-format
 msgid ""
-"<strong>Debug Log Viewer</strong>: Soubor (<code>%s</code>) určený k zápisu "
-"ladících informací byl úspěšně vytvořen."
+"<strong>Debug Log Viewer</strong>: File (<code>%s</code>) was successfully "
+"created."
 msgstr ""
+"<strong>Prohlížeč ladících informací</strong>: Soubor (<code>%s</code>) byl "
+"úspěšně vytvořen."
 
 #: src/DL_Plugin.php:311
 #, php-format
 msgid ""
-"<strong>Debug Log Viewer</strong>: Soubor (<code>%s</code>) určený k zápisu "
-"ladících informací není vytvořen a jeho vytvoření se nezdařilo. Vytvořte jej "
-"proto ručně."
+"<strong>Debug Log Viewer</strong>: File (<code>%s</code>) doesn't exist and "
+"can't be created. Create it on your own."
 msgstr ""
+"<strong>Prohlížeč ladících informací</strong>: Soubor (<code>%s</code>) "
+"neexistuje a ani nemůže být vytvořen. Musíte jej vytvořit sami."
 
 #: src/DL_Plugin.php:322
 #, php-format
 msgid ""
-"<strong>Debug Log Viewer</strong>: Soubor (<code>%s</code>) k zápisu "
-"ladících informací sice existuje ale není zapisovatelný."
+"<strong>Debug Log Viewer</strong>: File (<code>%s</code>) exists but is not "
+"writeable."
 msgstr ""
+"<strong>Prohlížeč ladících informací</strong>: Soubor (<code>%s</code>) "
+"existuje, ale není zapisovatelný."
 
 #: src/DL_Plugin.php:337
 #, php-format
 msgid ""
-"Pro umožnění zápisu ladících informací do logovacího souboru (<code>%s</"
-"code>) musí být konstanty <code>WP_DEBUG</code> a <code>WP_DEBUG_LOG</code> "
-"nastaveny na hodnotu <code>TRUE</code>."
+"If you want to write log records into (<code>%s</code>) file you need to set "
+"PHP constants <code>WP_DEBUG</code> and <code>WP_DEBUG_LOG</code> on value "
+"<code>TRUE</code>."
 msgstr ""
+"Pokud chcete, aby se ladící informace zapisovaly do souboru (<code>%s</"
+"code>) musíte nastavit PHP konstanty <code>WP_DEBUG</code> a "
+"<code>WP_DEBUG_LOG</code> na hodnotu <code>TRUE</code>."
 
 #: partials/screen-log.phtml:32
-msgid "Vymazat log"
-msgstr ""
+msgid "Delete log"
+msgstr "Smazat záznamy"
 
-#: partials/screen-log.phtml:34
-msgid "Filtrovat položky"
+#: partials/screen-log.phtml:33
+msgid ""
+"Small plugin aimed for developers that want easilly see their debug.log file."
 msgstr ""
+"Malý plugin pro vývojáře, kteří chtějí pohodlnější přístup k jejich souboru  "
+"debug.log."
 
-#: partials/screen-log.phtml:43
-msgid "Položky logu"
-msgstr ""
+#: partials/screen-log.phtml:35
+msgid "Filter records"
+msgstr "Filtrovat záznamy"
+
+#: partials/screen-log.phtml:44
+msgid "Log records"
+msgstr "Ladící informace"
 
 #: partials/screen-log_extra_tablenav.phtml:17
-msgid "Dle času"
-msgstr ""
-
 #: partials/screen-log_extra_tablenav.phtml:18
-msgid "Filtrovat dle času"
-msgstr ""
+msgid "Filter by time"
+msgstr "Filtrovat dle času"
 
 #: partials/screen-log_extra_tablenav.phtml:23
-msgid "Dle typu"
-msgstr ""
-
 #: partials/screen-log_extra_tablenav.phtml:24
-msgid "Filtrovat dle typu"
-msgstr ""
+msgid "Filter by type"
+msgstr "Filtrovat dle typu"
 
 #: partials/screen-log_extra_tablenav.phtml:29
-msgid "Filtrovat"
-msgstr ""
+msgid "Filter"
+msgstr "Filtr"
 
 #: partials/screen-log_options.phtml:30
 msgid "Screen Options Tab"
-msgstr ""
+msgstr "Nastavení zobrazení"
 
 #: partials/screen-log_options.phtml:35
-msgid "Nastavení pro zobrazení tabulky"
-msgstr ""
+msgid "Table screen options"
+msgstr "Nastavení zobrazení tabulky"
 
-#: partials/screen-log_options.phtml:36
+#: partials/screen-log_options.phtml:38
+msgid "Displayed columns: "
+msgstr "Zobrazené položky: "
+
+#: partials/screen-log_options.phtml:49
+msgid "Gray items are displayed by default and can't hidden."
+msgstr "Šedé položky jsou zobrazeny vždy a nemohou být skryty."
+
+#: partials/screen-log_options.phtml:53
+msgid "Count of records per page: "
+msgstr "Počet záznamů na stránku: "
+
+#: partials/screen-log_options.phtml:60
+msgid "Check if you want to see record type as an icon not as a normal text."
+msgstr ""
+"Zaškrtněte pokud chcete zobrazit typ záznamu jako ikonu a ne jako normální "
+"text."
+
+#: partials/screen-log_options.phtml:64
+msgid "Create links to source files?"
+msgstr "Zobrazit odkazy na zdrojové kódy?"
+
+#: partials/screen-log_options.phtml:66
 msgid ""
-"Pro význam jednotlivých nastavení se podívejte do nápovědy této obrazovky."
+"Check if you want to create links to source files where was error occured."
 msgstr ""
+"Zaškrtněte pokud chcete zobrazit odkazy na soubory se zdrojovými kódy, ve "
+"kterých se chyba stala."
 
-#: partials/screen-log_options.phtml:39
-msgid "Zobrazené sloupce: "
-msgstr ""
+#: partials/screen-log_options.phtml:70
+msgid "Show source file names shortened?"
+msgstr "Zobrazit názvy zdrojových souborů zkrácené?"
 
-#: partials/screen-log_options.phtml:50
-msgid "Zašedlé položky jsou zobrazeny vždy a nemohou tudíž být skryty."
-msgstr ""
-
-#: partials/screen-log_options.phtml:54
-msgid "Počet řádků zobrazených na stránce: "
-msgstr ""
-
-#: partials/screen-log_options.phtml:61
+#: partials/screen-log_options.phtml:72
 msgid ""
-"Zaškrtněte pokud chcete mít typ záznamu (chyba, oznámení, ostatní, "
-"upozornění) jako ikonu a ne jako normální text."
+"Show source file names shortened (e.g. without absolute path <code>ABSPATH</"
+"code>)?"
 msgstr ""
-
-#: partials/screen-log_options.phtml:67
-msgid ""
-"Zaškrtněte pokud chcete zobrazit odkazy na zdrojové soubory, ve kterých se "
-"chyba vyskytla."
-msgstr ""
-
-#: partials/screen-log_options.phtml:71
-msgid "Zobrazit názvy zdrojových souborů zkrácené?"
-msgstr ""
-
-#: partials/screen-log_options.phtml:73
-msgid ""
-"Zobrazit názvy zdrojových souborů zkrácené (tzn. bez absolutní cesty "
+"Zobrazit názvy souborů se zdrojovými kódy zkrácené (tzn. bez absolutní cesty "
 "<code>ABSPATH</code>)?"
-msgstr ""
 
-#: partials/screen-log_options.phtml:77
-msgid "Zobrazit stack trace defaultně rozbalenou?"
-msgstr ""
+#: partials/screen-log_options.phtml:76
+#, fuzzy
+msgid "Show stack trace defaultly unfolded?"
+msgstr "Zobrazit stack trace defaultně rozbalenou?"
 
-#: partials/screen-log_options.phtml:79
+#: partials/screen-log_options.phtml:78
+#, fuzzy
+msgid "Check if you want to have <em>stack trace</em> defaultly unfolded."
+msgstr ""
+"Zaškrtněte pokud chcete ponechat <em>stack trace</em> defaultně rozbalenou."
+
+#: partials/screen-log_options.phtml:83
+msgid "Set width and height for the modal window with source codes.  Width: "
+msgstr "Nastavte šířku a výšku okna se zdrojovými kódy. Šířka: "
+
+#: partials/screen-log_options.phtml:85
+msgid ", height: "
+msgstr ", výška: "
+
+#: partials/screen-log_options.phtml:88
 msgid ""
-"Zaškrtněte pokud chcete zobrazit <em>stack trace</em> defaultně rozbalenou."
+"This option has effect only when creating source files links is enabled (see "
+"above)."
 msgstr ""
+"Tato volba má vliv pouze pokud je povoleno zobrazení odkazů na soubory se "
+"zdrojovými kódy (viz. výše)."
 
-#: partials/screen-log_options.phtml:84
-msgid "Nastavte šířku a výšku okna pro zobrazování zdrojových kódů.  Šířka: "
-msgstr ""
+#: partials/screen-log_options.phtml:92
+msgid "Set column which will be sorted by default "
+msgstr "Nastavte sloupec, který bude seřazen defaultně "
 
-#: partials/screen-log_options.phtml:86
-msgid ", výška: "
-msgstr ""
+#: partials/screen-log_options.phtml:100
+msgid " and its order "
+msgstr " a také řazení "
 
-#: partials/screen-log_options.phtml:89
-msgid ""
-"Toto nastavení má význam pouze je-li povoleno zobrazování odkazů na zdrojové "
-"soubory (viz. nastavení výše)."
-msgstr ""
-
-#: partials/screen-log_options.phtml:93
-msgid "Nastavte sloupec, který se bude řadit defaultně "
-msgstr ""
-
-#: partials/screen-log_options.phtml:101
-msgid " a způsob jeho řazení "
-msgstr ""
+#: partials/screen-log_options.phtml:102
+msgid "Ascendant"
+msgstr "Vzestupně"
 
 #: partials/screen-log_options.phtml:103
-msgid "Vzestupně"
-msgstr ""
+msgid "Descendant"
+msgstr "Sestupně"
 
-#: partials/screen-log_options.phtml:104
-msgid "Sestupně"
-msgstr ""
-
-#: partials/screen-log_options.phtml:111
-msgid "Použít"
-msgstr ""
+#: partials/screen-log_options.phtml:110
+msgid "Save settings"
+msgstr "Uložit nastavení"

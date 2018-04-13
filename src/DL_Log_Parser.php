@@ -493,9 +493,6 @@ class DL_Log_Parser {
         else if( strpos( $str, DL_Log_Record::TYPE_WARNING ) === 0 ) {
             return DL_Log_Record::TYPE_WARNING;
         }
-        else if( strpos( $str, DL_Log_Record::TYPE_ODWPDL ) === 0 ) {
-            return DL_Log_Record::TYPE_ODWPDL;
-        }
 
         return DL_Log_Record::TYPE_OTHER;
     }

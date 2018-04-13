@@ -247,7 +247,7 @@ class DL_Plugin {
             'parent' => 'top-secondary',
             'title'  => '<span class="ab-icon"></span>',
             'meta'   => [
-                'title' => __( 'Přejít na zobrazení ladících informací.', DL_LOG ),
+                'title' => __( 'Show Debug Log Viewer', DL_LOG ),
             ],
         ] );
     }
@@ -300,7 +300,7 @@ class DL_Plugin {
             if ( self::create_log_file() === true ) {
                 add_action( 'admin_notices', function() {
                     $msg = sprintf(
-                            __( '<strong>Debug Log Viewer</strong>: Soubor (<code>%s</code>) určený k zápisu ladících informací byl úspěšně vytvořen.', DL_SLUG ),
+                            __( '<strong>Debug Log Viewer</strong>: File (<code>%s</code>) was successfully created.', DL_SLUG ),
                             DL_LOG
                     );
                     DL_Plugin::print_admin_notice( $msg, 'success' );
@@ -308,7 +308,7 @@ class DL_Plugin {
             } else {
                 add_action( 'admin_notices', function() {
                     $msg = sprintf(
-                            __( '<strong>Debug Log Viewer</strong>: Soubor (<code>%s</code>) určený k zápisu ladících informací není vytvořen a jeho vytvoření se nezdařilo. Vytvořte jej proto ručně.', DL_SLUG ),
+                            __( '<strong>Debug Log Viewer</strong>: File (<code>%s</code>) doesn\'t exist and can\'t be created. Create it on your own.', DL_SLUG ),
                             DL_LOG
                     );
                     DL_Plugin::print_admin_notice( $msg, 'warning', true );
@@ -319,7 +319,7 @@ class DL_Plugin {
             // File exists but is not writable
             add_action( 'admin_notices', function() {
                 $msg = sprintf(
-                        __( '<strong>Debug Log Viewer</strong>: Soubor (<code>%s</code>) k zápisu ladících informací sice existuje ale není zapisovatelný.', DL_SLUG ),
+                        __( '<strong>Debug Log Viewer</strong>: File (<code>%s</code>) exists but is not writeable.', DL_SLUG ),
                         DL_LOG
                 );
                 DL_Plugin::print_admin_notice( $msg );
@@ -334,7 +334,7 @@ class DL_Plugin {
          * @var string $err_msg Error message about setting WP_DEBUG and WP_DEBUG_LOG constants.
          */
         $err_msg = sprintf(
-                __( 'Pro umožnění zápisu ladících informací do logovacího souboru (<code>%s</code>) musí být konstanty <code>WP_DEBUG</code> a <code>WP_DEBUG_LOG</code> nastaveny na hodnotu <code>TRUE</code>.', DL_SLUG ),
+                __( 'If you want to write log records into (<code>%s</code>) file you need to set PHP constants <code>WP_DEBUG</code> and <code>WP_DEBUG_LOG</code> on value <code>TRUE</code>.', DL_SLUG ),
                 DL_LOG
         );
 

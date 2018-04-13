@@ -117,8 +117,8 @@ class DL_Log_Table extends WP_List_Table {
      */
     public function __construct( $args = [] ) {
         parent::__construct( [
-            'singular' => __( 'Záznam', DL_SLUG ),
-            'plural'   => __( 'Záznamy', DL_SLUG ),
+            'singular' => __( 'Record', DL_SLUG ),
+            'plural'   => __( 'Records', DL_SLUG ),
             'ajax'     => true,
         ] );
 
@@ -231,28 +231,24 @@ class DL_Log_Table extends WP_List_Table {
 
         switch( $item->get_type() ) {
             case DL_Log_Record::TYPE_ERROR:
-                $lbl = __( 'Chyba', DL_SLUG );
+                $lbl = __( 'Error', DL_SLUG );
                 return ( $show_icons === true ) ? '<span class="dashicons dashicons-warning" title="' . $lbl .'"></span>' : $lbl;
 
             case DL_Log_Record::TYPE_NOTICE:
-                $lbl = __( 'Upozornění', DL_SLUG );
+                $lbl = __( 'Notice', DL_SLUG );
                 return ( $show_icons === true ) ? '<span class="dashicons dashicons-format-status" title="' . $lbl .'"></span>' : $lbl;
 
             case DL_Log_Record::TYPE_OTHER:
-                $lbl = __( 'Ostatní', DL_SLUG );
+                $lbl = __( 'Other', DL_SLUG );
                 return ( $show_icons === true ) ? '<span class="dashicons dashicons-editor-help" title="' . $lbl .'"></span>' : $lbl;
 
             case DL_Log_Record::TYPE_PARSER:
-                $lbl = __( 'Chyba kódu', DL_SLUG );
+                $lbl = __( 'Parser error', DL_SLUG );
                 return ( $show_icons === true ) ? '<span class="dashicons  dashicons-thumbs-down" title="' . $lbl . '"></span>' : $lbl;
 
             case DL_Log_Record::TYPE_WARNING:
-                $lbl = __( 'Varování', DL_SLUG );
+                $lbl = __( 'Warning', DL_SLUG );
                 return ( $show_icons === true ) ? '<span class="dashicons dashicons-flag" title="' . $lbl .'"></span>' : $lbl;
-
-            case DL_Log_Record::TYPE_ODWPDL:
-                $lbl = __( 'Chyba log parseru', DL_SLUG );
-                return ( $show_icons === true ) ? '<span class="dashicons dashicons-no" title="' . $lbl .'"></span>' : $lbl;
         }
     }
 
@@ -327,7 +323,7 @@ class DL_Log_Table extends WP_List_Table {
      */
     public function get_bulk_actions() {
         $actions = [
-            'delete' => __( 'Smaž', DL_SLUG ),
+            'delete' => __( 'Delete', DL_SLUG ),
         ];
         return $actions;
     }
@@ -344,7 +340,7 @@ class DL_Log_Table extends WP_List_Table {
             'delete' => sprintf(
                     '<a href="%s">%s</a>',
                     $this->get_current_table_url( [ 'action' => 'delete', 'record' => $item->get_id() ] ),
-                    __( 'Smazat', DL_SLUG )
+                    __( 'Delete', DL_SLUG )
             ),
         ];
 
@@ -400,10 +396,10 @@ class DL_Log_Table extends WP_List_Table {
     public function get_columns() {
         $columns = [
             'cb'   => '<input type="checkbox">',
-            'id'   => __( '<abbr title="Pořadové číslo">P.č.</abbr>', DL_LOG ),
-            'time' => __( 'Datum a čas', DL_LOG ),
-            'type' => __( 'Typ', DL_LOG ),
-            'text' => __( 'Záznam', DL_LOG ),
+            'id'   => __( '<abbr title="Record Number">ID</abbr>', DL_SLUG ),
+            'time' => __( 'Date and time', DL_SLUG ),
+            'type' => __( 'Type', DL_SLUG ),
+            'text' => __( 'Record', DL_SLUG ),
         ];
 
         return $columns;
@@ -467,10 +463,10 @@ class DL_Log_Table extends WP_List_Table {
      */
     protected function get_views() {
         $views = [
-            'today'     => __( 'Dnešní', DL_SLUG ),
-            'yesterday' => __( 'Včerejší', DL_SLUG ),
-            'earlier'   => __( 'Dřívější', DL_SLUG ),
-            'all'       => __( 'Všechny', DL_SLUG ),
+            'today'     => __( 'Today', DL_SLUG ),
+            'yesterday' => __( 'Yesterday', DL_SLUG ),
+            'earlier'   => __( 'Earlier', DL_SLUG ),
+            'all'       => __( 'All', DL_SLUG ),
         ];
         $current_view = filter_input( INPUT_GET, 'view' );
 
@@ -590,21 +586,21 @@ class DL_Log_Table extends WP_List_Table {
         $type   = intval( $filter['type'] );
 
         $time_filters = [
-            0 => __( '—— Vše ——', DL_SLUG ),
-            1 => __( 'Posl. hodina', DL_SLUG ),
-            2 => __( 'Dnes', DL_SLUG ),
-            3 => __( 'Včera', DL_SLUG ),
-            4 => __( 'Posl. týden', DL_SLUG ),
-            5 => __( 'Posl. měsíc', DL_SLUG ),
+            0 => __( '—— All ——', DL_SLUG ),
+            1 => __( 'Last hour', DL_SLUG ),
+            2 => __( 'Today', DL_SLUG ),
+            3 => __( 'Yesterday', DL_SLUG ),
+            4 => __( 'Last week', DL_SLUG ),
+            5 => __( 'Last month', DL_SLUG ),
         ];
 
         $type_filters = [
-            0 => __( '—— Vše ——', DL_SLUG ),
-            1 => __( 'Chyba', DL_SLUG ),
-            2 => __( 'Oznámení', DL_SLUG ),
-            3 => __( 'Chyba parseru', DL_SLUG ),
-            4 => __( 'Varování', DL_SLUG ),
-            5 => __( 'Jiný', DL_SLUG ),
+            0 => __( '—— All ——', DL_SLUG ),
+            1 => __( 'Error', DL_SLUG ),
+            2 => __( 'Notice', DL_SLUG ),
+            3 => __( 'Parser error', DL_SLUG ),
+            4 => __( 'Warning', DL_SLUG ),
+            5 => __( 'Other', DL_SLUG ),
         ];
 
         // Print the filters
@@ -628,7 +624,7 @@ class DL_Log_Table extends WP_List_Table {
     public function no_items() {
         printf(
             '<p class="odwpdl-no_items">%s</p>',
-            __( 'Váš soubor <code>debug.log</code> je prázdný &ndash; to znamená žádné chyby <strong class="noitems-smiley">:-)</strong>&hellip;', DL_SLUG )
+            __( 'Your file <code>debug.log</code> is empty &ndash; that means no errors <strong class="noitems-smiley">:-)</strong>&hellip;', DL_SLUG )
         );
     }
 
@@ -781,7 +777,7 @@ class DL_Log_Table extends WP_List_Table {
         // Validate action, otherwise return
         if( ! in_array( $action, ['delete'] ) ) {
             DL_Plugin::print_admin_notice(
-                sprintf( __( 'Zadaná akce "<b>%s</b>" nebyla rozpoznána!', DL_SLUG ), $action ),
+                sprintf( __( 'Requested action "<b>%s</b>" was not recognized!', DL_SLUG ), $action ),
                 'warning',
                 true
             );
@@ -797,7 +793,7 @@ class DL_Log_Table extends WP_List_Table {
         // There are no items to delete
         if( count( $log_items ) == 0 ) {
             DL_Plugin::print_admin_notice(
-                __( 'Mazání nebylo provedeno - nebyly vybrány žádné položky logu ke smazání.', DL_SLUG ),
+                __( 'Nothing deleted - no records were selected.', DL_SLUG ),
                 'info',
                 true
             );
@@ -810,13 +806,13 @@ class DL_Log_Table extends WP_List_Table {
         // Print output message
         if( $res === false ) {
             DL_Plugin::print_admin_notice(
-                __( 'Při mazání položek ze souboru <code>debug.log</code> nastala chyba.', DL_SLUG ),
+                __( 'Error occured during deleting records from <code>debug.log</code> file.', DL_SLUG ),
                 'error'
             );
         }
         else if( $res === 0 ) {
             DL_Plugin::print_admin_notice(
-                __( 'Žádné položky souboru <code>debug.log</code> nebyly smazány.', DL_SLUG ),
+                __( 'No records from <code>debug.log</code> file were deleted.', DL_SLUG ),
                 'info'
             );
         }
@@ -824,7 +820,7 @@ class DL_Log_Table extends WP_List_Table {
             // bylo smazano X polozek
             DL_Plugin::print_admin_notice(
                 sprintf(
-                    __( 'Mazání položek bylo úspěšné (smazaných položek %d).', DL_SLUG ),
+                    __( 'Deleting were successfull (deleted %1$d records).', DL_SLUG ),
                     $res
                 ),
                 'success'
@@ -854,7 +850,7 @@ class DL_Log_Table extends WP_List_Table {
         // Validate action, otherwise return
         if( ! in_array( $action, ['delete'] ) || empty( $record ) ) {
             DL_Plugin::print_admin_notice(
-                __( 'Zadaná akce "<b>%s</b>" nebyla rozpoznána!', DL_SLUG ),
+                __( 'Requested action "<b>%s</b>" was not recognized!', DL_SLUG ),
                 'warning',
                 true
             );
@@ -867,10 +863,10 @@ class DL_Log_Table extends WP_List_Table {
             $msg_text = $msg_type = '';
 
             if( $this->parser->delete_record( $record ) === true ) {
-                $msg_text = __( 'Záznam z řádku <b>%d</b> byl úspěšně odstraněn ze souboru <code>debug.log</code>.', DL_SLUG );
+                $msg_text = __( 'Record on line <b>%d</b> was successfully removed from <code>debug.log</code> file.', DL_SLUG );
                 $msg_type = 'success';
             } else {
-                $msg_text = __( 'Záznam z řádku <b>%d</b> souboru <code>debug.log</code> se nepodařilo smazat!', DL_SLUG );
+                $msg_text = __( 'Record on line <b>%d</b> from <code>debug.log</code> file was not deleted!', DL_SLUG );
                 $msg_type = 'error';
             }
 
@@ -905,7 +901,9 @@ class DL_Log_Table extends WP_List_Table {
             $this->screen->render_screen_reader_content( 'heading_pagination' );
         }
 
-        $output = '<span class="displaying-num">' . sprintf( _n( '%s item', '%s items', $total_items ), number_format_i18n( $total_items ) ) . '</span>';
+        $output = '<span class="displaying-num">'
+            . sprintf( _n( '%s item', '%s items', $total_items, DL_SLUG ), number_format_i18n( $total_items ) )
+            . '</span>';
 
         $current = $this->get_pagenum();
         $removable_query_args = wp_removable_query_args();
@@ -947,7 +945,7 @@ class DL_Log_Table extends WP_List_Table {
         } else {
             $page_links[] = sprintf( "<a class='first-page' href='%s'><span class='screen-reader-text'>%s</span><span aria-hidden='true'>%s</span></a>",
                     esc_url( remove_query_arg( 'paged', $current_url ) ),
-                    __( 'First page' ),
+                    __( 'First page', DL_SLUG ),
                     '&laquo;'
             );
         }
@@ -957,30 +955,30 @@ class DL_Log_Table extends WP_List_Table {
         } else {
             $page_links[] = sprintf( "<a class='prev-page' href='%s'><span class='screen-reader-text'>%s</span><span aria-hidden='true'>%s</span></a>",
                     esc_url( add_query_arg( 'paged', max( 1, $current-1 ), $current_url ) ),
-                    __( 'Previous page' ),
+                    __( 'Previous page', DL_SLUG ),
                     '&lsaquo;'
             );
         }
 
         if ( 'bottom' === $which ) {
             $html_current_page  = $current;
-            $total_pages_before = '<span class="screen-reader-text">' . __( 'Current Page' ) . '</span><span id="table-paging" class="paging-input"><span class="tablenav-paging-text">';
+            $total_pages_before = '<span class="screen-reader-text">' . __( 'Current Page', DL_SLUG ) . '</span><span id="table-paging" class="paging-input"><span class="tablenav-paging-text">';
         } else {
-            $html_current_page = sprintf( "%s<input class='current-page' id='current-page-selector' type='text' name='paged' value='%s' size='%d' aria-describedby='table-paging' /><span class='tablenav-paging-text'>",
-                    '<label for="current-page-selector" class="screen-reader-text">' . __( 'Current Page' ) . '</label>',
+            $html_current_page = sprintf( "%s<input class='current-page' id='current-page-selector' type='text' name='paged' value='%s' size='%d' aria-describedby='table-paging'><span class='tablenav-paging-text'>",
+                    sprintf( '<label for="current-page-selector" class="screen-reader-text">%s</label>', __( 'Current Page', DL_SLUG ) ),
                     $current,
                     strlen( $total_pages )
             );
         }
-        $html_total_pages = sprintf( "<span class='total-pages'>%s</span>", number_format_i18n( $total_pages ) );
-        $page_links[] = $total_pages_before . sprintf( _x( '%1$s of %2$s', 'paging' ), $html_current_page, $html_total_pages ) . $total_pages_after;
+        $html_total_pages = sprintf( '<span class="total-pages">%s</span>', number_format_i18n( $total_pages ) );
+        $page_links[] = $total_pages_before . sprintf( _x( '%1$s of %2$s', 'paging', DL_SLUG ), $html_current_page, $html_total_pages ) . $total_pages_after;
 
         if ( $disable_next ) {
             $page_links[] = '<span class="tablenav-pages-navspan" aria-hidden="true">&rsaquo;</span>';
         } else {
             $page_links[] = sprintf( "<a class='next-page' href='%s'><span class='screen-reader-text'>%s</span><span aria-hidden='true'>%s</span></a>",
                     esc_url( add_query_arg( 'paged', min( $total_pages, $current+1 ), $current_url ) ),
-                    __( 'Next page' ),
+                    __( 'Next page', DL_SLUG ),
                     '&rsaquo;'
             );
         }
@@ -990,7 +988,7 @@ class DL_Log_Table extends WP_List_Table {
         } else {
             $page_links[] = sprintf( "<a class='last-page' href='%s'><span class='screen-reader-text'>%s</span><span aria-hidden='true'>%s</span></a>",
                     esc_url( add_query_arg( 'paged', $total_pages, $current_url ) ),
-                    __( 'Last page' ),
+                    __( 'Last page', DL_SLUG ),
                     '&raquo;'
             );
         }
@@ -1044,8 +1042,9 @@ class DL_Log_Table extends WP_List_Table {
 
         if ( ! empty( $columns['cb'] ) ) {
                 static $cb_counter = 1;
-                $columns['cb'] = '<label class="screen-reader-text" for="cb-select-all-' . $cb_counter . '">' . __( 'Select All' ) . '</label>'
-                        . '<input id="cb-select-all-' . $cb_counter . '" type="checkbox" />';
+                $columns['cb'] = '<label class="screen-reader-text" for="cb-select-all-' . $cb_counter . '">'
+                        . __( 'Select All', DL_SLUG ) . '</label>'
+                        . '<input id="cb-select-all-' . $cb_counter . '" type="checkbox">';
                 $cb_counter++;
         }
 
@@ -1078,7 +1077,8 @@ class DL_Log_Table extends WP_List_Table {
                                 $class[] = $desc_first ? 'asc' : 'desc';
                         }
 
-                        $column_display_name = '<a href="' . esc_url( add_query_arg( compact( 'orderby', 'order' ), $current_url ) ) . '"><span>' . $column_display_name . '</span><span class="sorting-indicator"></span></a>';
+                        $column_display_name = '<a href="' . esc_url( add_query_arg( compact( 'orderby', 'order' ), $current_url ) )
+                            . '"><span>' . $column_display_name . '</span><span class="sorting-indicator"></span></a>';
                 }
 
                 $tag = ( 'cb' === $column_key ) ? 'td' : 'th';

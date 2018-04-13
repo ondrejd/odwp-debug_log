@@ -1,0 +1,686 @@
+# Blank WordPress Pot
+# Copyright 2014 ...
+# This file is distributed under the GNU General Public License v3 or later.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: odwp-"
+"debug_log 1.0.0\n"
+"POT-Creation-Date: "
+"2018-04-13 13:38+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Your "
+"Name <you@example.com>\n"
+"Language-Team: Ondřej "
+"Doněk <ondrejd@gmail."
+"com>\n"
+"Report-Msgid-Bugs-To: "
+"Translator Name "
+"<translations@example."
+"com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/"
+"plain; charset=UTF-8\n"
+"Content-Transfer-"
+"Encoding: 8bit\n"
+"Plural-Forms: "
+"nplurals=2; plural=n != "
+"1;\n"
+"X-Textdomain-Support: "
+"yesX-Generator: Poedit "
+"1.6.4\n"
+"X-Poedit-SourceCharset: "
+"UTF-8\n"
+"X-Poedit-KeywordsList: "
+"__;_e;esc_html_e;"
+"esc_html_x:1,2c;"
+"esc_html__;esc_attr_e;"
+"esc_attr_x:1,2c;"
+"esc_attr__;_ex:1,2c;"
+"_nx:4c,1,2;"
+"_nx_noop:4c,1,2;_x:1,2c;"
+"_n:1,2;_n_noop:1,2;"
+"__ngettext:1,2;"
+"__ngettext_noop:1,2;_c,"
+"_nc:4c,1,2\n"
+"X-Poedit-Basepath: ..\n"
+"Language: en_US\n"
+"X-Generator: Poedit "
+"2.0.4\n"
+"X-Poedit-SearchPath-0: "
+"partials\n"
+"X-Poedit-SearchPath-1: "
+"src\n"
+"X-Poedit-SearchPath-2: "
+"odwp-debug_log.php\n"
+"X-Poedit-SearchPath-3: "
+"odwpdl-show_url.php\n"
+"X-Poedit-"
+"SearchPathExcluded-0: "
+"assets\n"
+"X-Poedit-"
+"SearchPathExcluded-1: "
+"lib\n"
+"X-Poedit-"
+"SearchPathExcluded-2: "
+"languages\n"
+
+#: odwp-debug_log.php:75
+#, php-format
+msgid ""
+"Used PHP interpreter "
+"doesn't meet "
+"requirements of this "
+"plugin (is required "
+"version <b>%1$s</b> at "
+"least)!"
+msgstr ""
+
+#: odwp-debug_log.php:86
+#, php-format
+msgid ""
+"PHP extension <b>%1$s</"
+"b> is required but not "
+"installed!"
+msgstr ""
+
+#: odwp-debug_log.php:97
+#, php-format
+msgid ""
+"This plugin requires "
+"higher version of "
+"<b>WordPress</b> (at "
+"least version <b>%1$s</"
+"b>)!"
+msgstr ""
+
+#: odwp-debug_log.php:109
+#, php-format
+msgid ""
+"The plugin <b>%1$s</b> "
+"is required but not "
+"installed!"
+msgstr ""
+
+#: odwp-debug_log.php:181
+msgid ""
+"Use function "
+"`odwpdl_write_log` "
+"instead!"
+msgstr ""
+
+#: odwp-debug_log.php:236
+msgid ""
+"<b>Debug Log Viewer</b>: "
+msgstr ""
+
+#: odwpdl-show_url.php:62
+#, php-format
+msgid ""
+"Source file [\"%1$s\"] "
+"was not found!"
+msgstr ""
+
+#: odwpdl-show_url.php:64
+#, php-format
+msgid ""
+"Source file [\"%1$s\"] "
+"can not be read!"
+msgstr ""
+
+#: src/DL_Log_Dashboard_Widget.php:48
+#: src/DL_Log_Screen.php:40
+#: src/DL_Options_Screen.php:30
+msgid "Debug Log"
+msgstr ""
+
+#: src/DL_Log_Screen.php:41
+#: partials/screen-log.phtml:32
+msgid "Debug Log Viewer"
+msgstr ""
+
+#: src/DL_Log_Screen.php:46
+msgid "General"
+msgstr ""
+
+#: src/DL_Log_Screen.php:64
+msgid ""
+"Debug log table contains "
+"all records from "
+"<code>debug.log</code> "
+"file."
+msgstr ""
+
+#: src/DL_Log_Screen.php:65
+msgid "Table columns"
+msgstr ""
+
+#: src/DL_Log_Screen.php:66
+msgid "Record number"
+msgstr ""
+
+#: src/DL_Log_Screen.php:67
+msgid ""
+"Record (line) number of "
+"the record"
+msgstr ""
+
+#: src/DL_Log_Screen.php:68
+#: src/DL_Log_Table.php:400
+msgid "Date and time"
+msgstr ""
+
+#: src/DL_Log_Screen.php:69
+msgid ""
+"Date and time when was "
+"record added"
+msgstr ""
+
+#: src/DL_Log_Screen.php:70
+msgid "Record type"
+msgstr ""
+
+#: src/DL_Log_Screen.php:71
+msgid ""
+"Type of record (see "
+"table below)"
+msgstr ""
+
+#: src/DL_Log_Screen.php:72
+#: src/DL_Log_Table.php:120
+#: src/DL_Log_Table.php:402
+msgid "Record"
+msgstr ""
+
+#: src/DL_Log_Screen.php:73
+msgid ""
+"Text of record "
+"(including <em>stack "
+"trace</em>)"
+msgstr ""
+
+#: src/DL_Log_Screen.php:74
+msgid "Types of records"
+msgstr ""
+
+#: src/DL_Log_Screen.php:75
+msgid "Fatal error"
+msgstr ""
+
+#: src/DL_Log_Screen.php:76
+msgid "Error notice"
+msgstr ""
+
+#: src/DL_Log_Screen.php:77
+msgid "Other errors"
+msgstr ""
+
+#: src/DL_Log_Screen.php:78
+msgid "PHP parser error"
+msgstr ""
+
+#: src/DL_Log_Screen.php:79
+msgid "Warning notice"
+msgstr ""
+
+#: src/DL_Log_Screen.php:94
+msgid "Usefull links"
+msgstr ""
+
+#: src/DL_Log_Screen.php:96
+msgid "Author's homepage"
+msgstr ""
+
+#: src/DL_Log_Screen.php:98
+msgid ""
+"GitHub - source codes"
+msgstr ""
+
+#: src/DL_Log_Screen.php:100
+msgid "GitHub - issues"
+msgstr ""
+
+#: src/DL_Log_Screen.php:108
+msgid "Displayed columns"
+msgstr ""
+
+#: src/DL_Log_Screen.php:113
+msgid ""
+"Count of records per page"
+msgstr ""
+
+#: src/DL_Log_Screen.php:118
+msgid ""
+"Make links to source "
+"files shorter?"
+msgstr ""
+
+#: src/DL_Log_Screen.php:123
+#: partials/screen-log_options.phtml:58
+msgid ""
+"Show record type as an "
+"icon?"
+msgstr ""
+
+#: src/DL_Log_Screen.php:128
+msgid ""
+"Show links to source "
+"files?"
+msgstr ""
+
+#: src/DL_Log_Screen.php:133
+msgid ""
+"Show <em>stack trace</"
+"em> defaultly unfolded?"
+msgstr ""
+
+#: src/DL_Log_Screen.php:138
+msgid ""
+"Defaultly sorted column"
+msgstr ""
+
+#: src/DL_Log_Screen.php:143
+msgid ""
+"Default sort direction"
+msgstr ""
+
+#: src/DL_Log_Screen.php:148
+msgid ""
+"Width of modal window "
+"with source codes"
+msgstr ""
+
+#: src/DL_Log_Screen.php:153
+msgid ""
+"Height of modal window "
+"with source codes"
+msgstr ""
+
+#: src/DL_Log_Table.php:121
+msgid "Records"
+msgstr ""
+
+#: src/DL_Log_Table.php:234
+#: src/DL_Log_Table.php:599
+msgid "Error"
+msgstr ""
+
+#: src/DL_Log_Table.php:238
+#: src/DL_Log_Table.php:600
+msgid "Notice"
+msgstr ""
+
+#: src/DL_Log_Table.php:242
+#: src/DL_Log_Table.php:603
+msgid "Other"
+msgstr ""
+
+#: src/DL_Log_Table.php:246
+#: src/DL_Log_Table.php:601
+msgid "Parser error"
+msgstr ""
+
+#: src/DL_Log_Table.php:250
+#: src/DL_Log_Table.php:602
+msgid "Warning"
+msgstr ""
+
+#: src/DL_Log_Table.php:284
+msgid "Stack trace"
+msgstr ""
+
+#: src/DL_Log_Table.php:326
+#: src/DL_Log_Table.php:343
+msgid "Delete"
+msgstr ""
+
+#: src/DL_Log_Table.php:399
+msgid ""
+"<abbr title=\"Record "
+"Number\">ID</abbr>"
+msgstr ""
+
+#: src/DL_Log_Table.php:401
+msgid "Type"
+msgstr ""
+
+#: src/DL_Log_Table.php:466
+#: src/DL_Log_Table.php:591
+msgid "Today"
+msgstr ""
+
+#: src/DL_Log_Table.php:467
+#: src/DL_Log_Table.php:592
+msgid "Yesterday"
+msgstr ""
+
+#: src/DL_Log_Table.php:468
+msgid "Earlier"
+msgstr ""
+
+#: src/DL_Log_Table.php:469
+msgid "All"
+msgstr ""
+
+#: src/DL_Log_Table.php:589
+#: src/DL_Log_Table.php:598
+msgid "—— All ——"
+msgstr ""
+
+#: src/DL_Log_Table.php:590
+msgid "Last hour"
+msgstr ""
+
+#: src/DL_Log_Table.php:593
+msgid "Last week"
+msgstr ""
+
+#: src/DL_Log_Table.php:594
+msgid "Last month"
+msgstr ""
+
+#: src/DL_Log_Table.php:627
+msgid ""
+"Your file <code>debug."
+"log</code> is empty "
+"&ndash; that means no "
+"errors <strong class="
+"\"noitems-smiley\">:-)</"
+"strong>&hellip;"
+msgstr ""
+
+#: src/DL_Log_Table.php:780
+#: src/DL_Log_Table.php:853
+#, php-format
+msgid ""
+"Requested action \"<b>"
+"%s</b>\" was not "
+"recognized!"
+msgstr ""
+
+#: src/DL_Log_Table.php:796
+msgid ""
+"Nothing deleted - no "
+"records were selected."
+msgstr ""
+
+#: src/DL_Log_Table.php:809
+msgid ""
+"Error occured during "
+"deleting records from "
+"<code>debug.log</code> "
+"file."
+msgstr ""
+
+#: src/DL_Log_Table.php:815
+msgid ""
+"No records from "
+"<code>debug.log</code> "
+"file were deleted."
+msgstr ""
+
+#: src/DL_Log_Table.php:823
+#, php-format
+msgid ""
+"Deleting were "
+"successfull (deleted "
+"%1$d records)."
+msgstr ""
+
+#: src/DL_Log_Table.php:866
+#, php-format
+msgid ""
+"Record on line <b>%d</b> "
+"was successfully removed "
+"from <code>debug.log</"
+"code> file."
+msgstr ""
+
+#: src/DL_Log_Table.php:869
+#, php-format
+msgid ""
+"Record on line <b>%d</b> "
+"from <code>debug.log</"
+"code> file was not "
+"deleted!"
+msgstr ""
+
+#: src/DL_Log_Table.php:905
+#, php-format
+msgid "%s item"
+msgid_plural "%s items"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/DL_Log_Table.php:948
+msgid "First page"
+msgstr ""
+
+#: src/DL_Log_Table.php:958
+msgid "Previous page"
+msgstr ""
+
+#: src/DL_Log_Table.php:965
+#: src/DL_Log_Table.php:968
+msgid "Current Page"
+msgstr ""
+
+#: src/DL_Log_Table.php:974
+#, php-format
+msgctxt "paging"
+msgid "%1$s of %2$s"
+msgstr ""
+
+#: src/DL_Log_Table.php:981
+msgid "Next page"
+msgstr ""
+
+#: src/DL_Log_Table.php:991
+msgid "Last page"
+msgstr ""
+
+#: src/DL_Log_Table.php:1046
+msgid "Select All"
+msgstr ""
+
+#: src/DL_Options_Screen.php:31
+msgid ""
+"Settings for plugin "
+"<em>Debug Log Viewer</em>"
+msgstr ""
+
+#: src/DL_Plugin.php:250
+msgid ""
+"Show Debug Log Viewer"
+msgstr ""
+
+#: src/DL_Plugin.php:303
+#, php-format
+msgid ""
+"<strong>Debug Log "
+"Viewer</strong>: File "
+"(<code>%s</code>) was "
+"successfully created."
+msgstr ""
+
+#: src/DL_Plugin.php:311
+#, php-format
+msgid ""
+"<strong>Debug Log "
+"Viewer</strong>: File "
+"(<code>%s</code>) "
+"doesn't exist and can't "
+"be created. Create it on "
+"your own."
+msgstr ""
+
+#: src/DL_Plugin.php:322
+#, php-format
+msgid ""
+"<strong>Debug Log "
+"Viewer</strong>: File "
+"(<code>%s</code>) exists "
+"but is not writeable."
+msgstr ""
+
+#: src/DL_Plugin.php:337
+#, php-format
+msgid ""
+"If you want to write log "
+"records into (<code>%s</"
+"code>) file you need to "
+"set PHP constants "
+"<code>WP_DEBUG</code> "
+"and <code>WP_DEBUG_LOG</"
+"code> on value "
+"<code>TRUE</code>."
+msgstr ""
+
+#: partials/screen-log.phtml:32
+msgid "Delete log"
+msgstr ""
+
+#: partials/screen-log.phtml:33
+msgid ""
+"Small plugin aimed for "
+"developers that want "
+"easilly see their debug."
+"log file."
+msgstr ""
+
+#: partials/screen-log.phtml:35
+msgid "Filter records"
+msgstr ""
+
+#: partials/screen-log.phtml:44
+msgid "Log records"
+msgstr ""
+
+#: partials/screen-log_extra_tablenav.phtml:17
+#: partials/screen-log_extra_tablenav.phtml:18
+msgid "Filter by time"
+msgstr ""
+
+#: partials/screen-log_extra_tablenav.phtml:23
+#: partials/screen-log_extra_tablenav.phtml:24
+msgid "Filter by type"
+msgstr ""
+
+#: partials/screen-log_extra_tablenav.phtml:29
+msgid "Filter"
+msgstr ""
+
+#: partials/screen-log_options.phtml:30
+msgid "Screen Options Tab"
+msgstr ""
+
+#: partials/screen-log_options.phtml:35
+msgid ""
+"Table screen options"
+msgstr ""
+
+#: partials/screen-log_options.phtml:38
+msgid "Displayed columns: "
+msgstr ""
+
+#: partials/screen-log_options.phtml:49
+msgid ""
+"Gray items are displayed "
+"by default and can't "
+"hidden."
+msgstr ""
+
+#: partials/screen-log_options.phtml:53
+msgid ""
+"Count of records per "
+"page: "
+msgstr ""
+
+#: partials/screen-log_options.phtml:60
+msgid ""
+"Check if you want to see "
+"record type as an icon "
+"not as a normal text."
+msgstr ""
+
+#: partials/screen-log_options.phtml:64
+msgid ""
+"Create links to source "
+"files?"
+msgstr ""
+
+#: partials/screen-log_options.phtml:66
+msgid ""
+"Check if you want to "
+"create links to source "
+"files where was error "
+"occured."
+msgstr ""
+
+#: partials/screen-log_options.phtml:70
+msgid ""
+"Show source file names "
+"shortened?"
+msgstr ""
+
+#: partials/screen-log_options.phtml:72
+msgid ""
+"Show source file names "
+"shortened (e.g. without "
+"absolute path "
+"<code>ABSPATH</code>)?"
+msgstr ""
+
+#: partials/screen-log_options.phtml:76
+msgid ""
+"Show stack trace "
+"defaultly unfolded?"
+msgstr ""
+
+#: partials/screen-log_options.phtml:78
+msgid ""
+"Check if you want to "
+"have <em>stack trace</"
+"em> defaultly unfolded."
+msgstr ""
+
+#: partials/screen-log_options.phtml:83
+msgid ""
+"Set width and height for "
+"the modal window with "
+"source codes.  Width: "
+msgstr ""
+
+#: partials/screen-log_options.phtml:85
+msgid ", height: "
+msgstr ""
+
+#: partials/screen-log_options.phtml:88
+msgid ""
+"This option has effect "
+"only when creating "
+"source files links is "
+"enabled (see above)."
+msgstr ""
+
+#: partials/screen-log_options.phtml:92
+msgid ""
+"Set column which will be "
+"sorted by default "
+msgstr ""
+
+#: partials/screen-log_options.phtml:100
+msgid " and its order "
+msgstr ""
+
+#: partials/screen-log_options.phtml:102
+msgid "Ascendant"
+msgstr ""
+
+#: partials/screen-log_options.phtml:103
+msgid "Descendant"
+msgstr ""
+
+#: partials/screen-log_options.phtml:110
+msgid "Save settings"
+msgstr ""

@@ -2,16 +2,15 @@
 /**
  * Plugin Name: Debug Log Viewer
  * Plugin URI: https://github.com/ondrejd/odwp-debug_log
- * Description: Small <a href="https://wordpress.org/" target="blank">WordPress</a> plugin especially for developers that allows better work with <code>debug.log</code> file.
+ * Description: Small plugin aimed for developers that want easilly see their debug.log file.
  * Version: 1.0.0
- * Author: Ondrej Donek
+ * Author: Ondřej Doněk
  * Author URI: https://ondrejd.com/
  * License: GPLv3
  * Requires at least: 4.7
- * Tested up to: 4.8.1
+ * Tested up to: 4.8.5
  * Tags: debug,log,development
  * Donate link: https://www.paypal.me/ondrejd
- *
  * Text Domain: odwpdl
  * Domain Path: /languages/
  *
@@ -73,7 +72,7 @@ if( ! function_exists( 'odwpdl_check_requirements' ) ) :
         if( ! empty( $requirements['php']['version'] ) ) {
             if( version_compare( phpversion(), $requirements['php']['version'], '<' ) ) {
                 $errors[] = sprintf(
-                        __( 'PHP nesplňuje nároky pluginu na minimální verzi (vyžadována nejméně <b>%s</b>)!', DL_SLUG ),
+                        __( 'Used PHP interpreter doesn\'t meet requirements of this plugin (is required version <b>%1$s</b> at least)!'),
                         $requirements['php']['version']
                 );
             }
@@ -84,7 +83,7 @@ if( ! function_exists( 'odwpdl_check_requirements' ) ) :
             foreach( $requirements['php']['extensions'] as $req_ext ) {
                 if( ! extension_loaded( $req_ext ) ) {
                     $errors[] = sprintf(
-                            __( 'Je vyžadováno rozšíření PHP <b>%s</b>, to ale není nainstalováno!', DL_SLUG ),
+                            __( 'PHP extension <b>%1$s</b> is required but not installed!', DL_SLUG ),
                             $req_ext
                     );
                 }
@@ -95,7 +94,7 @@ if( ! function_exists( 'odwpdl_check_requirements' ) ) :
         if( ! empty( $requirements['wp']['version'] ) ) {
             if( version_compare( $wp_version, $requirements['wp']['version'], '<' ) ) {
                 $errors[] = sprintf(
-                        __( 'Plugin vyžaduje vyšší verzi platformy <b>WordPress</b> (minimálně <b>%s</b>)!', DL_SLUG ),
+                        __( 'This plugin requires higher version of <b>WordPress</b> (at least version <b>%1$s</b>)!', DL_SLUG ),
                         $requirements['wp']['version']
                 );
             }
@@ -107,7 +106,7 @@ if( ! function_exists( 'odwpdl_check_requirements' ) ) :
             foreach( $requirements['wp']['plugins'] as $req_plugin ) {
                 if( ! in_array( $req_plugin, $active_plugins ) ) {
                     $errors[] = sprintf(
-                            __( 'Je vyžadován plugin <b>%s</b>, ten ale není nainstalován!', DL_SLUG ),
+                            __( 'The plugin <b>%1$s</b> is required but not installed!', DL_SLUG ),
                             $req_plugin
                     );
                 }
@@ -179,7 +178,7 @@ if( ! function_exists( 'odwpdl_error_log' ) ) :
      * @since 1.0.0
      */
     function odwpdl_error_log( string $message, int $message_type = null, string $destination = null, string $extra_headers = null ) {
-        _deprecated_function( __FUNCTION__, '1.0.0', __( 'Use function `odwpdl_write_log` instead.', DL_SLUG ) );
+        _deprecated_function( __FUNCTION__, '1.0.0', __( 'Use function `odwpdl_write_log` instead!', DL_SLUG ) );
 
         odwpdl_write_log( $message );
     }
@@ -237,7 +236,7 @@ if( count( $odwpdl_errs ) > 0 ) {
             $err_head = __( '<b>Debug Log Viewer</b>: ', DL_SLUG );
 
             foreach( $odwpdl_errs as $err ) {
-                printf( '<div class="error"><p>%s</p></div>', $err_head . $err );
+                printf( '<div class="error"><p>%1$s</p></div>', $err_head . $err );
             }
         } );
     }
