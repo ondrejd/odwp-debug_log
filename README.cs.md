@@ -2,7 +2,7 @@
 
 _For English version see [README.md][1]._
 
-Malý [WordPress][1] plugin pro vývojáře, kteří chtějí pohodlnější přístup k jejich souboru `debug.log`.
+Malý [WordPress][2] plugin pro vývojáře, kteří chtějí pohodlnější přístup k jejich souboru `debug.log`.
 
 ## Dárcovství
 
