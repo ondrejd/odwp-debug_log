@@ -344,7 +344,7 @@ class DL_Plugin {
             } );
         }
 
-        if( WP_DEBUG !== true || WP_DEBUG_LOG !== true ) {
+        if( WP_DEBUG != true || WP_DEBUG_LOG != true ) {
             add_action( 'admin_notices', function() use ( $err_msg ) {
                 self::print_admin_notice( $err_msg, 'error' );
             } );

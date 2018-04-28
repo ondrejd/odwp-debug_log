@@ -8,7 +8,7 @@
  * Author URI: https://ondrejd.com/
  * License: GPLv3
  * Requires at least: 4.7
- * Tested up to: 4.8.5
+ * Tested up to: 4.9.5
  * Tags: debug,log,development
  * Donate link: https://www.paypal.me/ondrejd
  * Text Domain: odwpdl
