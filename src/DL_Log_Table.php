@@ -104,6 +104,12 @@ class DL_Log_Table extends WP_List_Table {
     const DEFAULT_SRC_WIN_HEIGHT = 500;
 
     /**
+     * const string
+     * @since 1.0.0
+     */
+    const DEFAULT_VIEW = 'all';
+
+    /**
      * @var DL_Log_Parser $parser
      * @since 1.0.0
      */
@@ -396,7 +402,7 @@ class DL_Log_Table extends WP_List_Table {
     public function get_columns() {
         $columns = [
             'cb'   => '<input type="checkbox">',
-            'id'   => __( '<abbr title="Record Number">ID</abbr>', DL_SLUG ),
+            'id'   => __( 'ID', DL_SLUG ),
             'time' => __( 'Date and time', DL_SLUG ),
             'type' => __( 'Type', DL_SLUG ),
             'text' => __( 'Record', DL_SLUG ),
@@ -653,9 +659,10 @@ class DL_Log_Table extends WP_List_Table {
 
         // Use view
         $view = filter_input( INPUT_GET, 'view' );
-        if( in_array( $view, [ 'today', 'yesterday', 'earlier', 'all' ] ) ) {
-            $this->parser->set_view( $view );
+        if( !in_array( $view, [ 'today', 'yesterday', 'earlier', 'all' ] ) ) {
+            $view = self::DEFAULT_VIEW;
         }
+        $this->parser->set_view( $view );
 
         // Get order arguments
         extract( $this->get_order_args() );

@@ -209,7 +209,7 @@ endif;
 $odwpdl_errs = odwpdl_check_requirements( [
     'php' => [
         // Enter minimum PHP version you needs
-        'version' => '5.6',
+        'version' => '7.0',
         // Enter extensions that your plugin needs
         'extensions' => [
             //'gd',
