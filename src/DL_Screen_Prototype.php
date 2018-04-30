@@ -54,10 +54,10 @@ abstract class DL_Screen_Prototype {
      * ];
      * </pre>
      *
-     * @var array
+     * @var array $help_tabs
      * @since 1.0.0
      */
-    protected $help_tabs = [];
+    protected $help_tabs = array();
 
     /**
      * <p>Array with sidebars for screen help. Sidebar can be defined by code like this:</p>
@@ -73,22 +73,26 @@ abstract class DL_Screen_Prototype {
      *     '#'
      * );</pre>
      *
-     * @var array
+     * @var array $help_sidebars
      * @since 1.0.0
      */
-    protected $help_sidebars = [];
+    protected $help_sidebars = array();
 
     /**
-     * <p>Array with screen options. Don't forget that you can use screen options only when {@see DL_Screen_Prototype::$enable_screen_options} is set on <code>TRUE</code>. You can define them like this:</p>
+     * <p>Array with screen options - they are saved as user meta values. Don't forget that you can use screen options only when {@see DevHelper_Screen_Prototype::$enable_screen_options} is set on <code>TRUE</code>. You can define them like this:</p>
      * <pre>
      * $this->options[$this->slug . '-option1'] = [
-     *     'label'   => __( 'The first option', 'textdomain' ),
      *     'default' => 'default',
+     *     'label'   => __( 'The first option', 'textdomain' ),
      *     'option'  => $this->slug . '-option1',
+     *     'type'    => 'string', // ['boolean', 'integer', 'real', 'string']
      * ];
      * </pre>
+     *
+     * @var array $options
+     * @since 1.0.0
      */
-    protected $options = [];
+    protected $options = array();
 
     /**
      * <p>If this is set to <code>FALSE</code> these methods will be omitted:</p>
@@ -157,64 +161,41 @@ abstract class DL_Screen_Prototype {
     }
 
     /**
-     * <p>Returns current screen options. Here is an example code how to retrieve existing screen options:</p>
-     * <pre>
-     * $screen  = $this->get_screen();
-     * $user    = get_current_user_id();
-     * $option1 = get_user_meta( $user, $this->slug . '-option1', true );
-     *
-     * if( strlen( $option1 ) == 0 ) {
-     *     $option1 = $screen->get_option( $this->slug . '-option1', 'default' );
-     * }
-     *
-     * return [
-     *     'option1' => $option1,
-     * ];
-     * </pre>
+     * <p>Returns current screen options.</p>
      *
      * @return array
      * @since 1.0.0
-     * @todo Make this automatic without need of writing own code - just use {@see DL_Screen_Prototype::$options}.
+     * @uses get_current_user_id()
+     * @uses get_user_meta()
      */
     public function get_screen_options() {
         if( $this->enable_screen_options !== true ) {
-            return [];
+            return array();
         }
 
-        return [];
-    }
+        $screen = $this->get_screen();
+        $user = get_current_user_id();
+        $opts = array();
 
-    /**
-     * @internal Updates option with given value.
-     * @param string $key Option's key.
-     * @param mixed $value Option's value.
-     * @return void
-     * @since 1.0.0
-     */
-    protected function update_option( $key, $value ) {
-        if( $this->enable_screen_options !== true ) {
-            return;
+        // Go through all pre-defined screen options and collect them including values
+        foreach( $this->options as $option_key => $option_props ) {
+            $full_option_key = $this->slug . '-' . $option_key;
+            $option_val = get_user_meta( $user, $full_option_key, true );
+
+            // If option's value is not defined get the default value
+            if ( strlen( $option_val ) == 0 ) {
+                $option_val = $screen->get_option( $full_option_key, 'default' );
+            }
+
+            $opts[$option_key] = $option_val;
         }
 
-        $options = DL_Plugin::get_options();
-        $need_update = false;
-
-        if( ! array_key_exists( $key, $options ) ) {
-            $need_update = true;
-        }
-
-        if( ! $need_update && $options[$key] != $value ) {
-            $need_update = true;
-        }
-
-        if( $need_update === true) {
-            $options[$key] = $value;
-            update_option( $key, $value );
-        }
+        return $opts;
     }
 
     /**
      * Action for `init` hook.
+     * 
      * @return void
      * @since 1.0.0
      */
@@ -224,6 +205,7 @@ abstract class DL_Screen_Prototype {
 
     /**
      * Action for `admin_init` hook.
+     * 
      * @return void
      * @since 1.0.0
      */
@@ -233,6 +215,7 @@ abstract class DL_Screen_Prototype {
 
     /**
      * Action for `init` hook.
+     * 
      * @return void
      * @since 1.0.0
      */
@@ -242,6 +225,7 @@ abstract class DL_Screen_Prototype {
 
     /**
      * Action for `admin_head` hook.
+     * 
      * @return void
      * @since 1.0.0
      */
@@ -251,15 +235,15 @@ abstract class DL_Screen_Prototype {
 
     /**
      * Action for `admin_menu` hook.
+     * 
      * @return void
      * @since 1.0.0
      */
     abstract public function admin_menu();
 
     /**
-     * Creates screen help and add filter for screen options. Action 
-     * for `load-{$hookname}` hook (see {@see DL_Screen_Prototype::admin_menu} 
-     * for more details).
+     * Creates screen help and add filter for screen options. Action for `load-{$hookname}` hook.
+     * 
      * @return void
      * @since 1.0.0
      */
@@ -267,10 +251,12 @@ abstract class DL_Screen_Prototype {
         $screen = $this->get_screen();
 
         // Screen help
+
         // Help tabs
         foreach( $this->help_tabs as $tab ) {
             $screen->add_help_tab( $tab );
         }
+
         // Help sidebars
         foreach( $this->help_sidebars as $sidebar ) {
             $screen->set_help_sidebar( $sidebar );
@@ -278,7 +264,7 @@ abstract class DL_Screen_Prototype {
 
         // Screen options
         if( $this->enable_screen_options === true ) {
-            add_filter( 'screen_layout_columns', [$this, 'screen_options'] );
+            add_filter( 'screen_layout_columns', array( $this, 'screen_options' ) );
 
             foreach( $this->options as $option_key => $option_props ) {
                 if( ! empty( $option_key ) && is_array( $option_props ) ) {
@@ -289,13 +275,16 @@ abstract class DL_Screen_Prototype {
     }
 
     /**
-     * <p>Renders screen options form. Handler for `screen_layout_columns` filter (see {@see DL_Screen_Prototype::screen_load}).</p>
+     * <p>Renders screen options form. Handler for `screen_layout_columns` filter (see {@see DevHelper_Screen_Prototype::screen_load}).</p>
+     * 
+     * @param array $additional_template_args Optional.
      * @return void
      * @since 1.0.0
-     * @todo It should be rendered automatically by using {@see DL_Screen_Prototype::$options}.
+     * @uses apply_filters()
+     * 
      * @todo In WordPress Dashboard screen options there is no apply button and all is done by AJAX - it would be nice to have this the same.
      */
-    public function screen_options() {
+    public function screen_options( $additional_template_args = array() ) {
         if( $this->enable_screen_options !== true ) {
             return;
         }
@@ -303,9 +292,10 @@ abstract class DL_Screen_Prototype {
         // These are used in the template:
         $slug = $this->slug;
         $screen = $this->get_screen();
-        extract( $this->get_screen_options() );
+        $args = array_merge( $this->get_screen_options(), $additional_template_args );
+        extract( $args );
 
-        ob_start();
+        ob_start( function() {} );
         $template = str_replace( DL_SLUG . '-', '', "screen-{$this->slug}_options.phtml" );
         include( DL_PATH . "partials/{$template}" );
         $output = ob_get_clean();
@@ -314,6 +304,7 @@ abstract class DL_Screen_Prototype {
          * Filter for screen options form.
          *
          * @param string $output Rendered HTML.
+         * @since 1.0.0
          */
         $output = apply_filters( DL_SLUG . "_{$this->slug}_screen_options_form", $output );
         echo $output;
@@ -335,30 +326,68 @@ abstract class DL_Screen_Prototype {
      *
      * @return void
      * @since 1.0.0
-     * @todo It should be done automatically by using {@see DL_Screen_Prototype::$options} without need of writing own code.
+     * @uses get_current_user_id()
      */
     public function save_screen_options() {
         if( $this->enable_screen_options !== true ) {
             return;
         }
 
-        // ...
+        // Check if screen options are saved and NONCE
+        $submit = filter_input( INPUT_POST, $this->slug . '-screen_options_submit' );
+        $nonce = filter_input( INPUT_POST, $this->slug . '-screen_options_nonce' );
+
+		if ( ! ( $submit && ( bool ) wp_verify_nonce( $nonce ) === true ) ) {
+            return;
+        }
+
+        // Get current user's ID
+        $user = get_current_user_id();
+
+        if( empty( $user ) ) {
+            return;
+        }
+
+        // Collect all screen options
+        $opts = array();
+
+        foreach( $this->options as $option_key => $option_props ) {
+            if( ! empty( $option_key ) && is_array( $option_props ) ) {
+                $full_option_key = $this->slug . '-' . $option_key;
+
+                if( $option_props['type'] == 'boolean' ) { // e.g. checkbox in HTML
+                    $val = ( string ) filter_input( INPUT_POST, $full_option_key );
+                    $val = ( strtolower( $val ) == 'on' ) ? 1 : 0;
+                } else { // e.g. other inputs
+                    $val = ( string ) filter_input( INPUT_POST, $full_option_key );
+                }
+
+                update_user_meta( $user, $full_option_key, $val );
+            }
+        }
     }
 
     /**
      * Render page self.
+     * 
      * @param array $args (Optional.) Arguments for rendered template.
      * @return void
      * @since 1.0.0
+     * @uses apply_filters()
      */
-    public function render( $args = [] ) {
+    public function render( $args = array() ) {
+
+        // Check arguments
+        if( ! is_array( $args ) ) {
+            $args = array();
+        }
+
         // These are used in the template:
         $slug = $this->slug;
         $screen = $this->get_screen();
-        extract( $this->get_screen_options() );
-        extract( is_array( $args ) ? $args : [] );
+        extract( array_merge( $this->get_screen_options(), $args ) );
 
-        ob_start();
+        ob_start( function() {} );
         include( DL_PATH . 'partials/screen-' . str_replace( DL_SLUG . '-', '', $this->slug ) . '.phtml' );
         $output = ob_get_clean();
 
@@ -366,6 +395,7 @@ abstract class DL_Screen_Prototype {
          * Filter for whole rendered screen.
          *
          * @param string $output Rendered HTML.
+         * @since 1.0.0
          */
         $output = apply_filters( DL_SLUG . "_{$this->slug}", $output );
         echo $output;
