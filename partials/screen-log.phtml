@@ -29,19 +29,18 @@ $dl_log_table->prepare_items();
 add_thickbox();
 ?>
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php _e( 'Debug Log Viewer', DL_SLUG ) ?></h1> <a class="page-title-action" href="#"><?php _e( 'Delete log', DL_SLUG ) ?></a>
-    <span style="display: none"><?php _e( 'Small plugin aimed for developers that want easilly see their debug.log file.', DL_SLUG ) ?></span>
+    <h1 class="wp-heading-inline"><?php esc_html_e( 'Debug Log Viewer', DL_SLUG ) ?></h1> <a class="page-title-action" href="#"><?php esc_html_e( 'Delete log', DL_SLUG ) ?></a>
+    <span style="display: none"><?php esc_html_e( 'Small plugin aimed for developers that want easilly see their debug.log file.', DL_SLUG ) ?></span>
     <hr class="wp-header-end">
-    <h2 class="screen-reader-text"><?php _e( 'Filter records', DL_SLUG ) ?></h2>
+    <h2 class="screen-reader-text"><?php esc_html_e( 'Filter records', DL_SLUG ) ?></h2>
     <?php $dl_log_table->views() ?>
     <form id="odwpdl-log_table" method="get">
         <?php $dl_log_table->search_box( 'search', 'search_id' ) ?>
         <input type="hidden" name="page" value="<?php echo DL_Log_Screen::SLUG ?>">
         <?php /**
          * @todo Add hidden intput "_wpnonce"!
-         * @todo Add hidden input "_wp_http_referer"!
          */ ?>
-        <h2 class="screen-reader-text"><?php _e( 'Log records', DL_SLUG ) ?></h2>
+        <h2 class="screen-reader-text"><?php esc_html_e( 'Log records', DL_SLUG ) ?></h2>
         <?php $dl_log_table->display() ?>
     </form>
 </div>
