@@ -56,7 +56,7 @@ class DL_Log_Table extends WP_List_Table {
     const DEFAULT_PER_PAGE = 10;
 
     /**
-     * @var string Defaultly sorted column.
+     * @var string Column sorted by default.
      * @since 1.0.0
      */
     const DEFAULT_SORT_COL = 'time';
@@ -555,16 +555,14 @@ class DL_Log_Table extends WP_List_Table {
      * @since 1.0.0
      */
     public function get_filter() {
-        $_time = filter_input( INPUT_GET, 'filter-by-time' );
-        $_type = filter_input( INPUT_GET, 'filter-by-type' );
+        $_type = filter_input( INPUT_GET, 'filter-by-type', FILTER_SANITIZE_NUMBER_INT );
 
         /**
          * @var array $filter
          */
         $filter = [];
-        $filter['time'] = empty( $_time ) ? 0 : ( int ) $_time;
         $filter['type'] = empty( $_type ) ? 0 : ( int ) $_type;
-        $filter['is_filter'] = ! ( $filter['time'] === 0 && $filter['type'] === 0 );
+        $filter['is_filter'] = $filter['type'] > 0;
 
         return $filter;
     }
@@ -586,20 +584,10 @@ class DL_Log_Table extends WP_List_Table {
         }
 
         /**
-         * @var array $filter Contains array with filter settings (e.g. <code>['time' => 0, 'type' => 0]</code>).
+         * @var array $filter Contains array with filter settings (e.g. <code>['is_filter' => <bool>, 'type' => <int>]</code>).
         */
         $filter = $this->get_filter();
-        $time   = intval( $filter['time'] );
         $type   = intval( $filter['type'] );
-
-        $time_filters = [
-            0 => __( '—— All ——', DL_SLUG ),
-            1 => __( 'Last hour', DL_SLUG ),
-            2 => __( 'Today', DL_SLUG ),
-            3 => __( 'Yesterday', DL_SLUG ),
-            4 => __( 'Last week', DL_SLUG ),
-            5 => __( 'Last month', DL_SLUG ),
-        ];
 
         $type_filters = [
             0 => __( '—— All ——', DL_SLUG ),
@@ -614,9 +602,7 @@ class DL_Log_Table extends WP_List_Table {
         echo DL_Plugin::load_template(
             'screen-log_extra_tablenav', [
                 'filter'       => $filter,
-                'time'         => $time,
                 'type'         => $type,
-                'time_filters' => $time_filters,
                 'type_filters' => $type_filters,
             ]
         );
@@ -696,24 +682,17 @@ class DL_Log_Table extends WP_List_Table {
 
     /**
      * Applies filter on parser data.
-     * @param array $filter Array with filter settings (e.g. <code>['time' => 0, 'type' => 0]</code>).
+     * @param array $filter Array with filter settings (e.g. <code>['is_filter' => <bool>, 'type' => <int>]</code>).
      * @return void
      * @since 1.0.0
-     * @todo Finish filtering by time!
      */
     private function apply_filter( array $filter ) {
-        // Filter by time
-        $time = null;
 
-        switch( ( int ) $filter['time'] ) {
-            // TODO Finish filtering by time!
-        }
+    	if ( $filter['is_filter'] === false ) {
+    		return;
+	    }
 
-        // ...
-
-        // Filter by type
         $type = null;
-
         switch( ( int ) $filter['type'] ) {
             case 1 : $type = DL_Log_Record::TYPE_ERROR; break;
             case 2 : $type = DL_Log_Record::TYPE_NOTICE; break;
