@@ -7,19 +7,19 @@
  * @since 1.0.0
  */
 
-if( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if( ! class_exists( 'DL_Log_Record' ) ) {
+if ( ! class_exists( 'DL_Log_Record' ) ) {
     require_once( DL_PATH . 'src/DL_Log_Record.php' );
 }
 
-if( ! class_exists( 'DL_Log_Highlighter' ) ) {
+if ( ! class_exists( 'DL_Log_Highlighter' ) ) {
     require_once( DL_PATH . 'src/DL_Log_Highlighter.php' );
 }
 
-if( ! class_exists( 'DL_Log_Parser' ) ) :
+if ( ! class_exists( 'DL_Log_Parser' ) ) :
 
 /**
  * Parser for WordPress debug.log files.
@@ -149,7 +149,7 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     public function __destruct() {
-        if( $this->is_saved() ) {
+        if ( $this->is_saved() ) {
             $this->save();
         }
     }
@@ -161,17 +161,17 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     private function parse_args( $args = [] ) {
-        if( ! is_array( $args ) ) {
+        if ( ! is_array( $args ) ) {
             return;
         }
 
-        if( array_key_exists( 'log', $args ) ) {
-            if( is_array( $args['log'] ) ) {
+        if ( array_key_exists( 'log', $args ) ) {
+            if ( is_array( $args['log'] ) ) {
                 $this->log_raw = $args['log'];
             }
         }
 
-        if( array_key_exists( 'file', $args ) ) {
+        if ( array_key_exists( 'file', $args ) ) {
             $this->log_file = $args['file'];
         }
     }
@@ -184,11 +184,11 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     public function get_options( $option = null, $default = null ) {
-        if( empty( $option ) || is_null( $option ) ) {
+        if ( empty( $option ) || is_null( $option ) ) {
             return $this->options;
         }
 
-        if( array_key_exists( $option, $this->options ) ) {
+        if ( array_key_exists( $option, $this->options ) ) {
             return $this->options[$option];
         }
 
@@ -201,10 +201,10 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     public function get_sort_order() {
-        if( empty( $this->_order ) ) {
+        if ( empty( $this->_order ) ) {
             $this->_order = filter_input( INPUT_GET, 'order' );
 
-            if( empty( $this->_order ) ) {
+            if ( empty( $this->_order ) ) {
                 $this->_order = self::get_options()['sort_dir'];
             }
         }
@@ -218,10 +218,10 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     public function get_sort_orderby() {
-        if( empty( $this->_orderby ) ) {
+        if ( empty( $this->_orderby ) ) {
             $this->_orderby = filter_input( INPUT_GET, 'orderby' );
 
-            if( empty( $this->_orderby ) ) {
+            if ( empty( $this->_orderby ) ) {
                 $this->_orderby = self::get_options()['sort_col'];
             }
         }
@@ -235,10 +235,10 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     public function get_total_count() {
-        if( $this->is_parsed === true ) {
+        if ( $this->is_parsed === true ) {
             return count( $this->log );
         }
-        else if( $this->is_prepared === true ) {
+        else if ( $this->is_prepared === true ) {
             return count( $this->log_raw );
         }
 
@@ -269,7 +269,7 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     public function prepare() {
-        if( $this->is_prepared === true ) {
+        if ( $this->is_prepared === true ) {
             return;
         }
 
@@ -283,11 +283,11 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     public function parse() {
-        if( $this->is_parsed === true ) {
+        if ( $this->is_parsed === true ) {
             return;
         }
 
-        if( $this->is_prepared !== true ) {
+        if ( $this->is_prepared !== true ) {
             $this->prepare();
         }
 
@@ -297,7 +297,7 @@ class DL_Log_Parser {
             $this->parse_line( $log_line, $index );
         }
 
-        if( ( $this->_record instanceof DL_Log_Record ) ) {
+        if ( ( $this->_record instanceof DL_Log_Record ) ) {
             $this->log[] = $this->_record;
         }
 
@@ -320,7 +320,7 @@ class DL_Log_Parser {
             PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
         );
 
-        if( ! is_array( $matches ) ) {
+        if ( ! is_array( $matches ) ) {
             //odwpdl_write_log( 'DL_Log_Parser: Parser error (1).' );
             /**/echo '<pre>';
             echo 'WRONG MATCHES [1]:'.PHP_EOL;
@@ -331,9 +331,9 @@ class DL_Log_Parser {
             return;
         }
 
-        if( count( $matches ) == 2 ) {
+        if ( count( $matches ) == 2 ) {
             // This is normal log row (date and details)
-            if( ( $this->_record instanceof DL_Log_Record ) ) {
+            if ( ( $this->_record instanceof DL_Log_Record ) ) {
                 $this->log[] = $this->_record;
             }
 
@@ -347,14 +347,14 @@ class DL_Log_Parser {
             $this->_record->set_type( $type );
             $this->_record->set_message( $msg );
         }
-        elseif( count( $matches ) == 1 && ( $this->_record instanceof DL_Log_Record ) ) {
-            if( strpos( $matches[0], '#' ) === 0 ) {
+        elseif ( count( $matches ) == 1 && ( $this->_record instanceof DL_Log_Record ) ) {
+            if ( strpos( $matches[0], '#' ) === 0 ) {
                 // This is just continue of of previous line (debug details)
                 $this->_record->add_trace( $matches[0] );
             }
         }
         else {
-            if( empty( trim( $matches[0] ) ) ) {
+            if ( empty( trim( $matches[0] ) ) ) {
                 return;
             }
 
@@ -370,13 +370,13 @@ class DL_Log_Parser {
     }
 
     /**
-     * Filtres parsed log data.
-     * @param function $filter_func
+     * Filters parsed log data.
+     * @param Closure $filter_func
      * @return void
      * @since 1.0.0
      */
     public function filter( $filter_func ) {
-        if( $this->is_parsed !== true ) {
+        if ( $this->is_parsed !== true ) {
             $this->parse();
         }
 
@@ -391,27 +391,27 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     public function set_view( $view ) {
-        if( $this->_view === $view ) {
+        if ( $this->_view === $view ) {
             return;
         }
 
-        if( $this->is_parsed !== true ) {
+        if ( $this->is_parsed !== true ) {
             $this->parse();
         }
 
         $log_by_view = [];
 
         foreach( $this->log as $item ) {
-            if( $view === 'today' && $item->was_today() ) {
+            if ( $view === 'today' && $item->was_today() ) {
                 $log_by_view[] = $item;
             }
-            elseif( $view === 'yesterday' && $item->was_yesterday() ) {
+            elseif ( $view === 'yesterday' && $item->was_yesterday() ) {
                 $log_by_view[] = $item;
             }
-            elseif( $view === 'earlier' && ( ! $item->was_today() && ! $item->was_yesterday() ) ) {
+            elseif ( $view === 'earlier' && ( ! $item->was_today() && ! $item->was_yesterday() ) ) {
                 $log_by_view[] = $item;
             }
-            elseif( $view === 'all' ) {
+            elseif ( $view === 'all' ) {
                 $log_by_view[] = $item;
             }
         }
@@ -426,15 +426,15 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     public function sort( $args = [] ) {
-        if( $this->is_parsed !== true ) {
+        if ( $this->is_parsed !== true ) {
             $this->parse();
         }
 
-        if( array_key_exists( 'sort_col', $args ) ) {
+        if ( array_key_exists( 'sort_col', $args ) ) {
             $this->_orderby = $args['sort_col'];
         }
 
-        if( array_key_exists( 'sort_dir', $args ) ) {
+        if ( array_key_exists( 'sort_dir', $args ) ) {
             $this->_order = $args['sort_dir'];
         }
 
@@ -456,13 +456,13 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     public function get_data( $options = ['page' => -1] ) {
-        if( $this->is_parsed !== true ) {
+        if ( $this->is_parsed !== true ) {
             $this->parse();
         }
 
         $data = [];
 
-        if( $options['page'] == -1 ) {
+        if ( $options['page'] == -1 ) {
             $data = $this->log;
         } else {
             $per_page = $this->get_options( 'per_page', DL_Log_Table::DEFAULT_PER_PAGE );
@@ -481,16 +481,16 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     public function parse_type( $str ) {
-        if( strpos( $str, DL_Log_Record::TYPE_ERROR ) === 0 ) {
+        if ( strpos( $str, DL_Log_Record::TYPE_ERROR ) === 0 ) {
             return DL_Log_Record::TYPE_ERROR;
         }
-        else if( strpos( $str, DL_Log_Record::TYPE_NOTICE ) === 0 ) {
+        else if ( strpos( $str, DL_Log_Record::TYPE_NOTICE ) === 0 ) {
             return DL_Log_Record::TYPE_NOTICE;
         }
-        else if( strpos( $str, DL_Log_Record::TYPE_PARSER ) === 0 ) {
+        else if ( strpos( $str, DL_Log_Record::TYPE_PARSER ) === 0 ) {
             return DL_Log_Record::TYPE_PARSER;
         }
-        else if( strpos( $str, DL_Log_Record::TYPE_WARNING ) === 0 ) {
+        else if ( strpos( $str, DL_Log_Record::TYPE_WARNING ) === 0 ) {
             return DL_Log_Record::TYPE_WARNING;
         }
 
@@ -531,9 +531,9 @@ class DL_Log_Parser {
         $matches = preg_split( $regexp, $str, -1, PREG_SPLIT_DELIM_CAPTURE );
 
         foreach( $matches as $match ) {
-            if( strpos( $match, ABSPATH ) === 0 ) {
+            if ( strpos( $match, ABSPATH ) === 0 ) {
                 // Array item contains file link
-                if( ! in_array( $match, $file_links ) ) {
+                if ( ! in_array( $match, $file_links ) ) {
                     $file_links[] = $match;
                 }
             }
@@ -557,7 +557,7 @@ class DL_Log_Parser {
             $file_name = $file_link;
 
             // Make link shorter if user wants it
-            if( $short_src_links === true ) {
+            if ( $short_src_links === true ) {
                 $file_name = str_replace( WP_PLUGIN_DIR . '/' . DL_NAME, '&hellip;/' . DL_NAME, $file_name );
                 $file_name = str_replace( WP_PLUGIN_DIR, '&hellip;/plugins', $file_name );
                 $file_name = str_replace( ABSPATH, '&hellip;/', $file_name );
@@ -616,33 +616,40 @@ class DL_Log_Parser {
                 break;
         }
 
-        $result = strcmp( $val1, $val2 );
+        if ( is_numeric( $val1 ) && is_numeric( $val2 ) ) {
+            $result = ( $val1 < $val2 ) ? -1 : ( ( $val1 > $val2 ) ? 1 : 0 );
+        } else {
+            $result = strcmp( $val1, $val2 );
+        }
 
         return ( $order === 'asc' ) ? $result : -$result;
     }
 
     /**
-     * Deletes record at given row (but does not save the file).
-     * @param integer $line
+     * Delete record at given row (but does not save the file).
+     *
+     * @param integer $record Number of log record.
      * @return boolean
      * @since 1.0.0
      * @todo This is wrong! It should consider <em>stack trace</em>!
      */
-    public function delete_record( $line ) {
+    public function delete_record( $record ) {
+
         // It should be, but just for case...
-        if( $this->is_parsed !== false ) {
+        if ( $this->is_parsed !== false ) {
             return false;
         }
 
-        // Check if given line number is
-        $record = $this->log[$line];
-        if( array_key_exists( $line, $this->log_raw ) ) {
-            unset( $this->log_raw[$row] );
-            $this->saved = false;
-            return true;
+        // Check if given line number exists
+        if ( ! array_key_exists( $record, $this->log ) ) {
+            return false;
         }
 
-        return false;
+        // Delete item
+        unset( $this->log[$record] );
+        $this->saved = false;
+
+        return true;
     }
 
     /**
@@ -667,13 +674,12 @@ class DL_Log_Parser {
     }
 
     /**
-     * Saves {@see DL_Log_Parser::$log_raw} into the {@see DL_Log_Parser::$file}.
+     * Save {@see DL_Log_Parser::$log_raw} into the {@see DL_Log_Parser::$file}.
      * @return boolean
      * @since 1.0.0
      */
     public function save() {
-        //if( file_put_contents( DL_LOG, implode( PHP_EOL, $this->log_raw ) ) === false ) {
-        if( file_put_contents( DL_LOG, $this->log_raw ) === false ) {
+        if ( file_put_contents( DL_LOG, $this->log_raw ) === false ) {
             return false;
         }
 
