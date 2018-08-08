@@ -1,6 +1,6 @@
 # Prohlížeč ladících informací
 
-_For English version see [README.md][1]._
+__For English version see file [README.md][1].__
 
 Malý [WordPress][2] plugin pro vývojáře, kteří chtějí pohodlnější přístup k jejich souboru `debug.log`.
 
@@ -15,7 +15,7 @@ Pokud se vám tento plugin líbí a chcete podpořit jeho vývoj, můžete zvá�
 * povolit/zakázat _WP_ ladící mód přímo z administrace
 * widget pro nástěnku administrace se zmenšeným výpisem vašeho `debug.log` souboru
 * nová administrátorská stránka (__Administrace__ > __Nástroje__ > __Ladící informace__), kde jsou v tabulce zobrazeny záznamy z vašeho `debug.log` souboru
-* soubory se zdrojovými kódy, na které se v záznamech odkazuje, mohou být snadno zobrazeny ve vestavěném prohlížeči (zvýrazňování zdrojových kódů zajišťuje [GeSHi][4])
+* soubory se zdrojovými kódy, na které se v záznamech odkazuje, mohou být snadno zobrazeny ve vestavěném prohlížeči (zvýrazňování zdrojových kódů zajišťuje Javascriptová __[highlight.js][4]__)
 * anglický a český překlad
 
 ## Snímky obrazovky
@@ -33,4 +33,4 @@ Níže je několik obrázků:
 [1]: README.md
 [2]: https://wordpress.org/
 [3]: https://www.paypal.me/ondrejd
-[4]: http://qbnz.com/highlighter/
+[4]: https://highlightjs.org/

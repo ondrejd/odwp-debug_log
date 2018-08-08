@@ -1,6 +1,6 @@
 <?php
 /**
- * Script that renders source codes of given file. Used insed the log viewer.
+ * Script that renders source codes of given file.
  *
  * @author Ondřej Doněk <ondrejd@gmail.com>
  * @link https://github.com/ondrejd/odwp-debug_log for the canonical source repository
@@ -10,43 +10,38 @@
  */
 
 /**
- * @var string $path Path to the current file.
- */
-$path = dirname( __FILE__ );
-
-/**
  * @var string $root Path to the WordPress root.
  */
-$root = dirname( dirname( dirname( $path ) ) );
+$root = dirname( dirname( dirname( dirname( __FILE__ ) ) ) );
 
 // Initialize WordPress self (we need it because of localization).
 define( 'WP_USE_THEMES', false );
 require( $root . '/wp-load.php' );
+
+// File with some constants
+include( dirname( __FILE__ ) . '/constants.php' );
+
+// Initialize localization
 load_plugin_textdomain( 'odwpdl', false, 'odwp-debug_log/languages' );
 
-/**
- * @var string $file
- */
+// Passed file (should be full path)
 $file = filter_input( INPUT_GET, 'file' );
+$error_msg = '';
 
-/**
- * @var string $lang
- */
-$lang = 'php';
+if ( ! file_exists( $file ) ) {
+	$error_msg = sprintf( __( 'Source file <code>%1$s</code> was not found!', 'odwpdl' ), $file );
+}
+if ( ! is_readable( $file ) ) {
+	$error_msg = sprintf( __( 'Source file <code>%1$s</code> can not be read!', 'odwpdl' ), $file );
+}
 
-// Recognize used programming language.
-if( strpos( $file, '.phtml' ) > 0 || strpos( $file, '.php' ) > 0 ) {
-    $lang = 'php';
+// Get file sources
+if ( empty( $error_msg ) ) {
+	$contents = file_get_contents( $file );
 }
-elseif( strpos( $file, '.html' ) > 0 ) {
-    $lang = 'html';
-}
-elseif( strpos( $file, '.css' ) > 0 ) {
-    $lang = 'css';
-}
-elseif( strpos( $file, '.js' ) > 0 ) {
-    $lang = 'js';
-}
+
+// Plugin's URL
+$base_url = plugin_dir_url( __FILE__ );
 
 // Render output.
 header( 'Content-Type:text/html;charset=UTF-8' . PHP_EOL );
@@ -56,21 +51,15 @@ header( 'Content-Type:text/html;charset=UTF-8' . PHP_EOL );
     <head>
         <meta charset="UTF-8">
         <title><?php echo $file ?></title>
+        <link rel="stylesheet" href="<?php echo $base_url ?>assets/vendor/highlight.js/default.css">
+        <script src="<?php echo $base_url ?>assets/vendor/highlight.js/highlight.pack.js"></script>
     </head>
     <body>
-        <?php if( ! file_exists( $file ) ) : ?>
-            <p><b><?php printf(__( 'Source file ["%1$s"] was not found!', 'odwpdl' ), $file ) ?></b></p>
-        <?php elseif( ! is_readable( $file ) ) : ?>
-            <p><b><?php printf(__( 'Source file ["%1$s"] can not be read!', 'odwpdl' ), $file ) ?></b></p>
-        <?php else :
-            // Include Geshi
-            include( $path . '/lib/geshi/geshi.php' );
-
-            $source = file_get_contents( $file );
-            $geshi = new GeSHi( $source, $lang );
-            $geshi->enable_line_numbers( GESHI_FANCY_LINE_NUMBERS );
-
-            echo $geshi->parse_code();
-        endif; ?> 
+        <?php if ( ! empty( $error_msg) ) : ?>
+            <p><strong><?php echo $error_msg ?></strong></p>
+        <?php else : ?>
+            <pre><code class="php"><?php echo htmlentities( $contents ) ?></code></pre>
+        <?php endif ?>
+        <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
     </body>
 </html>

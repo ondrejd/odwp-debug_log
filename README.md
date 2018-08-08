@@ -1,6 +1,6 @@
 # Debug Log Viewer
 
-_Českou verzi najdete zde [README.cs.md][1]._
+__Českou verzi najdete v souboru [README.cs.md][1].__
 
 Small [WordPress][2] plugin aimed for developers that allows better work with their `debug.log` file.
 
@@ -15,8 +15,8 @@ If your like this plugin and you want to be maintained and improved more frequen
 * enabling/disabling _WP_ debug mode directly from _WP_ administration
 * widget for _WP_ admin dashboard that displays contents of the `debug.log` file
 * _WP_ admin page (__Administration__ > __Tools__ > __Log Viewer__) that displays content of the `debug.log` file
-* source files referenced in log can be easily viewed by built-in viewer (for source code highlightning is used [GeSHi][4])
-* stack trace (if present) is displayed as collapsable pane
+* source files referenced in log can be easily viewed by built-in viewer (for source code highlightning is used __[highlight.js][4]__ JavaScript library)
+* stack trace (if present) is displayed as collapsible pane
 * Czech and English locales
 
 ## Screenshots
@@ -35,4 +35,4 @@ Here are some screenshots:
 [1]: README.cs.md
 [2]: https://wordpress.org/
 [3]: https://www.paypal.me/ondrejd
-[4]: http://qbnz.com/highlighter/
+[4]: https://highlightjs.org/
