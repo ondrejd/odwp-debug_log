@@ -30,21 +30,21 @@ label.disabled {
 /**
  * Screen's help tab
  */
-h3.help-title, h4.help-title {
-    margin-bottom: 0px;
+h3.help-title {
+    font-size: 1.25em;
+    margin-bottom: 1em;
 }
-.help-list, .help-list ul {
+.help-list {
     padding-left: 1em;
+    margin-bottom: 2em;
 }
-.help-list, .help-list li, .help-list ul li {
-    list-style: none !important;
-    margin: 0 0 0 0px;
-    padding: 0 0 0 0px;
+.help-list li {
+    margin: 0;
+    padding: 0;
 }
 .help-list li .dashicons {
     width: 32px;
 }
-
 .help_tab_img {
     width: 100%;
 }
@@ -83,27 +83,28 @@ h3.help-title, h4.help-title {
     color: #fff;
     width: 1.4em;
 }
-/* Type columns */
-#odwpdl-log_table .wp-list-table .column-type .dashicons-warning {
+/* Column types */
+#odwpdl-log_table .wp-list-table .column-type .dashicons-warning, .help-list .dashicons-warning {
     /* error */
-    color: #f30;
+    color: red;
 }
-#odwpdl-log_table .wp-list-table .column-type .dashicons-format-status {
+#odwpdl-log_table .wp-list-table .column-type .dashicons-format-status, .help-list .dashicons-format-status {
     /* upozorneni */
-    color: #ccc;
+    color: darkgray;
 }
-#odwpdl-log_table .wp-list-table .column-type .dashicons-editor-help {
-    /* varovani */
+#odwpdl-log_table .wp-list-table .column-type .dashicons-editor-help, .help-list .dashicons-editor-help {
+    /* ostatni */
+    color: black;
 }
-#odwpdl-log_table .wp-list-table .column-type .dashicons-thumbs-down {
-    /* chyba kodu */
-    color: #06a;
+#odwpdl-log_table .wp-list-table .column-type .dashicons-thumbs-down, .help-list .dashicons-thumbs-down {
+    /* PHP Notice */
+    color: darkred;
 }
-#odwpdl-log_table .wp-list-table .column-type .dashicons-flag {
-    /* varovani */
-    color: #000;
+#odwpdl-log_table .wp-list-table .column-type .dashicons-flag, .help-list .dashicons-flag {
+    /* PHP Parser Error */
+    color: purple;
 }
-#odwpdl-log_table .wp-list-table .column-type .dashicons-no {}
+#odwpdl-log_table .wp-list-table .column-type .dashicons-no, .help-list .dashicons-no {}
 
 /* Stack trace */
 #odwpdl-log_table .wp-list-table .stack-trace {

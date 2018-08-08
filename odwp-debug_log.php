@@ -16,8 +16,7 @@
  * Text Domain: odwpdl
  * Domain Path: /languages/
  *
- * WordPress plugin Debug Log Viewer helps developers with reviewing
- * their `debug.log` file.
+ * WordPress plugin Debug Log Viewer shows contents of `debug.log` file.
  *
  * Copyright (C) 2018 Ondřej Doněk
  *
@@ -57,7 +56,7 @@
  * is used as a parameter for `odwpdl_check_requirements` function.
  */
 
-if( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
@@ -69,13 +68,16 @@ defined( 'DL_FILE' ) || define( 'DL_FILE', __FILE__ );
 defined( 'DL_LOG' )  || define( 'DL_LOG', WP_CONTENT_DIR . '/debug.log' );
 
 
-if( ! function_exists( 'odwpdl_check_requirements' ) ) :
+if ( ! function_exists( 'odwpdl_check_requirements' ) ) :
     /**
      * Checks requirements of our plugin.
+     *
      * @global string $wp_version
      * @param array $requirements
      * @return array
      * @since 1.0.0
+     * @uses get_option()
+     * @uses load_plugin_textdomain()
      */
     function odwpdl_check_requirements( array $requirements ) {
         global $wp_version;
@@ -89,8 +91,8 @@ if( ! function_exists( 'odwpdl_check_requirements' ) ) :
         $errors = [];
 
         // Check PHP version
-        if( ! empty( $requirements['php']['version'] ) ) {
-            if( version_compare( phpversion(), $requirements['php']['version'], '<' ) ) {
+        if ( ! empty( $requirements['php']['version'] ) ) {
+            if ( version_compare( phpversion(), $requirements['php']['version'], '<' ) ) {
                 $errors[] = sprintf(
                         __( 'Used PHP interpreter doesn\'t meet requirements of this plugin (is required version <b>%1$s</b> at least)!'),
                         $requirements['php']['version']
@@ -99,20 +101,17 @@ if( ! function_exists( 'odwpdl_check_requirements' ) ) :
         }
 
         // Check PHP extensions
-        if( count( $requirements['php']['extensions'] ) > 0 ) {
-            foreach( $requirements['php']['extensions'] as $req_ext ) {
-                if( ! extension_loaded( $req_ext ) ) {
-                    $errors[] = sprintf(
-                            __( 'PHP extension <b>%1$s</b> is required but not installed!', DL_SLUG ),
-                            $req_ext
-                    );
+        if ( count( $requirements['php']['extensions'] ) > 0 ) {
+            foreach ( $requirements['php']['extensions'] as $req_ext ) {
+                if ( ! extension_loaded( $req_ext ) ) {
+                    $errors[] = sprintf( __( 'PHP extension <b>%1$s</b> is required but not installed!', DL_SLUG ), $req_ext );
                 }
             }
         }
 
         // Check WP version
-        if( ! empty( $requirements['wp']['version'] ) ) {
-            if( version_compare( $wp_version, $requirements['wp']['version'], '<' ) ) {
+        if ( ! empty( $requirements['wp']['version'] ) ) {
+            if ( version_compare( $wp_version, $requirements['wp']['version'], '<' ) ) {
                 $errors[] = sprintf(
                         __( 'This plugin requires higher version of <b>WordPress</b> (at least version <b>%1$s</b>)!', DL_SLUG ),
                         $requirements['wp']['version']
@@ -121,14 +120,12 @@ if( ! function_exists( 'odwpdl_check_requirements' ) ) :
         }
 
         // Check WP plugins
-        if( count( $requirements['wp']['plugins'] ) > 0 ) {
+        if ( count( $requirements['wp']['plugins'] ) > 0 ) {
             $active_plugins = (array) get_option( 'active_plugins', [] );
-            foreach( $requirements['wp']['plugins'] as $req_plugin ) {
-                if( ! in_array( $req_plugin, $active_plugins ) ) {
-                    $errors[] = sprintf(
-                            __( 'The plugin <b>%1$s</b> is required but not installed!', DL_SLUG ),
-                            $req_plugin
-                    );
+
+            foreach ( $requirements['wp']['plugins'] as $req_plugin ) {
+                if ( ! in_array( $req_plugin, $active_plugins ) ) {
+                    $errors[] = sprintf( __( 'The plugin <b>%1$s</b> is required but not installed!', DL_SLUG ), $req_plugin );
                 }
             }
         }
@@ -138,44 +135,48 @@ if( ! function_exists( 'odwpdl_check_requirements' ) ) :
 endif;
 
 
-if( ! function_exists( 'odwpdl_deactivate_raw' ) ) :
+if ( ! function_exists( 'odwpdl_deactivate_raw' ) ) :
     /**
      * Deactivate plugin by the raw way (it updates directly WP options).
+     *
      * @return void
      * @since 1.0.0
+     * @uses get_option()
+     * @uses update_option()
      */
     function odwpdl_deactivate_raw() {
         $active_plugins = get_option( 'active_plugins' );
         $out = [];
-        foreach( $active_plugins as $key => $val ) {
-            if( $val != DL_NAME . '/' . DL_NAME . '.php' ) {
+
+        foreach ( $active_plugins as $key => $val ) {
+            if ( $val != DL_NAME . '/' . DL_NAME . '.php' ) {
                 $out[$key] = $val;
             }
         }
+
         update_option( 'active_plugins', $out );
     }
 endif;
 
 
-if( ! function_exists( 'odwpdl_write_log' ) ) :
+if ( ! function_exists( 'odwpdl_write_log' ) ) :
     /**
      * Write record to the `wp-content/debug.log` file.
+     *
      * @param mixed $log
      * @return void
      * @since 1.0.0
      */
     function odwpdl_write_log( $log ) {
-        if( ! file_exists( DL_LOG ) || ! is_writable( DL_LOG ) ) {
+        if ( ! file_exists( DL_LOG ) || ! is_writable( DL_LOG ) ) {
             return;
         }
 
-        if( is_null( $log ) ) {
+        if ( is_null( $log ) ) {
             $message = 'NULL';
-        }
-        elseif( is_array( $log ) || is_object( $log ) ) {
+        } elseif ( is_array( $log ) || is_object( $log ) ) {
             $message = print_r( $log, true );
-        }
-        else {
+        } else {
             $message = $log;
         }
 
@@ -187,35 +188,37 @@ if( ! function_exists( 'odwpdl_write_log' ) ) :
 endif;
 
 
-if( ! function_exists( 'odwpdl_error_log' ) ) :
+if ( ! function_exists( 'odwpdl_error_log' ) ) :
     /**
-     * @internal Write message to the `wp-content/debug.log` file.
+     * Write message to the `wp-content/debug.log` file.
+     *
+     * @deprecated 1.0.0
      * @param string $message
      * @param integer $message_type (Optional.)
      * @param string $destination (Optional.)
      * @param string $extra_headers (Optional.)
      * @return void
      * @since 1.0.0
+     * @uses _deprecated_function()
      */
     function odwpdl_error_log( string $message, int $message_type = null, string $destination = null, string $extra_headers = null ) {
         _deprecated_function( __FUNCTION__, '1.0.0', __( 'Use function `odwpdl_write_log` instead!', DL_SLUG ) );
-
         odwpdl_write_log( $message );
     }
 endif;
 
 
-if( ! function_exists( 'readonly' ) ) :
+if ( ! function_exists( 'readonly' ) ) :
     /**
-     * Prints HTML readonly attribute. It's an addition to WP original
-     * functions {@see disabled()} and {@see checked()}.
+     * Prints HTML readonly attribute. It's an addition to WP original functions {@see disabled()} and {@see checked()}.
+     *
      * @param mixed $value
      * @param mixed $current (Optional.) Defaultly TRUE.
      * @return string
      * @since 1.0.0
      */
     function readonly( $current, $value = true ) {
-        if( $current == $value ) {
+        if ( $current == $value ) {
             echo ' readonly';
         }
     }
@@ -223,8 +226,7 @@ endif;
 
 
 /**
- * Errors from the requirements check
- * @var array
+ * @var array Errors from the requirements check.
  */
 $odwpdl_errs = odwpdl_check_requirements( [
     'php' => [
@@ -246,16 +248,16 @@ $odwpdl_errs = odwpdl_check_requirements( [
 ] );
 
 // Check if requirements are met or not
-if( count( $odwpdl_errs ) > 0 ) {
+if ( count( $odwpdl_errs ) > 0 ) {
     // Requirements are not met
     odwpdl_deactivate_raw();
 
     // In administration print errors
-    if( is_admin() ) {
+    if ( is_admin() ) {
         add_action( 'admin_notices', function() use ( $odwpdl_errs ) {
             $err_head = __( '<b>Debug Log Viewer</b>: ', DL_SLUG );
 
-            foreach( $odwpdl_errs as $err ) {
+            foreach ( $odwpdl_errs as $err ) {
                 printf( '<div class="error"><p>%1$s</p></div>', $err_head . $err );
             }
         } );
@@ -264,5 +266,6 @@ if( count( $odwpdl_errs ) > 0 ) {
     // Requirements are met so initialize the plugin.
     include( DL_PATH . 'src/DL_Screen_Prototype.php' );
     include( DL_PATH . 'src/DL_Plugin.php' );
+
     DL_Plugin::initialize();
 }

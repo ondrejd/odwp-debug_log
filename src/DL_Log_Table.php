@@ -23,6 +23,8 @@ if ( ! class_exists( 'DL_Log_Table' ) ) :
 
 /**
  * Table with log. User options for the table are implemented partially in {@see DL_Log_Screen}.
+ *
+ * @author Ondřej Doněk, <ondrejd@gmail.com>
  * @since 1.0.0
  * @todo Default column and direction for sorting should be set via user preferences.
  * @todo Default per page items count should be set via user preferences.
@@ -117,7 +119,8 @@ class DL_Log_Table extends WP_List_Table {
 
     /**
      * Constructor.
-     * @param array $args (Optional.)
+     *
+     * @param array $args Optional (not used anyway).
      * @return void
      * @since 1.0.0
      */
@@ -128,11 +131,12 @@ class DL_Log_Table extends WP_List_Table {
             'ajax'     => true,
         ] );
 
-        $this->parser = new DL_Log_Parser( null, self::get_options() );
+        $this->parser = new DL_Log_Parser( self::get_options() );
     }
 
     /**
-     * Returns default options for the table.
+     * Return default options for the table.
+     * 
      * @return array
      * @since 1.0.0
      */
@@ -152,10 +156,13 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * Returns options for the table.
+     * Return options for the table.
+     *
      * @return array
      * @since 1.0.0
      * @todo This should be located in {@see DL_Log_Screen}!
+     * @uses get_current_user_id()
+     * @uses get_user_meta()
      */
     public static function get_options() {
         $user = get_current_user_id();
@@ -172,62 +179,87 @@ class DL_Log_Table extends WP_List_Table {
         $src_win_height = get_user_meta( $user, DL_Log_Screen::SLUG . '-src_win_height', true );
 
         $defaults = self::get_default_options();
-        $currents = [
-            'shown_cols'      => $shown_cols,
-            'per_page'        => ( int ) $per_page,
-            'show_icons'      => ( bool ) $show_icons,
-            'show_links'      => ( bool ) $show_links,
-            'show_trace'      => ( bool ) $show_trace,
-            'sort_col'        => $sort_col,
-            'sort_dir'        => $sort_dir,
-            'short_src_links' => (bool) $short_src_links,
-            'src_win_width'   => (int) $src_win_width,
-            'src_win_height'  => (int) $src_win_height,
-        ];
+        $currents = [];
+
+        if ( ! empty( $shown_cols ) ) {
+        	$currents['shown_cols'] = $shown_cols;
+        }
+
+	    if ( ! empty( $per_page ) ) {
+		    $currents['per_page'] = (int) $per_page;
+	    }
+
+	    if ( ! empty( $show_icons ) ) {
+		    $currents['show_icons'] = (bool) $show_icons;
+	    }
+
+	    if ( ! empty( $show_links ) ) {
+		    $currents['show_links'] = (bool) $show_links;
+	    }
+
+	    if ( ! empty( $show_trace ) ) {
+		    $currents['show_trace'] = (bool) $show_trace;
+	    }
+
+	    if ( ! empty( $sort_col ) ) {
+		    $currents['sort_col'] = $sort_col;
+	    }
+
+	    if ( ! empty( $sort_dir ) ) {
+		    $currents['sort_dir'] = $sort_dir;
+	    }
+
+	    if ( ! empty( $short_src_links ) ) {
+		    $currents['short_src_links'] = (bool) $short_src_links;
+	    }
+
+	    if ( ! empty( $per_page ) ) {
+		    $currents['per_page'] = (int) $per_page;
+	    }
+
+	    if ( ! empty( $src_win_width ) ) {
+		    $currents['src_win_width'] = (int) $src_win_width;
+	    }
+
+	    if ( ! empty( $src_win_height ) ) {
+		    $currents['src_win_height'] = (int) $src_win_height;
+	    }
 
         return array_merge( $defaults, $currents );
     }
 
     /**
      * Renders checkbox column.
+     * 
      * @param DL_Log_Record $item
      * @return string
      * @since 1.0.0
      */
     function column_cb( $item ) {
-        return sprintf(
-            '<input type="checkbox" name="log_item[]" value="%s">', $item->get_id()
-        );
+        return sprintf( '<input type="checkbox" name="log_item[]" value="%s">', $item->get_id() );
     }
 
     /**
      * Default function for rendering columns.
+     * 
      * @param DL_Log_Record $item
      * @param string $column_name
      * @return string
      * @since 1.0.0
      */
     public function column_default( $item, $column_name ) {
-        switch( $column_name ) {
-            case 'id':
-                return $item->get_id();
-
-            case 'time':
-                return $item->get_time( true );
-
-            case 'text':
-                return $item->get_message();
-
-            case 'type':
-                return $item->get_type();
-
-            default:
-                return '';
+        switch ( $column_name ) {
+            case 'id'   : return $item->get_id();
+            case 'time' : return $item->get_time( true );
+            case 'text' : return $item->get_message();
+            case 'type' : return $item->get_type();
+            default     : return '';
         }
     }
 
     /**
-     * Renders column with log record type.
+     * Render column with log record type.
+     * 
      * @param DL_Log_Record $item
      * @return string
      * @since 1.0.0
@@ -235,7 +267,7 @@ class DL_Log_Table extends WP_List_Table {
     public function column_type( DL_Log_Record $item ) {
         $show_icons = self::get_options()['show_icons'];
 
-        switch( $item->get_type() ) {
+        switch ( $item->get_type() ) {
             case DL_Log_Record::TYPE_ERROR:
                 $lbl = __( 'Error', DL_SLUG );
                 return ( $show_icons === true ) ? '<span class="dashicons dashicons-warning" title="' . $lbl .'"></span>' : $lbl;
@@ -259,11 +291,11 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * Renders `text` column with the `delete` and `view` action.
+     * Render `text` column with the `delete` and `view` action.
      * @param DL_Log_Record $item
      * @return string
      * @since 1.0.0
-     * @todo Display also stack trace!
+     * @todo Improve this!
      */
     public function column_text( DL_Log_Record $item ) {
         $id = ( int ) $item->get_id();
@@ -290,7 +322,7 @@ class DL_Log_Table extends WP_List_Table {
             $text .= '    <b onclick="StackTraceToggler.toggle(this)">' . $icon . ' ' . __( 'Stack trace', DL_SLUG ) . '</b>' . PHP_EOL;
             $text .= '    <ul>' . PHP_EOL;
 
-            foreach( $item->get_trace() as $trace ) {
+            foreach ( $item->get_trace() as $trace ) {
                 if ( $show_links === true ) {
                     $trace = $this->parser->make_source_links( $trace );
                 }
@@ -309,11 +341,12 @@ class DL_Log_Table extends WP_List_Table {
 
     /**
      * Custom method for displaying rows.
+     * 
      * @return void
      * @since 1.0.0
      */
     public function display_rows() {
-        foreach( $this->items as $item ) {
+        foreach ( $this->items as $item ) {
             if ( ! ( $item instanceof \DL_Log_Record ) ) {
                 continue;
             }
@@ -323,7 +356,8 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * Returns array describing bulk actions.
+     * Return array describing bulk actions.
+     *
      * @return array
      * @since 1.0.0
      */
@@ -335,7 +369,8 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * Returns array describing row actions.
+     * Return array describing row actions.
+     *
      * @param DL_Log_Record $item
      * @return array
      * @since 1.0.0
@@ -354,7 +389,8 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * Returns URL of the WP admin page where the table lives on.
+     * Return URL of the WP admin page where the table lives on.
+     *
      * @param array $args (Optional.) Additional URL arguments as key => value array.
      * @return string
      * @since 1.0.0
@@ -364,7 +400,8 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * Returns current table URL (with all parameters - filter, paging etc.).
+     * Return current table URL (with all parameters - filter, paging etc.).
+     *
      * @param array $args (Optional.) Additional URL arguments as key => value array.
      * @return string
      * @since 1.0.0
@@ -387,7 +424,7 @@ class DL_Log_Table extends WP_List_Table {
         }
 
         // Other arguments
-        foreach( $args as $key => $val ) {
+        foreach ( $args as $key => $val ) {
             $url .= "&amp;{$key}={$val}";
         }
 
@@ -395,7 +432,8 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * Returns array with table columns.
+     * Return array with table columns.
+     *
      * @return array
      * @since 1.0.0
      */
@@ -412,7 +450,8 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * Returns array with table columns that can be hidden.
+     * Return array with table columns that can be hidden.
+     *
      * @return array
      * @since 1.0.0
      */
@@ -426,7 +465,8 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * Returns array with table columns that are hidden.
+     * Return array with table columns that are hidden.
+     *
      * @return array
      * @since 1.0.0
      * @todo Get really hidden columns from user meta!
@@ -443,7 +483,8 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * Returns array with sortable table columns.
+     * Return array with sortable table columns.
+     *
      * @return array
      * @since 1.0.0
      */
@@ -459,13 +500,14 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * Returns array with the list of views available on this table.
+     * Return array with the list of views available on this table.
      *
-     * @access protected
      * @return array
      * @since 1.0.0
      * @todo Load correct count of items!
      * @todo Highlight currently selected view!
+     * @uses add_query_arg()
+     * @uses admin_url()
      */
     protected function get_views() {
         $views = [
@@ -482,7 +524,7 @@ class DL_Log_Table extends WP_List_Table {
 
         $ret = [];
 
-        foreach( $views as $view => $view_lbl ) {
+        foreach ( $views as $view => $view_lbl ) {
             $url = add_query_arg( [ 'page' => 'odwpdl-log', 'view' => $view ], admin_url( 'tools.php') );
             $cls = ( $view == $current_view ) ? ' class="current"' : '';
             $cnt = $this->get_view_items_count( $view );
@@ -493,14 +535,14 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * Display the list of views available on this table - but only when
-     * there are some table items.
-     * @access public
+     * Display the list of views available on this table - but only when there are some table items.
+     *
      * @return void
      * @see WP_List_Table::views
      * @since 1.0.0
      */
     public function views() {
+
         if ( count( $this->items ) <= 0 && !$this->isAnyFilterUsed() && !$this->isAnyViewUsed() ) {
             return;
         }
@@ -509,7 +551,8 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * @internal Returns count of items for given view.
+     * Return count of items for given view.
+     *
      * @param string $view
      * @return integer
      * @since 1.0.0
@@ -521,18 +564,15 @@ class DL_Log_Table extends WP_List_Table {
             $this->parser->filter( function( \DL_Log_Record $record ) {
                 return true;
             } );
-        }
-        elseif ( $view == 'today' ) {
+        } else if ( $view == 'today' ) {
             $this->parser->filter( function( \DL_Log_Record $record ) {
                 return $record->was_today();
             } );
-        }
-        elseif ( $view == 'yesterday' ) {
+        } else if ( $view == 'yesterday' ) {
             $this->parser->filter( function( \DL_Log_Record $record ) {
                 return $record->was_yesterday();
             } );
-        }
-        elseif ( $view == 'earlier' ) {
+        } else if ( $view == 'earlier' ) {
             $this->parser->filter( function( \DL_Log_Record $record ) {
                 return ( ! $record->was_today() && ! $record->was_yesterday() );
             } );
@@ -544,6 +584,7 @@ class DL_Log_Table extends WP_List_Table {
             'sort_col' => $order_args['orderby'],
             'sort_dir' => $order_args['order'],
         ] );
+
         $data = $this->parser->get_data( ['page' => -1] );
 
         return count( $data );
@@ -551,6 +592,7 @@ class DL_Log_Table extends WP_List_Table {
 
     /**
      * Get current filter settings.
+     *
      * @return array
      * @since 1.0.0
      */
@@ -569,12 +611,14 @@ class DL_Log_Table extends WP_List_Table {
 
     /**
      * Extra controls to be displayed between bulk actions and pagination
+     *
      * @param string $which
      * @return void
      * @since 1.0.0
      * @todo Remember filtering for the next session (save it as user preferences and renew it).
      */
     protected function extra_tablenav( $which ) {
+
         if ( $which != 'top' ) {
             return;
         }
@@ -624,6 +668,7 @@ class DL_Log_Table extends WP_List_Table {
 
     /**
      * Prepares data items for the table.
+     *
      * @return void
      * @since 1.0.0
      * @todo Process row actions!
@@ -654,6 +699,7 @@ class DL_Log_Table extends WP_List_Table {
 
         // Get order arguments
 	    $order_args = $this->get_order_args();
+
         // Needed hack (because other way is arrow indicating sorting
         // in table head not displayed correctly).
         $_GET['orderby'] = $order_args['orderby'];
@@ -681,7 +727,8 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * Applies filter on parser data.
+     * Apply filter on parser data.
+     *
      * @param array $filter Array with filter settings (e.g. <code>['is_filter' => <bool>, 'type' => <int>]</code>).
      * @return void
      * @since 1.0.0
@@ -693,7 +740,7 @@ class DL_Log_Table extends WP_List_Table {
 	    }
 
         $type = null;
-        switch( ( int ) $filter['type'] ) {
+        switch ( ( int ) $filter['type'] ) {
             case 1 : $type = DL_Log_Record::TYPE_ERROR; break;
             case 2 : $type = DL_Log_Record::TYPE_NOTICE; break;
             case 3 : $type = DL_Log_Record::TYPE_PARSER; break;
@@ -711,7 +758,8 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * @internal Returns array with sorting arguments ['orderby' => 'id', 'order' => 'asc'].
+     * Return array with sorting arguments ['orderby' => 'id', 'order' => 'asc'].
+     *
      * @return array
      * @since 1.0.0
      */
@@ -741,20 +789,22 @@ class DL_Log_Table extends WP_List_Table {
 
     /**
      * Process bulk actions.
+     *
      * @return void
      * @since 1.0.0
      * @todo Finish this!
      */
     public function process_bulk_actions() {
+
         /**
          * Name of bulk action we should perform.
          * @var string $action
          */
-        $action = filter_input( INPUT_GET, 'action' );
+        $action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
 
         // There are top and bottom toolbars submit buttons...
         if ( empty( $action ) ) {
-            $action = filter_input( INPUT_GET, 'action2' );
+            $action = filter_input( INPUT_GET, 'action2', FILTER_SANITIZE_STRING );
         }
 
         // But no one was pressed
@@ -764,11 +814,7 @@ class DL_Log_Table extends WP_List_Table {
 
         // Validate action, otherwise return
         if ( ! in_array( $action, ['delete'] ) ) {
-            DL_Plugin::print_admin_notice(
-                sprintf( __( 'Requested action "<b>%s</b>" was not recognized!', DL_SLUG ), $action ),
-                'warning',
-                true
-            );
+            DL_Plugin::print_admin_notice( sprintf( __( 'Requested action "<b>%s</b>" was not recognized!', DL_SLUG ), $action ), 'warning', true );
             return;
         }
 
@@ -780,11 +826,7 @@ class DL_Log_Table extends WP_List_Table {
 
         // There are no items to delete
         if ( count( $log_items ) == 0 ) {
-            DL_Plugin::print_admin_notice(
-                __( 'Nothing deleted - no records were selected.', DL_SLUG ),
-                'info',
-                true
-            );
+            DL_Plugin::print_admin_notice( __( 'Nothing deleted - no records were selected.', DL_SLUG ), 'info', true );
             return;
         }
 
@@ -793,26 +835,12 @@ class DL_Log_Table extends WP_List_Table {
 
         // Print output message
         if ( $res === false ) {
-            DL_Plugin::print_admin_notice(
-                __( 'Error occured during deleting records from <code>debug.log</code> file.', DL_SLUG ),
-                'error'
-            );
-        }
-        else if ( $res === 0 ) {
-            DL_Plugin::print_admin_notice(
-                __( 'No records from <code>debug.log</code> file were deleted.', DL_SLUG ),
-                'info'
-            );
-        }
-        else {
+            DL_Plugin::print_admin_notice( __( 'Error occured during deleting records from <code>debug.log</code> file.', DL_SLUG ), 'error' );
+        } else if ( $res === 0 ) {
+            DL_Plugin::print_admin_notice( __( 'No records from <code>debug.log</code> file were deleted.', DL_SLUG ), 'info' );
+        } else {
             // bylo smazano X polozek
-            DL_Plugin::print_admin_notice(
-                sprintf(
-                    __( 'Deleting were successfull (deleted %1$d records).', DL_SLUG ),
-                    $res
-                ),
-                'success'
-            );
+            DL_Plugin::print_admin_notice( sprintf( __( 'Deleting were successfull (deleted %1$d records).', DL_SLUG ), $res ), 'success' );
         }
 
         if ( $this->parser->is_saved() !== true ) {
@@ -823,6 +851,7 @@ class DL_Log_Table extends WP_List_Table {
 
     /**
      * Process row actions. As are defined in {@see DL_Log_Table::column_text()}.
+     *
      * @return void
      * @since 1.0.0
      * @todo Use {@see wp_redirect()} at the end?
@@ -839,10 +868,7 @@ class DL_Log_Table extends WP_List_Table {
 
         // Validate action, otherwise return
         if ( ! in_array( $action, ['delete'] ) || empty( $record ) ) {
-            DL_Plugin::print_admin_notice(
-                sprintf( __( 'Requested action <strong>%s</strong> was not recognized!', DL_SLUG ), $action ),
-                'warning', true
-            );
+            DL_Plugin::print_admin_notice( sprintf( __( 'Requested action <strong>%s</strong> was not recognized!', DL_SLUG ), $action ), 'warning', true );
             return;
         }
 
@@ -868,13 +894,21 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * We override default {@see WP_List_Table::pagination()} method because
-     * we need to add filter argument into it.
+     * We override default {@see WP_List_Table::pagination()} method because we need to add filter argument into it.
+     *
      * @param string $which
      * @return void
      * @since 1.0.0
+     * @uses add_query_arg()
+     * @uses esc_url()
+     * @uses number_format_i18n()
+     * @uses remove_query_arg()
+     * @uses set_url_scheme()
+     * @uses wp_removable_query_args()
+     * @todo Refactor this method!
      */
     protected function pagination( $which ) {
+
         if ( empty( $this->_pagination_args ) ) {
             return;
         }
@@ -882,6 +916,7 @@ class DL_Log_Table extends WP_List_Table {
         $total_items = $this->_pagination_args['total_items'];
         $total_pages = $this->_pagination_args['total_pages'];
         $infinite_scroll = false;
+
         if ( isset( $this->_pagination_args['infinite_scroll'] ) ) {
             $infinite_scroll = $this->_pagination_args['infinite_scroll'];
         }
@@ -898,10 +933,9 @@ class DL_Log_Table extends WP_List_Table {
         $removable_query_args = wp_removable_query_args();
 
         $current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
-
         $current_url = remove_query_arg( $removable_query_args, $current_url );
 
-        // [ondrejd]: added filter
+        // Added filter
         $filter = $this->get_filter();
         if ( $filter > 0 ) {
             $current_url = add_query_arg( 'filter-by-type', $filter, $current_url );
@@ -934,8 +968,7 @@ class DL_Log_Table extends WP_List_Table {
         } else {
             $page_links[] = sprintf( "<a class='first-page' href='%s'><span class='screen-reader-text'>%s</span><span aria-hidden='true'>%s</span></a>",
                     esc_url( remove_query_arg( 'paged', $current_url ) ),
-                    __( 'First page', DL_SLUG ),
-                    '&laquo;'
+                    __( 'First page', DL_SLUG ), '&laquo;'
             );
         }
 
@@ -944,8 +977,7 @@ class DL_Log_Table extends WP_List_Table {
         } else {
             $page_links[] = sprintf( "<a class='prev-page' href='%s'><span class='screen-reader-text'>%s</span><span aria-hidden='true'>%s</span></a>",
                     esc_url( add_query_arg( 'paged', max( 1, $current-1 ), $current_url ) ),
-                    __( 'Previous page', DL_SLUG ),
-                    '&lsaquo;'
+                    __( 'Previous page', DL_SLUG ), '&lsaquo;'
             );
         }
 
@@ -955,10 +987,10 @@ class DL_Log_Table extends WP_List_Table {
         } else {
             $html_current_page = sprintf( "%s<input class='current-page' id='current-page-selector' type='text' name='paged' value='%s' size='%d' aria-describedby='table-paging'><span class='tablenav-paging-text'>",
                     sprintf( '<label for="current-page-selector" class="screen-reader-text">%s</label>', __( 'Current Page', DL_SLUG ) ),
-                    $current,
-                    strlen( $total_pages )
+                    $current, strlen( $total_pages )
             );
         }
+
         $html_total_pages = sprintf( '<span class="total-pages">%s</span>', number_format_i18n( $total_pages ) );
         $page_links[] = $total_pages_before . sprintf( _x( '%1$s of %2$s', 'paging', DL_SLUG ), $html_current_page, $html_total_pages ) . $total_pages_after;
 
@@ -967,8 +999,7 @@ class DL_Log_Table extends WP_List_Table {
         } else {
             $page_links[] = sprintf( "<a class='next-page' href='%s'><span class='screen-reader-text'>%s</span><span aria-hidden='true'>%s</span></a>",
                     esc_url( add_query_arg( 'paged', min( $total_pages, $current+1 ), $current_url ) ),
-                    __( 'Next page', DL_SLUG ),
-                    '&rsaquo;'
+                    __( 'Next page', DL_SLUG ), '&rsaquo;'
             );
         }
 
@@ -977,8 +1008,7 @@ class DL_Log_Table extends WP_List_Table {
         } else {
             $page_links[] = sprintf( "<a class='last-page' href='%s'><span class='screen-reader-text'>%s</span><span aria-hidden='true'>%s</span></a>",
                     esc_url( add_query_arg( 'paged', $total_pages, $current_url ) ),
-                    __( 'Last page', DL_SLUG ),
-                    '&raquo;'
+                    __( 'Last page', DL_SLUG ), '&raquo;'
             );
         }
 
@@ -999,11 +1029,16 @@ class DL_Log_Table extends WP_List_Table {
     }
 
     /**
-     * We override default {@see WP_List_Table::print_column_headers()} method
-     * because we need to add filter argument into it.
+     * We override default {@see WP_List_Table::print_column_headers()} method because we need to add filter argument into it.
+     *
      * @param boolean $with_id (Optional.)
      * @return void
      * @since 1.0.0
+     * @uses add_query_arg()
+     * @uses esc_url()
+     * @uses remove_query_arg()
+     * @uses set_url_scheme()
+     * @todo Refactor this method!
      */
     public function print_column_headers( $with_id = true ) {
         list( $columns, $hidden, $sortable, $primary ) = $this->get_column_info();
@@ -1083,6 +1118,7 @@ class DL_Log_Table extends WP_List_Table {
 
     /**
      * Return TRUE if any filter is selected/used.
+     *
      * @return bool
      * @since 1.0.0
      */
@@ -1092,6 +1128,7 @@ class DL_Log_Table extends WP_List_Table {
 
     /**
      * Return TRUE if any view is selected/used.
+     *
      * @return bool
      * @since 1.0.0
      */

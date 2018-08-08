@@ -7,14 +7,16 @@
  * @since 1.0.0
  */
 
-if( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if( ! class_exists( 'DL_Plugin' ) ) :
+if ( ! class_exists( 'DL_Plugin' ) ) :
 
 /**
  * Main class.
+ *
+ * @author Ondřej Doněk, <ondrejd@gmail.com>
  * @since 1.0.0
  */
 class DL_Plugin {
@@ -44,7 +46,8 @@ class DL_Plugin {
     public static $options_page_hook;
 
     /**
-     * @internal Activates the plugin.
+     * Activation hook.
+     *
      * @return void
      * @since 1.0.0
      */
@@ -53,7 +56,8 @@ class DL_Plugin {
     }
 
     /**
-     * @internal Deactivates the plugin.
+     * Deactivation hook.
+     *
      * @return void
      * @since 1.0.0
      */
@@ -62,7 +66,9 @@ class DL_Plugin {
     }
 
     /**
-     * @return array Default values for settings of the plugin.
+     * Return default options of the plugin.
+     * 
+     * @return array
      * @since 1.0.0
      */
     public static function get_default_options() {
@@ -72,8 +78,12 @@ class DL_Plugin {
     }
 
     /**
-     * @return array Settings of the plugin.
+     * Return current options of the plugin.
+     *
+     * @return array
      * @since 1.0.0
+     * @uses get_option()
+     * @uses update_option()
      */
     public static function get_options() {
         $defaults = self::get_default_options();
@@ -82,14 +92,14 @@ class DL_Plugin {
 
         // Fill defaults for the options that are not set yet
         foreach( $defaults as $key => $val ) {
-            if( ! array_key_exists( $key, $options ) ) {
+            if ( ! array_key_exists( $key, $options ) ) {
                 $options[$key] = $val;
                 $update = true;
             }
         }
 
         // Updates options if needed
-        if( $update === true) {
+        if ( $update === true) {
             update_option( self::SETTINGS_KEY, $options );
         }
 
@@ -98,6 +108,7 @@ class DL_Plugin {
 
     /**
      * Returns value of option with given key.
+     *
      * @param string $key Option's key.
      * @param mixed $default Option's default value.
      * @return mixed Option's value.
@@ -106,7 +117,7 @@ class DL_Plugin {
     public static function get_option( $key, $default = null ) {
         $options = self::get_options();
 
-        if( array_key_exists( $key, $options ) ) {
+        if ( array_key_exists( $key, $options ) ) {
             return $options[$key];
         }
 
@@ -115,8 +126,13 @@ class DL_Plugin {
 
     /**
      * Initializes the plugin.
+     *
      * @return void
      * @since 1.0.0
+     * @uses add_action()
+     * @uses register_activation_hook()
+     * @uses register_deactivation_hook()
+     * @uses register_uninstall_hook()
      */
     public static function initialize() {
         register_activation_hook( DL_FILE, [__CLASS__, 'activate'] );
@@ -134,15 +150,18 @@ class DL_Plugin {
 
     /**
      * Hook for "init" action.
+     *
      * @return void
      * @since 1.0.0
+     * @uses load_plugin_textdomain()
      */
     public static function init() {
+
         // Initialize locales
         load_plugin_textdomain( DL_SLUG, false, DL_NAME . '/languages' );
 
         // Initialize options
-        $options = self::get_options();
+        self::get_options();
 
         // Initialize custom post types
         self::init_custom_post_types();
@@ -157,6 +176,7 @@ class DL_Plugin {
 
     /**
      * Initialize custom post types.
+     *
      * @return void
      * @since 1.0.0
      */
@@ -166,6 +186,7 @@ class DL_Plugin {
 
     /**
      * Registers our shortcodes.
+     *
      * @return void
      * @since 1.0.O
      */
@@ -175,6 +196,7 @@ class DL_Plugin {
 
     /**
      * Initialize settings using <b>WordPress Settings API</b>.
+     *
      * @link https://developer.wordpress.org/plugins/settings/settings-api/
      * @return void
      * @since 1.0.0
@@ -185,12 +207,17 @@ class DL_Plugin {
 
     /**
      * Initialize admin screens.
+     *
      * @return void
      * @since 1.0.0
      */
     protected static function init_screens() {
+
+    	// Include required source files
         include( DL_PATH . 'src/DL_Screen_Prototype.php' );
         include( DL_PATH . 'src/DL_Log_Screen.php' );
+
+        // Initialize all screens one by one
 
         /**
          * @var DL_Log_Screen $log_screen
@@ -201,8 +228,10 @@ class DL_Plugin {
 
     /**
      * Hook for "admin_init" action.
+     *
      * @return void
      * @since 1.0.0
+     * @uses register_setting()
      */
     public static function admin_init() {
         register_setting( DL_SLUG, self::SETTINGS_KEY );
@@ -214,31 +243,41 @@ class DL_Plugin {
     }
 
     /**
-     * @internal Initializes WP admin dashboard widgets.
+     * Initializes WP admin dashboard widgets.
+     *
      * @return void
      * @since 1.0.0
+     * @uses add_action()
      */
     public static function admin_init_widgets() {
+
+    	// Include required source files
         include( DL_PATH . 'src/DL_Log_Dashboard_Widget.php' );
+
+        // Register widgets
         add_action( 'wp_dashboard_setup', ['DL_Log_Dashboard_Widget', 'init'] );
     }
 
     /**
      * Hook for "admin_menu" action.
+     *
      * @return void
      * @since 1.0.0
      */
     public static function admin_menu() {
+
         // Call action for `admin_menu` hook on all screens.
         self::screens_call_method( 'admin_menu' );
     }
 
     /**
      * Hook for "admin_menu_bar" action.
+     *
      * @link https://codex.wordpress.org/Class_Reference/WP_Admin_Bar/add_menu
      * @param \WP_Admin_Bar $bar
      * @return void
      * @since 1.0.0
+     * @uses admin_url()
      */
     public static function admin_menu_bar( \WP_Admin_Bar $bar ) {
         $bar->add_node( [
@@ -254,16 +293,21 @@ class DL_Plugin {
 
     /**
      * Hook for "admin_enqueue_scripts" action.
+     *
      * @param string $hook
      * @return void
      * @since 1.0.0
+     * @uses plugins_url()
+     * @uses wp_enqueue_script()
+     * @uses wp_enqueue_style()
+     * @uses wp_localize_script()
      */
     public static function admin_enqueue_scripts( $hook ) {
         $js_file = 'assets/js/admin.js';
         $js_path = DL_PATH . $js_file;
 
-        if( file_exists( $js_path ) && is_readable( $js_path ) ) {
-	    wp_enqueue_script( DL_SLUG, plugins_url( $js_file, DL_FILE ), ['jquery'] );
+        if ( file_exists( $js_path ) && is_readable( $js_path ) ) {
+	        wp_enqueue_script( DL_SLUG, plugins_url( $js_file, DL_FILE ), ['jquery'] );
             wp_localize_script( DL_SLUG, 'odwpdl', [
                 // Put variables you want to pass into JS here...
             ] );
@@ -272,7 +316,7 @@ class DL_Plugin {
         $css_file = 'assets/css/admin.css';
         $css_path = DL_PATH . $css_file;
 
-        if( file_exists( $css_path ) && is_readable( $css_path ) ) {
+        if ( file_exists( $css_path ) && is_readable( $css_path ) ) {
             wp_enqueue_style( DL_SLUG, plugins_url( $css_file, DL_FILE ) );
         }
 
@@ -281,6 +325,7 @@ class DL_Plugin {
 
     /**
      * @private Creates `debug.log` file.
+     *
      * @return boolean
      * @since 1.0.0
      */
@@ -290,61 +335,51 @@ class DL_Plugin {
 
     /**
      * Checks environment we're running and prints admin messages if needed.
+     *
      * @return void
      * @since 1.0.0
+     * @uses add_action()
      */
     public static function check_environment() {
+
         // Firstly we check if `debug.log` file exists
         if ( ! file_exists( DL_LOG ) ) {
+
             // File doesn't exist. We will try create it.
             if ( self::create_log_file() === true ) {
+
+            	// Print admin notice
                 add_action( 'admin_notices', function() {
-                    $msg = sprintf(
-                            __( '<strong>Debug Log Viewer</strong>: File (<code>%s</code>) was successfully created.', DL_SLUG ),
-                            DL_LOG
-                    );
+                    $msg = sprintf( __( '<strong>Debug Log Viewer</strong>: File (<code>%s</code>) was successfully created.', DL_SLUG ), DL_LOG );
                     DL_Plugin::print_admin_notice( $msg, 'success' );
                 } );
             } else {
+
+	            // Print admin notice
                 add_action( 'admin_notices', function() {
-                    $msg = sprintf(
-                            __( '<strong>Debug Log Viewer</strong>: File (<code>%s</code>) doesn\'t exist and can\'t be created. Create it on your own.', DL_SLUG ),
-                            DL_LOG
-                    );
+                    $msg = sprintf( __( '<strong>Debug Log Viewer</strong>: File (<code>%s</code>) doesn\'t exist and can\'t be created. Create it on your own.', DL_SLUG ), DL_LOG );
                     DL_Plugin::print_admin_notice( $msg, 'warning', true );
                 } );
             }
-        }
-        else if ( ! is_writable( DL_LOG ) ) {
+        } else if ( ! is_writable( DL_LOG ) ) {
+
             // File exists but is not writable
             add_action( 'admin_notices', function() {
-                $msg = sprintf(
-                        __( '<strong>Debug Log Viewer</strong>: File (<code>%s</code>) exists but is not writeable.', DL_SLUG ),
-                        DL_LOG
-                );
+                $msg = sprintf( __( '<strong>Debug Log Viewer</strong>: File (<code>%s</code>) exists but is not writeable.', DL_SLUG ), DL_LOG );
                 DL_Plugin::print_admin_notice( $msg );
             } );
         }
-        else {
-            // File exists and is writable
-            // ... nothing to do ...
-        }
 
-        /**
-         * @var string $err_msg Error message about setting WP_DEBUG and WP_DEBUG_LOG constants.
-         */
-        $err_msg = sprintf(
-                __( 'If you want to write log records into (<code>%s</code>) file you need to set PHP constants <code>WP_DEBUG</code> and <code>WP_DEBUG_LOG</code> on value <code>TRUE</code>.', DL_SLUG ),
-                DL_LOG
-        );
+        // Setting of WP_DEBUG|WP_DEBUG_LOG constants is wrong
+        $err_msg = sprintf( __( 'If you want to write log records into (<code>%s</code>) file you need to set PHP constants <code>WP_DEBUG</code> and <code>WP_DEBUG_LOG</code> on value <code>TRUE</code>.', DL_SLUG ), DL_LOG );
 
-        if( ! defined( 'WP_DEBUG' ) || ! defined( 'WP_DEBUG_LOG' ) ) {
+        if ( ! defined( 'WP_DEBUG' ) || ! defined( 'WP_DEBUG_LOG' ) ) {
             add_action( 'admin_notices', function() use ( $err_msg ) {
                 self::print_admin_notice( $err_msg, 'error' );
             } );
         }
 
-        if( WP_DEBUG != true || WP_DEBUG_LOG != true ) {
+        if ( WP_DEBUG != true || WP_DEBUG_LOG != true ) {
             add_action( 'admin_notices', function() use ( $err_msg ) {
                 self::print_admin_notice( $err_msg, 'error' );
             } );
@@ -353,21 +388,30 @@ class DL_Plugin {
 
     /**
      * Loads specified template with given arguments.
+     *
      * @param string $template
      * @param array  $args (Optional.)
      * @return string Output created by rendering template.
      * @since 1.0.0
      */
     public static function load_template( $template, array $args = [] ) {
+
+    	// Extract all arguments as variables for the template
         extract( $args );
+
+        // Get template's path
         $path = sprintf( '%spartials/%s.phtml', DL_PATH, $template );
+
+        // Render and return template
         ob_start( function() {} );
         include( $path );
+
         return ob_get_flush();
     }
 
     /**
      * Hook for "plugins_loaded" action.
+     *
      * @return void
      * @since 1.0.0
      */
@@ -377,14 +421,19 @@ class DL_Plugin {
 
     /**
      * Hook for "wp_enqueue_scripts" action.
+     *
      * @return void
      * @since 1.0.0
+     * @uses plugins_url()
+     * @uses wp_enqueue_script()
+     * @uses wp_enqueue_style()
+     * @uses wp_localize_script()
      */
     public static function enqueue_scripts() {
         $js_file = 'assets/js/public.js';
         $js_path = DL_FILE . $js_file;
 
-        if( file_exists( $js_path ) && is_readable( $js_path ) ) {
+        if ( file_exists( $js_path ) && is_readable( $js_path ) ) {
             wp_enqueue_script( DL_SLUG, plugins_url( $js_file, DL_FILE ), ['jquery'] );
             wp_localize_script( DL_SLUG, 'odwpdl', [
                 // Put variables you want to pass into JS here...
@@ -394,13 +443,14 @@ class DL_Plugin {
         $css_file = 'assets/css/public.css';
         $css_path = DL_FILE . $css_file;
 
-        if( file_exists( $css_path ) && is_readable( $css_path ) ) {
+        if ( file_exists( $css_path ) && is_readable( $css_path ) ) {
             wp_enqueue_style( DL_SLUG, plugins_url( $css_file, DL_FILE ) );
         }
     }
 
     /**
-     * @internal Renders the first settings section.
+     * Render the first settings section.
+     *
      * @return void
      * @since 1.0.0
      */
@@ -409,7 +459,8 @@ class DL_Plugin {
     }
 
     /**
-     * @internal Renders setting `debug_mode`.
+     * Render setting `debug_mode`.
+     *
      * @return void
      * @since 1.0.0
      */
@@ -420,12 +471,14 @@ class DL_Plugin {
     }
 
     /**
-     * @internal Uninstalls the plugin.
+     * Uninstall hook.
+     *
      * @return void
      * @since 1.0.0
      */
     public static function uninstall() {
-        if( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+
+        if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
             return;
         }
 
@@ -433,7 +486,8 @@ class DL_Plugin {
     }
 
     /**
-     * @internal Prints error message in correct WP amin style.
+     * Prints error message in correct WP admin style.
+     *
      * @param string $msg Error message.
      * @param string $type (Optional.) One of ['error','info','success','warning'].
      * @param boolean $dismissible (Optional.) Is notice dismissible?
@@ -443,13 +497,13 @@ class DL_Plugin {
     public static function print_admin_notice( $msg, $type = 'info', $dismissible = true ) {
         $class = 'notice';
 
-        if( in_array( $type, ['error','info','success','warning'] ) ) {
+        if ( in_array( $type, ['error','info','success','warning'] ) ) {
             $class .= ' notice-' . $type;
         } else {
             $class .= ' notice-info';
         }
 
-        if( $dismissible === true) {
+        if ( $dismissible === true) {
             $class .= ' s-dismissible';
         }
 
@@ -472,7 +526,7 @@ class DL_Plugin {
      */
     private static function screens_call_method( $method ) {
         foreach ( self::$admin_screens as $slug => $screen ) {
-            if( method_exists( $screen, $method ) ) {
+            if ( method_exists( $screen, $method ) ) {
                 call_user_func( [ $screen, $method ] );
             }
         }

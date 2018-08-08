@@ -23,43 +23,57 @@ if ( ! class_exists( 'DL_Log_Parser' ) ) :
 
 /**
  * Parser for WordPress debug.log files.
- * Using the parser:
+ *
+ * Snippet below explains how to initialize the parser:
+ *
  * <pre>
- * // Initialize parser:
+ * // Set up options:
  * $options =  [
  *     'per_page'   => 10,
  *     'show_links' => true,
  *     'sort_col'   => 'time',
  *     'sort_dir'   => DL_Log_Table::DEFAULT_SORT_DIR_DESC,
  * ];
- * // 1) Where 'log' => '...' should be raw log text.
- * $parser = new DL_Log_Parser( ['log' => '...'], $options );
- * // 2) Where 'file' => '...' should be full path to debug.log file
- * $parser = new DL_Log_Parser( ['file' => '...'], $options );
- * // 3) Using default debug.log file path.
- * $parser = new DL_Log_Parser( null, $options );
  *
- * // Using parser:
+ * // Set up log source log file:
+ * $source = '/usr/home/test/debug.log'; // When you have full path of log file
+ * $source = null;                       // When you want use WP log file
  *
- * // We can either use just {@see DL_Log_Parser::prepare()} if we just need count of total items:
+ * // Initialize the parser:
+ * $parser = new DL_Log_Parser( $source, $options );
+ * </pre>
+ *
+ * And here is snippet how to use initialized parser:
+ *
+ * <pre>
+ * // If you need to prepare parser (total count of rows will be available):
  * $parser->prepare();
- * // But if we need also filtering we should parse whole log immediately:
- * $parser->parse();
- * // Commonly we also need to sort data:
- * $parser->sort();
- * // Anyway at the end we need data items; here from the eleventh page:
- * $items = $parser->get_data( ['page' => 11] );
- * // here from starting to ending index:
- * $items = $parser->get_data( ['from' => 0, 'to' => 35] );
  *
- * // Filtering data
+ * // If you need also filtering you should parse whole log:
+ * $parser->parse();
+ *
+ * // Now here are snippets how to get your data:
+ *
+ * // Get data by page:
+ * $items = $parser->get_data( ['page' => 11] );
+ *
+ * // Get data by range:
+ * $items = $parser->get_data( ['from' => 0, 'to' => 35] );
+ * <pre>
+ *
+ * Here is an example how to filter data:
+ *
+ * <pre>
  * $this->parse();
  * $parser->filter( ['type' => DL_Log_Record::TYPE_ERROR] );
  * $items = $parser->get_data( ['page' => 3] );
  * </pre>
+ *
+ * @author Ondřej Doněk, <ondrejd@gmail.com>
  * @since 1.0.0
  */
 class DL_Log_Parser {
+
     /**
      * @var array $options
      * @since 1.0.0
@@ -67,15 +81,13 @@ class DL_Log_Parser {
     protected $options;
 
     /**
-     * @internal If is <em>TRUE</em> the log data are already prepared.
-     * @var boolean $is_prepared
+     * @var boolean $is_prepared If is TRUE the log data are already prepared.
      * @since 1.0.0
      */
     private $is_prepared = false;
 
     /**
-     * @internal If is <em>TRUE</em> the log data are already parsed.
-     * @var boolean $is_parsed
+     * @var boolean $is_parsed If is TRUE the log data are already parsed.
      * @since 1.0.0
      */
     private $is_parsed = false;
@@ -99,8 +111,7 @@ class DL_Log_Parser {
     private $log_unfiltered;
 
     /**
-     * @internal Used as temporary variable when parsing data.
-     * @var \DL_Log_Record $_record
+     * @var \DL_Log_Record $_record Temporary variable when parsing data.
      * @since 1.0.0
      */
     private $_record = null;
@@ -131,55 +142,36 @@ class DL_Log_Parser {
 
     /**
      * Constructor.
-     * @param array $args Array with arguments (can contains either "log" or "file" properties).
-     * @param boolean $options Options for parsing.
+     *
+     * @param array $options
      * @return void
      * @since 1.0.0
      */
-    public function __construct( $args = [], $options = [] ) {
-        $this->parse_args( $args );
+    public function __construct( $options = [] ) {
         $this->set_options( $options );
         $this->prepare();
         $this->parse();
     }
 
     /**
-     * @internal Destructor - ensures that log file is saved.
+     * Destructor.
+     *
      * @return void
      * @since 1.0.0
      */
     public function __destruct() {
+
+        // Ensure that log file is saved.
         if ( $this->is_saved() ) {
             $this->save();
         }
     }
 
     /**
-     * @internal Parse constructor arguments
-     * @param array $args
-     * @return void
-     * @since 1.0.0
-     */
-    private function parse_args( $args = [] ) {
-        if ( ! is_array( $args ) ) {
-            return;
-        }
-
-        if ( array_key_exists( 'log', $args ) ) {
-            if ( is_array( $args['log'] ) ) {
-                $this->log_raw = $args['log'];
-            }
-        }
-
-        if ( array_key_exists( 'file', $args ) ) {
-            $this->log_file = $args['file'];
-        }
-    }
-
-    /**
-     * Returns parser options.
-     * @param string $option (Optional.)
-     * @param mixed $default (Optional.)
+     * Return parser options.
+     * 
+     * @param string $option
+     * @param mixed $default
      * @return array
      * @since 1.0.0
      */
@@ -196,7 +188,8 @@ class DL_Log_Parser {
     }
 
     /**
-     * @internal Returns "Order by" parameter for sorting.
+     * Return "Order by" parameter for sorting.
+     * 
      * @return string
      * @since 1.0.0
      */
@@ -213,7 +206,8 @@ class DL_Log_Parser {
     }
 
     /**
-     * @internal Returns "Order by" parameter for sorting.
+     * Return "Order by" parameter for sorting.
+     * 
      * @return string
      * @since 1.0.0
      */
@@ -230,15 +224,15 @@ class DL_Log_Parser {
     }
 
     /**
-     * Returns total count of log items.
+     * Return total count of log items.
+     * 
      * @return integer
      * @since 1.0.0
      */
     public function get_total_count() {
         if ( $this->is_parsed === true ) {
             return count( $this->log );
-        }
-        else if ( $this->is_prepared === true ) {
+        } else if ( $this->is_prepared === true ) {
             return count( $this->log_raw );
         }
 
@@ -246,7 +240,8 @@ class DL_Log_Parser {
     }
 
     /**
-     * Returns name of used view.
+     * Return name of used view.
+     * 
      * @return string
      * @since 1.0.0
      */
@@ -255,7 +250,8 @@ class DL_Log_Parser {
     }
 
     /**
-     * Sets parser options.
+     * Set parser options.
+     * 
      * @param array $options
      * @since 1.0.0
      */
@@ -264,7 +260,8 @@ class DL_Log_Parser {
     }
 
     /**
-     * Prepares log data from raw data. After this is possible to get total count of items.
+     * Prepare log data from raw data. After this is possible to get total count of items.
+     * 
      * @return void
      * @since 1.0.0
      */
@@ -278,11 +275,13 @@ class DL_Log_Parser {
     }
 
     /**
-     * Parses prepared log data.
+     * Parse prepared log data.
+     *
      * @return void
      * @since 1.0.0
      */
     public function parse() {
+
         if ( $this->is_parsed === true ) {
             return;
         }
@@ -293,7 +292,7 @@ class DL_Log_Parser {
 
         $this->log = array();
 
-        foreach( $this->log_raw as $index => $log_line ) {
+        foreach ( $this->log_raw as $index => $log_line ) {
             $this->parse_line( $log_line, $index );
         }
 
@@ -306,11 +305,13 @@ class DL_Log_Parser {
     }
 
     /**
-     * @internal Parse single log line.
+     * Parse single log line.
+     *
      * @param string $line
      * @param integer $line_num
      * @return void
      * @since 1.0.0
+     * @todo Finish this! (There should be no `var_dump()`)!
      */
     private function parse_line( $line, $line_num ) {
         $matches = preg_split(
@@ -370,12 +371,14 @@ class DL_Log_Parser {
     }
 
     /**
-     * Filters parsed log data.
+     * Filter parsed log data.
+     *
      * @param Closure $filter_func
      * @return void
      * @since 1.0.0
      */
     public function filter( $filter_func ) {
+
         if ( $this->is_parsed !== true ) {
             $this->parse();
         }
@@ -385,12 +388,14 @@ class DL_Log_Parser {
     }
 
     /**
-     * Sets view.
+     * Set view.
+     *
      * @param string $view
      * @return void
      * @since 1.0.0
      */
     public function set_view( $view ) {
+
         if ( $this->_view === $view ) {
             return;
         }
@@ -401,17 +406,15 @@ class DL_Log_Parser {
 
         $log_by_view = [];
 
-        foreach( $this->log as $item ) {
+        foreach ( $this->log as $item ) {
+
             if ( $view === 'today' && $item->was_today() ) {
                 $log_by_view[] = $item;
-            }
-            elseif ( $view === 'yesterday' && $item->was_yesterday() ) {
+            } else if ( $view === 'yesterday' && $item->was_yesterday() ) {
                 $log_by_view[] = $item;
-            }
-            elseif ( $view === 'earlier' && ( ! $item->was_today() && ! $item->was_yesterday() ) ) {
+            } else if ( $view === 'earlier' && ( ! $item->was_today() && ! $item->was_yesterday() ) ) {
                 $log_by_view[] = $item;
-            }
-            elseif ( $view === 'all' ) {
+            } else if ( $view === 'all' ) {
                 $log_by_view[] = $item;
             }
         }
@@ -421,7 +424,8 @@ class DL_Log_Parser {
 
     /**
      * Sort parsed (or parsed and filtered) data.
-     * @param array $args (Optional.) Sorting arguments ('sort_col' and 'sort_dir').
+     * 
+     * @param array $args Sorting arguments ('sort_col' and 'sort_dir').
      * @return void
      * @since 1.0.0
      */
@@ -443,6 +447,7 @@ class DL_Log_Parser {
 
     /**
      * Reset used sorting or filters.
+     * 
      * @return void
      * @since 1.0.0
      */
@@ -451,16 +456,17 @@ class DL_Log_Parser {
     }
 
     /**
-     * Returns data from the log.
+     * Return data from the log.
+     * 
+     * @param array $options
      * @return array
      * @since 1.0.0
      */
     public function get_data( $options = ['page' => -1] ) {
+    	
         if ( $this->is_parsed !== true ) {
             $this->parse();
         }
-
-        $data = [];
 
         if ( $options['page'] == -1 ) {
             $data = $this->log;
@@ -474,7 +480,7 @@ class DL_Log_Parser {
     }
 
     /**
-     * @internal Recognizes and returns type of log record from the given string.
+     * Recognizes and returns type of log record from the given string.
      * @param string $str
      * @return string
      * @see DL_Log_Table::get_data()
@@ -498,7 +504,8 @@ class DL_Log_Parser {
     }
 
     /**
-     * @internal Returns the same text as given but the mentioned PHP source files are made accessible as links.
+     * Return the same text as given but the mentioned PHP source files are made accessible as links.
+     * 
      * @link http://php.net/manual/en/function.get-defined-functions.php
      * @link https://stackoverflow.com/questions/13421317/finding-the-php-file-at-run-time-where-a-method-of-an-object-was-defined
      * @link https://stackoverflow.com/questions/2222142/how-to-find-out-where-a-function-is-defined
@@ -509,16 +516,18 @@ class DL_Log_Parser {
      * @todo Rename to `highlight_text_line`!
      */
     public function make_source_links( $str ) {
+    	
         if ( strpos( $str, ABSPATH ) === false ) {
             return $str;
         }
 
-        /** @var string $ret Holds HTML to return. */
         $ret = $str;
+        
         // Variables based on user settings
         $short_src_links = (bool) $this->get_options( 'short_src_links', DL_Log_Table::DEFAULT_SHORT_SRC_LINKS );
         $src_win_width = (int) $this->get_options( 'src_win_width', DL_Log_Table::DEFAULT_SRC_WIN_WIDTH );
         $src_win_height = (int) $this->get_options( 'src_win_height', DL_Log_Table::DEFAULT_SRC_WIN_HEIGHT );
+        
         // Other variables
         $abspath = str_replace( '/', '\/', ABSPATH );
         $regexp  = '/((' . $abspath . '[a-zA-Z0-9.\-\_\/]*))/';
@@ -530,30 +539,35 @@ class DL_Log_Parser {
         $file_links = [];
         $matches = preg_split( $regexp, $str, -1, PREG_SPLIT_DELIM_CAPTURE );
 
-        foreach( $matches as $match ) {
+        foreach ( $matches as $match ) {
             if ( strpos( $match, ABSPATH ) === 0 ) {
+            	
                 // Array item contains file link
                 if ( ! in_array( $match, $file_links ) ) {
                     $file_links[] = $match;
                 }
-            }
-            else {
+            } else {
                 // Other text
+	            
                 // Highlight numbers
                 $ret = DL_Log_Highlighter::highlight_numbers( $match, $ret );
+                
                 // Highlight function names
                 $ret = DL_Log_Highlighter::highlight_functions( $match, $ret );
+                
                 // Highlight strings in brackets
                 $ret = DL_Log_Highlighter::highlight_strings( $match, $ret );
+                
                 // Highlight "undefined variable: *"
                 $ret = DL_Log_Highlighter::highlight_undefined_variable( $match, $ret );
+                
                 // Highlight others
                 $ret = DL_Log_Highlighter::highlight_others( $match, $ret );
             }
         }
 
         // 2) Update string with HTML anchors for file links
-        foreach( $file_links as $file_link ) {
+        foreach ( $file_links as $file_link ) {
             $file_name = $file_link;
 
             // Make link shorter if user wants it
@@ -582,7 +596,8 @@ class DL_Log_Parser {
     }
 
     /**
-     * @internal Sorting method for the table data.
+     * Sorting method for the table data.
+     * 
      * @param DL_Log_Record $a The first row.
      * @param DL_Log_Record $b The second row.
      * @return integer
@@ -653,9 +668,10 @@ class DL_Log_Parser {
     }
 
     /**
-     * Đeletes records at given rows (but does not save the file).
+     * Delete records at given rows (but does not save the file).
+     * 
      * @param integer $lines
-     * @return mixed Returns FALSE if something went wrong otherwise count of deleted lines.
+     * @return mixed Return FALSE if something went wrong otherwise count of deleted lines.
      * @since 1.0.0
      */
     public function delete_records( $lines ) {
@@ -666,7 +682,7 @@ class DL_Log_Parser {
         $lines = array_reverse( $lines );
         odwpdl_write_log( $lines ); // XXX Remove this!
 
-        foreach( $lines as $line ) {
+        foreach ( $lines as $line ) {
             $ret = $this->delete_record( $line );
         }
 
@@ -675,6 +691,7 @@ class DL_Log_Parser {
 
     /**
      * Save {@see DL_Log_Parser::$log_raw} into the {@see DL_Log_Parser::$file}.
+     * 
      * @return boolean
      * @since 1.0.0
      */
@@ -687,7 +704,8 @@ class DL_Log_Parser {
     }
 
     /**
-     * Returns true if log file is saved (or if there are unsaved changes).
+     * Return true if log file is saved (or if there are unsaved changes).
+     * 
      * @return boolean
      * @since 1.0.0
      */

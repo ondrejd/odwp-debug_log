@@ -7,17 +7,20 @@
  * @since 1.0.0
  */
 
-if( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if( ! class_exists( 'DL_Log_Record' ) ) :
+if ( ! class_exists( 'DL_Log_Record' ) ) :
 
 /**
  * Log record.
+ *
+ * @author Ondřej Doněk, <ondrejd@gmail.com>
  * @since 1.0.0
  */
 class DL_Log_Record {
+
     /**
      * @var string
      * @since 1.0.0
@@ -104,6 +107,7 @@ class DL_Log_Record {
 
     /**
      * Construct.
+     * 
      * @param integer $id
      * @param integer $time
      * @param string  $message
@@ -120,7 +124,8 @@ class DL_Log_Record {
     }
 
     /**
-     * Returns index of the log record.
+     * Return index of the log record.
+     * 
      * @return integer
      * @since 1.0.0
      */
@@ -129,7 +134,8 @@ class DL_Log_Record {
     }
 
     /**
-     * Returns time of the log record.
+     * Return time of the log record.
+     *
      * @param boolean $formatted (Optional.)
      * @return integer
      * @since 1.0.0
@@ -139,7 +145,8 @@ class DL_Log_Record {
     }
 
     /**
-     * Returns time of the log record.
+     * Return time of the log record.
+     *
      * @return string
      * @since 1.0.0
      */
@@ -148,7 +155,8 @@ class DL_Log_Record {
     }
 
     /**
-     * Returns stack trace of the log record (error in this case).
+     * Return stack trace of the log record (error in this case).
+     *
      * @return array
      * @since 1.0.0
      */
@@ -157,8 +165,9 @@ class DL_Log_Record {
     }
 
     /**
-     * Returns log record type.
-     * @return array
+     * Return log record type.
+     *
+     * @return string
      * @since 1.0.0
      */
     public function get_type() {
@@ -166,7 +175,8 @@ class DL_Log_Record {
     }
 
     /**
-     * Returns TRUE if record should be displayed.
+     * Return TRUE if record should be displayed.
+     *
      * @return boolean
      * @since 1.0.0
      */
@@ -175,7 +185,8 @@ class DL_Log_Record {
     }
 
     /**
-     * Sets index of the log record.
+     * Set index of the log record.
+     *
      * @param integer $id
      * @return void
      * @since 1.0.0
@@ -185,7 +196,8 @@ class DL_Log_Record {
     }
 
     /**
-     * Sets time of the log record.
+     * Set time of the log record.
+     *
      * @param integer $time
      * @return void
      * @since 1.0.0
@@ -202,7 +214,8 @@ class DL_Log_Record {
     }
 
     /**
-     * Sets message of the log record.
+     * Set message of the log record.
+     *
      * @param string $message
      * @return void
      * @since 1.0.0
@@ -212,7 +225,8 @@ class DL_Log_Record {
     }
 
     /**
-     * Sets stack trace of the log record.
+     * Set stack trace of the log record.
+     *
      * @param array $trace
      * @return void
      * @since 1.0.0
@@ -222,7 +236,8 @@ class DL_Log_Record {
     }
 
     /**
-     * Adds stack trace message to the log record.
+     * Add stack trace message to the log record.
+     *
      * @param string $trace
      * @return void
      * @since 1.0.0
@@ -232,7 +247,8 @@ class DL_Log_Record {
     }
 
     /**
-     * Returns <em>TRUE</em> if error record has a stack trace.
+     * Return TRUE if error record has a stack trace.
+     *
      * @return boolean
      * @since 1.0.0
      */
@@ -241,7 +257,8 @@ class DL_Log_Record {
     }
 
     /**
-     * Sets log record type.
+     * Set log record type.
+     *
      * @param string $type
      * @return void
      * @since 1.0.0
@@ -251,7 +268,8 @@ class DL_Log_Record {
     }
 
     /**
-     * Sets if record should be displayed.
+     * Set if record should be displayed.
+     *
      * @param boolean $display
      * @return void
      * @since 1.0.0
@@ -262,6 +280,7 @@ class DL_Log_Record {
 
     /**
      * Was the log record created today?
+     *
      * @return boolean
      * @since 1.0.0
      */
@@ -271,6 +290,7 @@ class DL_Log_Record {
 
     /**
      * Was the log record created yesterday?
+     *
      * @return boolean
      * @since 1.0.0
      */

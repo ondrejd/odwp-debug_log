@@ -15,9 +15,12 @@ if( ! class_exists( 'DL_Log_Dashboard_Widget' ) ) :
 
 /**
  * Log dashboard widget.
+ *
+ * @author Ondřej Doněk, <ondrejd@gmail.com>
  * @since 1.0.0
  */
 class DL_Log_Dashboard_Widget {
+
     /**
      * @const string ID of the widget.
      * @since 1.0.0

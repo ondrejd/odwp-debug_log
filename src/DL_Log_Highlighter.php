@@ -15,11 +15,15 @@ if( ! class_exists( 'DL_Log_Highlighter' ) ) :
 
 /**
  * Class that serves highlighting of log text.
+ *
+ * @author Ondřej Doněk, <ondrejd@gmail.com>
  * @since 1.0.0
  */
 class DL_Log_Highlighter {
+
     /**
      * Highlights numbers.
+     *
      * @param string $part
      * @param string $line
      * @return string
@@ -35,6 +39,7 @@ class DL_Log_Highlighter {
 
     /**
      * Highlights PHP function names.
+     *
      * @param string $part
      * @param string $line
      * @return string
@@ -50,6 +55,7 @@ class DL_Log_Highlighter {
 
     /**
      * Highlight some others that pass through the other regexp's.
+     *
      * @param string $part
      * @param string $line
      * @return string
@@ -71,6 +77,7 @@ class DL_Log_Highlighter {
 
     /**
      * Highlights strings in brackets.
+     *
      * @param string $part
      * @param string $line
      * @return string
@@ -86,6 +93,7 @@ class DL_Log_Highlighter {
 
     /**
      * Highlights "undefined variable: *".
+     *
      * @param string $part
      * @param string $line
      * @return string
