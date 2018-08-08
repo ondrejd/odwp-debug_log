@@ -7,19 +7,19 @@
  * @since 1.0.0
  */
 
-if( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if( ! class_exists( 'WP_List_Table' ) ) {
+if ( ! class_exists( 'WP_List_Table' ) ) {
     require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-if( ! class_exists( 'DL_Log_Parser' ) ) {
+if ( ! class_exists( 'DL_Log_Parser' ) ) {
     require_once( DL_PATH . 'src/DL_Log_Parser.php' );
 }
 
-if( ! class_exists( 'DL_Log_Table' ) ) :
+if ( ! class_exists( 'DL_Log_Table' ) ) :
 
 /**
  * Table with log. User options for the table are implemented partially in {@see DL_Log_Screen}.
@@ -273,15 +273,15 @@ class DL_Log_Table extends WP_List_Table {
         $show_trace = $options['show_trace'];
         $show_type  = ( strpos( $options['shown_cols'], 'type' ) !== false );
 
-        if( $show_type !== true ) {
+        if ( $show_type !== true ) {
             $text = '<b>' . $item->get_type() . '</b>: ' . $text;
         }
 
-        if( $show_links === true ) {
+        if ( $show_links === true ) {
             $text = $this->parser->make_source_links( $text );
         }
 
-        if( $item->has_trace() === true ) {
+        if ( $item->has_trace() === true ) {
             $icon = ( $show_trace === true )
                     ? '<span class="dashicons dashicons-arrow-up-alt2"></span>'
                     : '<span class="dashicons dashicons-arrow-down-alt2"></span>';
@@ -291,7 +291,7 @@ class DL_Log_Table extends WP_List_Table {
             $text .= '    <ul>' . PHP_EOL;
 
             foreach( $item->get_trace() as $trace ) {
-                if( $show_links === true ) {
+                if ( $show_links === true ) {
                     $trace = $this->parser->make_source_links( $trace );
                 }
 
@@ -314,7 +314,7 @@ class DL_Log_Table extends WP_List_Table {
      */
     public function display_rows() {
         foreach( $this->items as $item ) {
-            if( ! ( $item instanceof \DL_Log_Record ) ) {
+            if ( ! ( $item instanceof \DL_Log_Record ) ) {
                 continue;
             }
 
@@ -376,13 +376,13 @@ class DL_Log_Table extends WP_List_Table {
 
         // Default table argument "paged"
         $paged = (int) filter_input( INPUT_GET, 'paged' );
-        if( $paged > 1 ) {
+        if ( $paged > 1 ) {
             $url .= "&amp;paged={$paged}";
         }
 
         // Default table argument "filter"
         $filter = filter_input( INPUT_GET, 'filter' );
-        if( ! empty( $filter ) ) {
+        if ( ! empty( $filter ) ) {
             $url .= "&amp;filter={$filter}";
         }
 
@@ -476,7 +476,7 @@ class DL_Log_Table extends WP_List_Table {
         ];
         $current_view = filter_input( INPUT_GET, 'view' );
 
-        if( empty( $current_view ) ) {
+        if ( empty( $current_view ) ) {
             $current_view = 'all';
         }
 
@@ -501,7 +501,7 @@ class DL_Log_Table extends WP_List_Table {
      * @since 1.0.0
      */
     public function views() {
-        if( count( $this->items ) <= 0 ) {
+        if ( count( $this->items ) <= 0 && !$this->isAnyFilterUsed() && !$this->isAnyViewUsed() ) {
             return;
         }
 
@@ -517,32 +517,32 @@ class DL_Log_Table extends WP_List_Table {
     private function get_view_items_count( $view ) {
         $this->parser->reset();
 
-        if( $view == 'all' ) {
+        if ( $view == 'all' ) {
             $this->parser->filter( function( \DL_Log_Record $record ) {
                 return true;
             } );
         }
-        elseif( $view == 'today' ) {
+        elseif ( $view == 'today' ) {
             $this->parser->filter( function( \DL_Log_Record $record ) {
                 return $record->was_today();
             } );
         }
-        elseif( $view == 'yesterday' ) {
+        elseif ( $view == 'yesterday' ) {
             $this->parser->filter( function( \DL_Log_Record $record ) {
                 return $record->was_yesterday();
             } );
         }
-        elseif( $view == 'earlier' ) {
+        elseif ( $view == 'earlier' ) {
             $this->parser->filter( function( \DL_Log_Record $record ) {
                 return ( ! $record->was_today() && ! $record->was_yesterday() );
             } );
         }
 
         // Get data
-        extract( $this->get_order_args() );
+        $order_args = $this->get_order_args();
         $this->parser->sort( [
-            'sort_col'    => $orderby,
-            'sort_dir'    => $order,
+            'sort_col' => $order_args['orderby'],
+            'sort_dir' => $order_args['order'],
         ] );
         $data = $this->parser->get_data( ['page' => -1] );
 
@@ -564,6 +564,7 @@ class DL_Log_Table extends WP_List_Table {
         $filter = [];
         $filter['time'] = empty( $_time ) ? 0 : ( int ) $_time;
         $filter['type'] = empty( $_type ) ? 0 : ( int ) $_type;
+        $filter['is_filter'] = ! ( $filter['time'] === 0 && $filter['type'] === 0 );
 
         return $filter;
     }
@@ -576,11 +577,11 @@ class DL_Log_Table extends WP_List_Table {
      * @todo Remember filtering for the next session (save it as user preferences and renew it).
      */
     protected function extra_tablenav( $which ) {
-        if( $which != 'top' ) {
+        if ( $which != 'top' ) {
             return;
         }
 
-        if( $this->parser->get_total_count() == 0 ) {
+        if ( $this->parser->get_total_count() == 0 ) {
             return;
         }
 
@@ -628,19 +629,21 @@ class DL_Log_Table extends WP_List_Table {
      * @access public
      */
     public function no_items() {
-        printf(
-            '<p class="odwpdl-no_items">%s</p>',
-            __( 'Your file <code>debug.log</code> is empty &ndash; that means no errors <strong class="noitems-smiley">:-)</strong>&hellip;', DL_SLUG )
-        );
+        $msg = ( $this->isAnyFilterUsed() || $this->isAnyViewUsed() )
+            ? __( 'There are no items with filter or view you have selected&hellip;', DL_SLUG )
+            : __( 'Your file <code>debug.log</code> is empty &ndash; that means no errors <strong class="noitems-smiley">:-)</strong>&hellip;', DL_SLUG );
+
+        printf( '<p class="odwpdl-no_items">%s</p>', $msg );
     }
 
     /**
      * Prepares data items for the table.
      * @return void
      * @since 1.0.0
+     * @todo Process row actions!
+     * @todo Process bulk actions!
      */
     public function prepare_items() {
-        $options  = self::get_options();
 
         // Set up column headers
         $this->_column_headers = [
@@ -653,31 +656,30 @@ class DL_Log_Table extends WP_List_Table {
         $this->parser->reset();
 
         // Process row and bulk actions
-        // XXX In this moment is log not parsed so it can't work!
-        // XXX $this->process_row_actions();
-        // XXX $this->process_bulk_actions();
+        $this->process_row_actions();
+        // TODO $this->process_bulk_actions();
 
         // Use view
         $view = filter_input( INPUT_GET, 'view' );
-        if( !in_array( $view, [ 'today', 'yesterday', 'earlier', 'all' ] ) ) {
+        if ( !in_array( $view, [ 'today', 'yesterday', 'earlier', 'all' ] ) ) {
             $view = self::DEFAULT_VIEW;
         }
         $this->parser->set_view( $view );
 
         // Get order arguments
-        extract( $this->get_order_args() );
-        // Needed hack (because otherway is arrow indicating sorting
+	    $order_args = $this->get_order_args();
+        // Needed hack (because other way is arrow indicating sorting
         // in table head not displayed correctly).
-        $_GET['orderby'] = $orderby;
-        $_GET['order'] = $order;
+        $_GET['orderby'] = $order_args['orderby'];
+        $_GET['order'] = $order_args['order'];
 
         // Apply filtering
         $this->apply_filter( $this->get_filter() );
 
         // Apply sorting
         $this->parser->sort( [
-            'sort_col'    => $orderby,
-            'sort_dir'    => $order,
+            'sort_col' => $order_args['orderby'],
+            'sort_dir' => $order_args['order'],
         ] );
 
         // Pagination arguments
@@ -722,7 +724,7 @@ class DL_Log_Table extends WP_List_Table {
             default: $type = null; break;
         }
 
-        if( ! is_null( $type ) ) {
+        if ( ! is_null( $type ) ) {
             $this->parser->filter( function( \DL_Log_Record $record ) use( $type ) {
                 return ( $record->get_type() == $type );
             } );
@@ -739,19 +741,19 @@ class DL_Log_Table extends WP_List_Table {
         $orderby = filter_input( INPUT_GET, DL_Log_Screen::SLUG . '-sort_col' );
         $order = filter_input( INPUT_GET, DL_Log_Screen::SLUG . '-sort_dir' );
 
-        if( empty( $orderby ) ) {
+        if ( empty( $orderby ) ) {
             $orderby = filter_input( INPUT_GET, 'orderby' );
         }
 
-        if( empty( $orderby ) ) {
+        if ( empty( $orderby ) ) {
             $orderby = $options['sort_col'];
         }
 
-        if( empty( $order ) ) {
+        if ( empty( $order ) ) {
             $order = filter_input( INPUT_GET, 'order' );
         }
 
-        if( empty( $order ) ) {
+        if ( empty( $order ) ) {
             $order = $options['sort_dir'];
         }
 
@@ -772,17 +774,17 @@ class DL_Log_Table extends WP_List_Table {
         $action = filter_input( INPUT_GET, 'action' );
 
         // There are top and bottom toolbars submit buttons...
-        if( empty( $action ) ) {
+        if ( empty( $action ) ) {
             $action = filter_input( INPUT_GET, 'action2' );
         }
 
         // But no one was pressed
-        if( empty( $action ) ) {
+        if ( empty( $action ) ) {
             return;
         }
 
         // Validate action, otherwise return
-        if( ! in_array( $action, ['delete'] ) ) {
+        if ( ! in_array( $action, ['delete'] ) ) {
             DL_Plugin::print_admin_notice(
                 sprintf( __( 'Requested action "<b>%s</b>" was not recognized!', DL_SLUG ), $action ),
                 'warning',
@@ -798,7 +800,7 @@ class DL_Log_Table extends WP_List_Table {
         $log_items = filter_input( INPUT_GET, 'log_item', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 
         // There are no items to delete
-        if( count( $log_items ) == 0 ) {
+        if ( count( $log_items ) == 0 ) {
             DL_Plugin::print_admin_notice(
                 __( 'Nothing deleted - no records were selected.', DL_SLUG ),
                 'info',
@@ -811,13 +813,13 @@ class DL_Log_Table extends WP_List_Table {
         $res = $this->parser->delete_records( $log_items );
 
         // Print output message
-        if( $res === false ) {
+        if ( $res === false ) {
             DL_Plugin::print_admin_notice(
                 __( 'Error occured during deleting records from <code>debug.log</code> file.', DL_SLUG ),
                 'error'
             );
         }
-        else if( $res === 0 ) {
+        else if ( $res === 0 ) {
             DL_Plugin::print_admin_notice(
                 __( 'No records from <code>debug.log</code> file were deleted.', DL_SLUG ),
                 'info'
@@ -834,8 +836,9 @@ class DL_Log_Table extends WP_List_Table {
             );
         }
 
-        if( $this->parser->is_saved() !== true ) {
-            $this->parser->save();
+        if ( $this->parser->is_saved() !== true ) {
+	        // TODO Metoda `save` používá `$log_raw` namísto `log`, který byl aktualizován v metodě `delete_record`!
+	        // TODO $this->parser->save();
         }
     }
 
@@ -846,42 +849,42 @@ class DL_Log_Table extends WP_List_Table {
      * @todo Use {@see wp_redirect()} at the end?
      */
     public function process_row_actions() {
+
         // If request's method is not GET return
-        if( strtolower( filter_input( INPUT_SERVER, 'method' ) ) !== 'get' ){
+        if ( strtolower( filter_input( INPUT_SERVER, 'method' ) ) !== 'get' ) {
             return;
         }
 
-        $action = filter_input( INPUT_GET, 'action' );
-        $record = (int) filter_input( INPUT_GET, 'record' );
+        $action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
+        $record = (int) filter_input( INPUT_GET, 'record', FILTER_SANITIZE_NUMBER_INT );
 
         // Validate action, otherwise return
-        if( ! in_array( $action, ['delete'] ) || empty( $record ) ) {
+        if ( ! in_array( $action, ['delete'] ) || empty( $record ) ) {
             DL_Plugin::print_admin_notice(
-                __( 'Requested action "<b>%s</b>" was not recognized!', DL_SLUG ),
-                'warning',
-                true
+                sprintf( __( 'Requested action <strong>%s</strong> was not recognized!', DL_SLUG ), $action ),
+                'warning', true
             );
             return;
         }
 
         // Perform action
-        if( $action == 'delete' ) {
-            // Delete selected log record.
-            $msg_text = $msg_type = '';
+        if ( $action == 'delete' ) {
 
-            if( $this->parser->delete_record( $record ) === true ) {
-                $msg_text = __( 'Record on line <b>%d</b> was successfully removed from <code>debug.log</code> file.', DL_SLUG );
+            // Delete selected log record
+            if ( $this->parser->delete_record( $record ) === true ) {
+                $msg_text = __( 'Record on line <strong>%d</strong> was successfully removed from <code>debug.log</code> file.', DL_SLUG );
                 $msg_type = 'success';
             } else {
-                $msg_text = __( 'Record on line <b>%d</b> from <code>debug.log</code> file was not deleted!', DL_SLUG );
+                $msg_text = __( 'Record on line <strong>%d</strong> from <code>debug.log</code> file was not deleted!', DL_SLUG );
                 $msg_type = 'error';
             }
 
-            DL_Plugin::print_admin_notice( sprintf( $msg_text, $record ), $msg_type, true );
-        }
+            if ( $this->parser->is_saved() !== true ) {
+                // TODO Metoda `save` používá `$log_raw` namísto `log`, který byl aktualizován v metodě `delete_record`!
+                // TODO $this->parser->save();
+            }
 
-        if( $this->parser->is_saved() !== true ) {
-            $this->parser->save();
+            DL_Plugin::print_admin_notice( sprintf( $msg_text, $record ), $msg_type, true );
         }
     }
 
@@ -921,7 +924,7 @@ class DL_Log_Table extends WP_List_Table {
 
         // [ondrejd]: added filter
         $filter = $this->get_filter();
-        if( $filter > 0 ) {
+        if ( $filter > 0 ) {
             $current_url = add_query_arg( 'filter-by-type', $filter, $current_url );
         }
 
@@ -1031,7 +1034,7 @@ class DL_Log_Table extends WP_List_Table {
 
         // [ondrejd]: added filter
         $filter = $this->get_filter();
-        if( $filter > 0 ) {
+        if ( $filter > 0 ) {
             $current_url = add_query_arg( 'filter-by-type', $filter, $current_url );
         }
 
@@ -1097,6 +1100,34 @@ class DL_Log_Table extends WP_List_Table {
 
                 echo "<$tag $scope $id $class>$column_display_name</$tag>";
         }
+    }
+
+    /**
+     * Return TRUE if any filter is selected/used.
+     * @return bool
+     * @since 1.0.0
+     */
+    public function isAnyFilterUsed() {
+        return $this->get_filter()['is_filter'];
+    }
+
+    /**
+     * Return TRUE if any view is selected/used.
+     * @return bool
+     * @since 1.0.0
+     */
+    public function isAnyViewUsed() {
+        $view = filter_input( INPUT_GET, 'view', FILTER_SANITIZE_STRING );
+
+        if ( empty( $view ) ) {
+            $view = filter_input( INPUT_POST, 'view', FILTER_SANITIZE_STRING );
+
+            if ( empty( $view ) ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
 
