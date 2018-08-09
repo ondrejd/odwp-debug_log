@@ -296,8 +296,9 @@ class DL_Log_Parser {
             $this->parse_line( $log_line, $index );
         }
 
+        // Sometimes record is not properly finished after parser is done so fix it
         if ( ( $this->_record instanceof DL_Log_Record ) ) {
-            $this->log[] = $this->_record;
+            $this->log[$this->_record->get_id()] = $this->_record;
         }
 
         $this->log_unfiltered = $this->log;
@@ -311,7 +312,6 @@ class DL_Log_Parser {
      * @param integer $line_num
      * @return void
      * @since 1.0.0
-     * @todo Finish this! (There should be no `var_dump()`)!
      */
     private function parse_line( $line, $line_num ) {
         $matches = preg_split(
@@ -321,21 +321,21 @@ class DL_Log_Parser {
             PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
         );
 
+        // TODO User should by able to override this (using user's meta)!
+        $log_parser_errors = DL_DEBUG;
+        $parser_error_msg = 'DL_Log_Parser: Parser error (1) ["%s"|"%s"|"%s"]';
+
         if ( ! is_array( $matches ) ) {
-            //odwpdl_write_log( 'DL_Log_Parser: Parser error (1).' );
-            /**/echo '<pre>';
-            echo 'WRONG MATCHES [1]:'.PHP_EOL;
-            var_dump( $line );
-            var_dump( $line_num );
-            var_dump( $matches );
-            echo '</pre>';
+            if ( $log_parser_errors === true ) {
+                odwpdl_write_log( sprintf( $parser_error_msg, $line_num, $line, json_encode($matches) ) );
+            }
             return;
         }
 
+        // This is normal log row (date and details)
         if ( count( $matches ) == 2 ) {
-            // This is normal log row (date and details)
             if ( ( $this->_record instanceof DL_Log_Record ) ) {
-                $this->log[] = $this->_record;
+                $this->log[$this->_record->get_id()] = $this->_record;
             }
 
             $_msg = trim( $matches[1] );
@@ -343,29 +343,31 @@ class DL_Log_Parser {
             $msg  = str_replace( $type . ': ', '', $_msg );
 
             $this->_record = new DL_Log_Record( 0, '', '' );
-            $this->_record->set_id( $line_num + 1 );
+            $this->_record->set_id( $line_num );
             $this->_record->set_time( strtotime( trim( $matches[0], '[]' ) ) );
             $this->_record->set_type( $type );
             $this->_record->set_message( $msg );
+            $this->_record->set_start_line( $line_num );
         }
+
+        // This is just continue of of previous line (debug details)
         elseif ( count( $matches ) == 1 && ( $this->_record instanceof DL_Log_Record ) ) {
             if ( strpos( $matches[0], '#' ) === 0 ) {
-                // This is just continue of of previous line (debug details)
                 $this->_record->add_trace( $matches[0] );
+                $this->_record->set_end_line( $line_num );
             }
         }
+
+        // Something is (maybe) wrong or just empty line
         else {
             if ( empty( trim( $matches[0] ) ) ) {
                 return;
             }
 
-            //odwpdl_write_log( 'DL_Log_Parser: Parser error (2).' );
-            /**/echo '<pre>';
-            echo 'WRONG MATCHES [2]:'.PHP_EOL;
-            var_dump( $line );
-            var_dump( $line_num );
-            var_dump( $matches );
-            echo '</pre>';
+            if ( $log_parser_errors === true ) {
+                odwpdl_write_log( sprintf( $parser_error_msg, $line_num, $line, json_encode( $matches ) ) );
+            }
+
             return;
         }
     }
@@ -459,18 +461,22 @@ class DL_Log_Parser {
      * Return data from the log.
      * 
      * @param array $options
-     * @return array
+     * @return DL_Log_Record|[DL_Log_Record]
      * @since 1.0.0
      */
     public function get_data( $options = ['page' => -1] ) {
-    	
+        
         if ( $this->is_parsed !== true ) {
             $this->parse();
         }
 
-        if ( $options['page'] == -1 ) {
+        if ( array_key_exists( 'page', $options ) && $options['page'] == -1 ) {
             $data = $this->log;
-        } else {
+        }
+        elseif ( array_key_exists( 'record', $options ) ) {
+            $data = $this->log[(int) $options['record']];
+        }
+        else {
             $per_page = $this->get_options( 'per_page', DL_Log_Table::DEFAULT_PER_PAGE );
             $current  = array_key_exists( 'page', $options ) ? $options['page'] : 1;
             $data     = array_slice( $this->log, ( ( $current - 1 ) * $per_page ), $per_page );
@@ -481,6 +487,7 @@ class DL_Log_Parser {
 
     /**
      * Recognizes and returns type of log record from the given string.
+     *
      * @param string $str
      * @return string
      * @see DL_Log_Table::get_data()
@@ -516,7 +523,7 @@ class DL_Log_Parser {
      * @todo Rename to `highlight_text_line`!
      */
     public function make_source_links( $str ) {
-    	
+        
         if ( strpos( $str, ABSPATH ) === false ) {
             return $str;
         }
@@ -541,14 +548,14 @@ class DL_Log_Parser {
 
         foreach ( $matches as $match ) {
             if ( strpos( $match, ABSPATH ) === 0 ) {
-            	
+                
                 // Array item contains file link
                 if ( ! in_array( $match, $file_links ) ) {
                     $file_links[] = $match;
                 }
             } else {
                 // Other text
-	            
+                
                 // Highlight numbers
                 $ret = DL_Log_Highlighter::highlight_numbers( $match, $ret );
                 
@@ -641,30 +648,42 @@ class DL_Log_Parser {
     }
 
     /**
-     * Delete record at given row (but does not save the file).
+     * Delete specified log record (but does not save the file!).
      *
-     * @param integer $record Number of log record.
+     * @param DL_Log_Record $record
      * @return boolean
      * @since 1.0.0
-     * @todo This is wrong! It should consider <em>stack trace</em>!
      */
-    public function delete_record( $record ) {
+    public function delete_record( DL_Log_Record $record ) {
 
         // It should be, but just for case...
-        if ( $this->is_parsed !== false ) {
+        if ( $this->is_parsed === false ) {
             return false;
         }
 
         // Check if given line number exists
-        if ( ! array_key_exists( $record, $this->log ) ) {
+        if ( ! array_key_exists( $record->get_id(), $this->log ) ) {
             return false;
         }
 
-        // Delete item
-        unset( $this->log[$record] );
-        $this->saved = false;
+        // Starting/ending lines
+        $start_index = $record->get_start_line();
+        $end_index = $record->get_end_line();
 
-        return true;
+        // Delete item from raw log
+        if ( $start_index === $end_index ) {
+            array_splice( $this->log_raw, $start_index, 1 );
+        } else {
+            array_splice( $this->log_raw, $start_index, $end_index - $start_index );
+        }
+
+        // Parse raw log again
+        $this->is_prepared = true;
+        $this->is_parsed = false;
+        $this->parse();
+
+        // Save log file and return result
+        return $this->save();
     }
 
     /**
@@ -695,12 +714,10 @@ class DL_Log_Parser {
      * @return boolean
      * @since 1.0.0
      */
-    public function save() {
-        if ( file_put_contents( DL_LOG, $this->log_raw ) === false ) {
-            return false;
-        }
+    protected function save() {
+        $this->saved = ( file_put_contents( DL_LOG, $this->log_raw ) !== false );
 
-        return true;
+        return $this->saved;
     }
 
     /**

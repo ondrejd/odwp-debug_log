@@ -61,11 +61,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Some constants
-defined( 'DL_SLUG' ) || define( 'DL_SLUG', 'odwpdl' );
-defined( 'DL_NAME' ) || define( 'DL_NAME', 'odwp-debug_log' );
-defined( 'DL_PATH' ) || define( 'DL_PATH', dirname( __FILE__ ) . '/' );
-defined( 'DL_FILE' ) || define( 'DL_FILE', __FILE__ );
-defined( 'DL_LOG' )  || define( 'DL_LOG', WP_CONTENT_DIR . '/debug.log' );
+defined( 'DL_SLUG' )  || define( 'DL_SLUG', 'odwpdl' );
+defined( 'DL_NAME' )  || define( 'DL_NAME', 'odwp-debug_log' );
+defined( 'DL_PATH' )  || define( 'DL_PATH', dirname( __FILE__ ) . '/' );
+defined( 'DL_FILE' )  || define( 'DL_FILE', __FILE__ );
+defined( 'DL_LOG' )   || define( 'DL_LOG', WP_CONTENT_DIR . '/debug.log' );
+defined( 'DL_DEBUG' ) || define( 'DL_DEBUG', true );
 
 
 if ( ! function_exists( 'odwpdl_check_requirements' ) ) :

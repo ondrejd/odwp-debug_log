@@ -44,9 +44,9 @@ add_thickbox();
     <form id="odwpdl-log_table" method="get">
         <?php $dl_log_table->search_box( 'search', 'search_id' ) ?>
         <input type="hidden" name="page" value="<?php echo DL_Log_Screen::SLUG ?>">
-        <?php /**
-         * @todo Add hidden intput "_wpnonce"!
-         */ ?>
+        <?php
+        // TODO Add hidden intput "_wpnonce"!
+        ?>
         <h2 class="screen-reader-text"><?php esc_html_e( 'Log records', DL_SLUG ) ?></h2>
         <?php $dl_log_table->display() ?>
     </form>

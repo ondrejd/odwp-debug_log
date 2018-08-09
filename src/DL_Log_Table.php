@@ -182,33 +182,33 @@ class DL_Log_Table extends WP_List_Table {
         $currents = [];
 
         if ( strlen( $shown_cols ) > 0 && filter_var( $shown_cols, FILTER_SANITIZE_STRING ) ) {
-        	$currents['shown_cols'] = $shown_cols;
+            $currents['shown_cols'] = $shown_cols;
         }
 
-	    if ( filter_var( $per_page, FILTER_SANITIZE_NUMBER_INT ) ) {
-		    $currents['per_page'] = (int) $per_page;
-	    }
+        if ( filter_var( $per_page, FILTER_SANITIZE_NUMBER_INT ) ) {
+            $currents['per_page'] = (int) $per_page;
+        }
 
-	    $currents['show_icons'] = ( filter_var( $show_icons, FILTER_SANITIZE_NUMBER_INT ) == '1' );
-	    $currents['show_links'] = ( filter_var( $show_links, FILTER_SANITIZE_NUMBER_INT ) == '1' );
-	    $currents['show_trace'] = ( filter_var( $show_trace, FILTER_SANITIZE_NUMBER_INT ) == '1' );
-	    $currents['short_src_links'] = ( filter_var( $short_src_links, FILTER_SANITIZE_NUMBER_INT ) == '1' );
+        $currents['show_icons'] = ( filter_var( $show_icons, FILTER_SANITIZE_NUMBER_INT ) == '1' );
+        $currents['show_links'] = ( filter_var( $show_links, FILTER_SANITIZE_NUMBER_INT ) == '1' );
+        $currents['show_trace'] = ( filter_var( $show_trace, FILTER_SANITIZE_NUMBER_INT ) == '1' );
+        $currents['short_src_links'] = ( filter_var( $short_src_links, FILTER_SANITIZE_NUMBER_INT ) == '1' );
 
-	    if ( strlen( $sort_col ) > 0 && filter_var( $shown_cols, FILTER_SANITIZE_STRING ) ) {
-		    $currents['sort_col'] = $sort_col;
-	    }
+        if ( strlen( $sort_col ) > 0 && filter_var( $shown_cols, FILTER_SANITIZE_STRING ) ) {
+            $currents['sort_col'] = $sort_col;
+        }
 
-	    if ( strlen( $sort_dir ) > 0 && filter_var( $shown_cols, FILTER_SANITIZE_STRING ) ) {
-		    $currents['sort_dir'] = $sort_dir;
-	    }
+        if ( strlen( $sort_dir ) > 0 && filter_var( $shown_cols, FILTER_SANITIZE_STRING ) ) {
+            $currents['sort_dir'] = $sort_dir;
+        }
 
-	    if ( filter_var( $src_win_width, FILTER_SANITIZE_NUMBER_INT ) ) {
-		    $currents['src_win_width'] = (int) $src_win_width;
-	    }
+        if ( filter_var( $src_win_width, FILTER_SANITIZE_NUMBER_INT ) ) {
+            $currents['src_win_width'] = (int) $src_win_width;
+        }
 
-	    if ( filter_var( $src_win_height, FILTER_SANITIZE_NUMBER_INT ) ) {
-		    $currents['src_win_height'] = (int) $src_win_height;
-	    }
+        if ( filter_var( $src_win_height, FILTER_SANITIZE_NUMBER_INT ) ) {
+            $currents['src_win_height'] = (int) $src_win_height;
+        }
 
         return array_merge( $defaults, $currents );
     }
@@ -221,7 +221,13 @@ class DL_Log_Table extends WP_List_Table {
      * @since 1.0.0
      */
     function column_cb( $item ) {
-	    return sprintf( '<input type="checkbox" name="log_item[]" value="%s">', $item->get_id() );
+
+        // TODO Remove this!
+        if ( DL_DEBUG === true) {
+            return sprintf( '<input type="checkbox" name="log_item[]" value="%s"><em>[%d|%d]</em>', $item->get_id(), $item->get_start_line(), $item->get_end_line() );
+        }
+
+        return sprintf( '<input type="checkbox" name="log_item[]" value="%s">', $item->get_id() );
     }
 
     /**
@@ -683,7 +689,7 @@ class DL_Log_Table extends WP_List_Table {
         $this->parser->set_view( $view );
 
         // Get order arguments
-	    $order_args = $this->get_order_args();
+        $order_args = $this->get_order_args();
 
         // Needed hack (because other way is arrow indicating sorting
         // in table head not displayed correctly).
@@ -720,9 +726,9 @@ class DL_Log_Table extends WP_List_Table {
      */
     private function apply_filter( array $filter ) {
 
-    	if ( $filter['is_filter'] === false ) {
-    		return;
-	    }
+        if ( $filter['is_filter'] === false ) {
+            return;
+        }
 
         $type = null;
         switch ( ( int ) $filter['type'] ) {
@@ -829,8 +835,8 @@ class DL_Log_Table extends WP_List_Table {
         }
 
         if ( $this->parser->is_saved() !== true ) {
-	        // TODO Metoda `save` používá `$log_raw` namísto `log`, který byl aktualizován v metodě `delete_record`!
-	        // TODO $this->parser->save();
+            // TODO Metoda `save` používá `$log_raw` namísto `log`, který byl aktualizován v metodě `delete_record`!
+            // TODO $this->parser->save();
         }
     }
 
@@ -839,29 +845,29 @@ class DL_Log_Table extends WP_List_Table {
      *
      * @return void
      * @since 1.0.0
-     * @todo Use {@see wp_redirect()} at the end?
+     * @todo Add NONCE (is also protection against reloading the page with delete params set!!!)!
      */
     public function process_row_actions() {
-
-        // If request's method is not GET return
-        if ( strtolower( filter_input( INPUT_SERVER, 'method' ) ) !== 'get' ) {
-            return;
-        }
 
         $action = filter_input( INPUT_GET, 'action', FILTER_SANITIZE_STRING );
         $record = (int) filter_input( INPUT_GET, 'record', FILTER_SANITIZE_NUMBER_INT );
 
         // Validate action, otherwise return
         if ( ! in_array( $action, ['delete'] ) || empty( $record ) ) {
-            DL_Plugin::print_admin_notice( sprintf( __( 'Requested action <strong>%s</strong> was not recognized!', DL_SLUG ), $action ), 'warning', true );
             return;
         }
 
         // Perform action
         if ( $action == 'delete' ) {
+            $record_obj = $this->parser->get_data( ['record' => $record] );
+
+            if ( ! ( $record_obj instanceof DL_Log_Record ) ) {
+                DL_Plugin::print_admin_notice( sprintf( __( 'Something went wrong so log record with ID <strong>%d</strong> was not deleted!', DL_SLUG ), $record ), 'error', true );
+                return;
+            }
 
             // Delete selected log record
-            if ( $this->parser->delete_record( $record ) === true ) {
+            if ( $this->parser->delete_record( $record_obj ) === true ) {
                 $msg_text = __( 'Record on line <strong>%d</strong> was successfully removed from <code>debug.log</code> file.', DL_SLUG );
                 $msg_type = 'success';
             } else {
@@ -869,12 +875,7 @@ class DL_Log_Table extends WP_List_Table {
                 $msg_type = 'error';
             }
 
-            if ( $this->parser->is_saved() !== true ) {
-                // TODO Metoda `save` používá `$log_raw` namísto `log`, který byl aktualizován v metodě `delete_record`!
-                // TODO $this->parser->save();
-            }
-
-            DL_Plugin::print_admin_notice( sprintf( $msg_text, $record ), $msg_type, true );
+            DL_Plugin::print_admin_notice( $msg_text, $msg_type, true );
         }
     }
 
@@ -1124,20 +1125,20 @@ class DL_Log_Table extends WP_List_Table {
         return true;
     }
 
-	/**
-	 * Return current URL.
-	 *
-	 * @return string
-	 * @since void
-	 * @uses remove_query_arg()
-	 * @uses set_url_scheme()
-	 * @uses wp_removable_query_args()
-	 */
+    /**
+     * Return current URL.
+     *
+     * @return string
+     * @since void
+     * @uses remove_query_arg()
+     * @uses set_url_scheme()
+     * @uses wp_removable_query_args()
+     */
     public static function get_current_url() {
-	    $r_query_args = wp_removable_query_args();
-	    $current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+        $r_query_args = wp_removable_query_args();
+        $current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
 
-	    return remove_query_arg( $r_query_args, $current_url );
+        return remove_query_arg( $r_query_args, $current_url );
     }
 }
 

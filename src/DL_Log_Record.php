@@ -94,6 +94,18 @@ class DL_Log_Record {
     protected $display = true;
 
     /**
+     * @var int $start_line
+     * @since 1.0.0
+     */
+    protected $start_line;
+
+    /**
+     * @var int $end_line
+     * @since 1.0.0
+     */
+    protected $end_line;
+
+    /**
      * @var boolean Was record created today?
      * @since 1.0.0
      */
@@ -182,6 +194,34 @@ class DL_Log_Record {
      */
     public function get_display() {
         return $this->display;
+    }
+
+    /**
+     * Return number of line where log record starts.
+     *
+     * @return int
+     * @since 1.0.0
+     */
+    public function get_start_line()
+    {
+        return $this->start_line;
+    }
+
+    /**
+     * Return number of line where log record ends.
+     *
+     * @return int
+     * @since 1.0.0
+     */
+    public function get_end_line()
+    {
+
+        // If end line is not set it means that current record takes just one line
+        if ( empty( $this->end_line ) ) {
+            return $this->get_start_line();
+        }
+
+        return $this->end_line;
     }
 
     /**
@@ -276,6 +316,30 @@ class DL_Log_Record {
      */
     public function set_display( $display ) {
         $this->display = ( bool ) $display;
+    }
+
+    /**
+     * Return number of line where log record starts.
+     *
+     * @param int $line_num
+     * @return void
+     * @since 1.0.0
+     */
+    public function set_start_line( $line_num )
+    {
+        $this->start_line = $line_num;
+    }
+
+    /**
+     * Return number of line where log record ends.
+     *
+     * @param int $line_num
+     * @return void
+     * @since 1.0.0
+     */
+    public function set_end_line( $line_num )
+    {
+        $this->end_line = $line_num;
     }
 
     /**
