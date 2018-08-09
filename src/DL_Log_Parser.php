@@ -290,7 +290,7 @@ class DL_Log_Parser {
             $this->prepare();
         }
 
-        $this->log = array();
+        $this->log = [];
 
         foreach ( $this->log_raw as $index => $log_line ) {
             $this->parse_line( $log_line, $index );
@@ -609,7 +609,7 @@ class DL_Log_Parser {
         $val1 = null;
         $val2 = null;
 
-        switch( $orderby ) {
+        switch ( $orderby ) {
             case 'id':
                 $val1 = $a->get_id();
                 $val2 = $b->get_id();

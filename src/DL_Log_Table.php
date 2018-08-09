@@ -926,7 +926,7 @@ class DL_Log_Table extends WP_List_Table {
             $current_url = add_query_arg( 'filter-by-type', $filter, $current_url );
         }
 
-        $page_links = array();
+        $page_links = [];
 
         $total_pages_before = '<span class="paging-input">';
         $total_pages_after  = '</span></span>';

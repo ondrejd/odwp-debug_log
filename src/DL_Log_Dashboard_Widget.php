@@ -7,11 +7,11 @@
  * @since 1.0.0
  */
 
-if( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if( ! class_exists( 'DL_Log_Dashboard_Widget' ) ) :
+if ( ! class_exists( 'DL_Log_Dashboard_Widget' ) ) :
 
 /**
  * Log dashboard widget.

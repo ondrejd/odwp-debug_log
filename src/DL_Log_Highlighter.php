@@ -7,11 +7,11 @@
  * @since 1.0.0
  */
 
-if( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if( ! class_exists( 'DL_Log_Highlighter' ) ) :
+if ( ! class_exists( 'DL_Log_Highlighter' ) ) :
 
 /**
  * Class that serves highlighting of log text.

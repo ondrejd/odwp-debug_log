@@ -8,11 +8,11 @@
  * @since 1.0.0
  */
 
-if( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if( ! class_exists( 'DL_Log_Table' ) ) {
+if ( ! class_exists( 'DL_Log_Table' ) ) {
     require_once( DL_PATH . 'src/DL_Log_Table.php' );
 }
 
@@ -36,8 +36,8 @@ extract( $table_options );
             <ul>
                 <li>
                     <label><?php _e( 'Displayed columns: ', DL_SLUG ) ?></label>
-                    <?php foreach( $all_columns as $col_key => $col_label ) :
-                        if( $col_key != 'cb' ) :
+                    <?php foreach ( $all_columns as $col_key => $col_label ) :
+                        if ( $col_key != 'cb' ) :
                             $checked = ! in_array( $col_key, $hidden_columns );
                             $disabled = ! in_array( $col_key, $hideable_columns );
                     ?>
@@ -91,8 +91,8 @@ extract( $table_options );
                     <label for="<?php echo $slug ?>-select1">
                         <?php _e( 'Set column which will be sorted by default ', DL_SLUG ) ?>
                         <select name="<?php echo $slug ?>-sort_col" id="<?php echo $slug ?>-select1" value="<?php echo $sort_col ?>">
-                            <?php foreach( $dl_log_table->get_columns() as $col_key => $col_lbl ) :
-                                if( $col_key != 'cb' ) :
+                            <?php foreach ( $dl_log_table->get_columns() as $col_key => $col_lbl ) :
+                                if ( $col_key != 'cb' ) :
                             ?>
                             <option value="<?php echo $col_key ?>"<?php selected( $col_key, $sort_col ) ?>><?php echo $col_lbl ?></option>
                             <?php endif; endforeach ?>

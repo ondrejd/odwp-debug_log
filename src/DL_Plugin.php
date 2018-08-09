@@ -91,7 +91,7 @@ class DL_Plugin {
         $update = false;
 
         // Fill defaults for the options that are not set yet
-        foreach( $defaults as $key => $val ) {
+        foreach ( $defaults as $key => $val ) {
             if ( ! array_key_exists( $key, $options ) ) {
                 $options[$key] = $val;
                 $update = true;
