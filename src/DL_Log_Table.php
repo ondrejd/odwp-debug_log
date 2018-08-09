@@ -181,47 +181,32 @@ class DL_Log_Table extends WP_List_Table {
         $defaults = self::get_default_options();
         $currents = [];
 
-        if ( ! empty( $shown_cols ) ) {
+        if ( strlen( $shown_cols ) > 0 && filter_var( $shown_cols, FILTER_SANITIZE_STRING ) ) {
         	$currents['shown_cols'] = $shown_cols;
         }
 
-	    if ( ! empty( $per_page ) ) {
+	    if ( filter_var( $per_page, FILTER_SANITIZE_NUMBER_INT ) ) {
 		    $currents['per_page'] = (int) $per_page;
 	    }
 
-	    if ( ! empty( $show_icons ) ) {
-		    $currents['show_icons'] = (bool) $show_icons;
-	    }
+	    $currents['show_icons'] = ( filter_var( $show_icons, FILTER_SANITIZE_NUMBER_INT ) == '1' );
+	    $currents['show_links'] = ( filter_var( $show_links, FILTER_SANITIZE_NUMBER_INT ) == '1' );
+	    $currents['show_trace'] = ( filter_var( $show_trace, FILTER_SANITIZE_NUMBER_INT ) == '1' );
+	    $currents['short_src_links'] = ( filter_var( $short_src_links, FILTER_SANITIZE_NUMBER_INT ) == '1' );
 
-	    if ( ! empty( $show_links ) ) {
-		    $currents['show_links'] = (bool) $show_links;
-	    }
-
-	    if ( ! empty( $show_trace ) ) {
-		    $currents['show_trace'] = (bool) $show_trace;
-	    }
-
-	    if ( ! empty( $sort_col ) ) {
+	    if ( strlen( $sort_col ) > 0 && filter_var( $shown_cols, FILTER_SANITIZE_STRING ) ) {
 		    $currents['sort_col'] = $sort_col;
 	    }
 
-	    if ( ! empty( $sort_dir ) ) {
+	    if ( strlen( $sort_dir ) > 0 && filter_var( $shown_cols, FILTER_SANITIZE_STRING ) ) {
 		    $currents['sort_dir'] = $sort_dir;
 	    }
 
-	    if ( ! empty( $short_src_links ) ) {
-		    $currents['short_src_links'] = (bool) $short_src_links;
-	    }
-
-	    if ( ! empty( $per_page ) ) {
-		    $currents['per_page'] = (int) $per_page;
-	    }
-
-	    if ( ! empty( $src_win_width ) ) {
+	    if ( filter_var( $src_win_width, FILTER_SANITIZE_NUMBER_INT ) ) {
 		    $currents['src_win_width'] = (int) $src_win_width;
 	    }
 
-	    if ( ! empty( $src_win_height ) ) {
+	    if ( filter_var( $src_win_height, FILTER_SANITIZE_NUMBER_INT ) ) {
 		    $currents['src_win_height'] = (int) $src_win_height;
 	    }
 
