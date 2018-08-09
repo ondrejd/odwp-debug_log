@@ -27,9 +27,16 @@ $dl_log_table->prepare_items();
  * @link https://developer.wordpress.org/reference/functions/add_thickbox/
  */
 add_thickbox();
+
+// Screen actions URLs
+$delete_log_action_url = add_query_arg( 'delete_log', '1', DL_Log_Table::get_current_url() );
+$show_raw_log_action_url = add_query_arg( 'show_raw_log', '1', DL_Log_Table::get_current_url() );
+
 ?>
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php esc_html_e( 'Debug Log Viewer', DL_SLUG ) ?></h1> <a class="page-title-action" href="#"><?php esc_html_e( 'Delete log', DL_SLUG ) ?></a>
+    <h1 class="wp-heading-inline"><?php esc_html_e( 'Debug Log Viewer', DL_SLUG ) ?></h1>
+    <a class="page-title-action" href="<?php echo esc_url( $delete_log_action_url ) ?>"><?php esc_html_e( 'Delete log', DL_SLUG ) ?></a>
+    <a class="page-title-action" href="<?php echo esc_url( $show_raw_log_action_url ) ?>"><?php esc_html_e( 'Show raw log', DL_SLUG ) ?></a>
     <span style="display: none"><?php esc_html_e( 'Small plugin aimed for developers that want easilly see their debug.log file.', DL_SLUG ) ?></span>
     <hr class="wp-header-end">
     <h2 class="screen-reader-text"><?php esc_html_e( 'Filter records', DL_SLUG ) ?></h2>

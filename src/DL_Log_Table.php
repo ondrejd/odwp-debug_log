@@ -221,7 +221,7 @@ class DL_Log_Table extends WP_List_Table {
      * @since 1.0.0
      */
     function column_cb( $item ) {
-        return sprintf( '<input type="checkbox" name="log_item[]" value="%s">', $item->get_id() );
+	    return sprintf( '<input type="checkbox" name="log_item[]" value="%s">', $item->get_id() );
     }
 
     /**
@@ -528,7 +528,7 @@ class DL_Log_Table extends WP_List_Table {
      */
     public function views() {
 
-        if ( count( $this->items ) <= 0 && !$this->isAnyFilterUsed() && !$this->isAnyViewUsed() ) {
+        if ( count( $this->items ) <= 0 && !$this->is_any_filter_used() && !$this->is_any_view_used() ) {
             return;
         }
 
@@ -644,7 +644,7 @@ class DL_Log_Table extends WP_List_Table {
      * @access public
      */
     public function no_items() {
-        $msg = ( $this->isAnyFilterUsed() || $this->isAnyViewUsed() )
+        $msg = ( $this->is_any_filter_used() || $this->is_any_view_used() )
             ? __( 'There are no items with filter or view you have selected&hellip;', DL_SLUG )
             : __( 'Your file <code>debug.log</code> is empty &ndash; that means no errors <strong class="noitems-smiley">:-)</strong>&hellip;', DL_SLUG );
 
@@ -888,8 +888,6 @@ class DL_Log_Table extends WP_List_Table {
      * @uses esc_url()
      * @uses number_format_i18n()
      * @uses remove_query_arg()
-     * @uses set_url_scheme()
-     * @uses wp_removable_query_args()
      * @todo Refactor this method!
      */
     protected function pagination( $which ) {
@@ -915,10 +913,7 @@ class DL_Log_Table extends WP_List_Table {
             . '</span>';
 
         $current = $this->get_pagenum();
-        $removable_query_args = wp_removable_query_args();
-
-        $current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
-        $current_url = remove_query_arg( $removable_query_args, $current_url );
+        $current_url = self::get_current_url();
 
         // Added filter
         $filter = $this->get_filter();
@@ -1022,14 +1017,12 @@ class DL_Log_Table extends WP_List_Table {
      * @uses add_query_arg()
      * @uses esc_url()
      * @uses remove_query_arg()
-     * @uses set_url_scheme()
      * @todo Refactor this method!
      */
     public function print_column_headers( $with_id = true ) {
         list( $columns, $hidden, $sortable, $primary ) = $this->get_column_info();
 
-        $current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
-        $current_url = remove_query_arg( 'paged', $current_url );
+        $current_url = remove_query_arg( 'paged', self::get_current_url() );
 
         // [ondrejd]: added filter
         $filter = $this->get_filter();
@@ -1107,7 +1100,7 @@ class DL_Log_Table extends WP_List_Table {
      * @return bool
      * @since 1.0.0
      */
-    public function isAnyFilterUsed() {
+    public function is_any_filter_used() {
         return $this->get_filter()['is_filter'];
     }
 
@@ -1117,7 +1110,7 @@ class DL_Log_Table extends WP_List_Table {
      * @return bool
      * @since 1.0.0
      */
-    public function isAnyViewUsed() {
+    public function is_any_view_used() {
         $view = filter_input( INPUT_GET, 'view', FILTER_SANITIZE_STRING );
 
         if ( empty( $view ) ) {
@@ -1129,6 +1122,22 @@ class DL_Log_Table extends WP_List_Table {
         }
 
         return true;
+    }
+
+	/**
+	 * Return current URL.
+	 *
+	 * @return string
+	 * @since void
+	 * @uses remove_query_arg()
+	 * @uses set_url_scheme()
+	 * @uses wp_removable_query_args()
+	 */
+    public static function get_current_url() {
+	    $r_query_args = wp_removable_query_args();
+	    $current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+
+	    return remove_query_arg( $r_query_args, $current_url );
     }
 }
 
