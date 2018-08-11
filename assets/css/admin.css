@@ -83,17 +83,17 @@ h3.help-title {
     color: #fff;
     width: 1.4em;
 }
-/* Column types */
+/* Column with type of records */
 #odwpdl-log_table .wp-list-table .column-type .dashicons-warning, .help-list .dashicons-warning {
-    /* error */
+    /* Fatal errors */
     color: red;
 }
 #odwpdl-log_table .wp-list-table .column-type .dashicons-format-status, .help-list .dashicons-format-status {
-    /* upozorneni */
+    /* Notices */
     color: darkgray;
 }
 #odwpdl-log_table .wp-list-table .column-type .dashicons-editor-help, .help-list .dashicons-editor-help {
-    /* ostatni */
+    /* Other errors */
     color: black;
 }
 #odwpdl-log_table .wp-list-table .column-type .dashicons-thumbs-down, .help-list .dashicons-thumbs-down {
@@ -103,6 +103,10 @@ h3.help-title {
 #odwpdl-log_table .wp-list-table .column-type .dashicons-flag, .help-list .dashicons-flag {
     /* PHP Parser Error */
     color: purple;
+}
+#odwpdl-log_table .wp-list-table .column-type .dashicons-marker, .help-list .dashicons-marker {
+    /* DL_Log_Parser Error */
+    color: deeppink;
 }
 #odwpdl-log_table .wp-list-table .column-type .dashicons-no, .help-list .dashicons-no {}
 

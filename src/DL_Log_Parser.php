@@ -19,6 +19,10 @@ if ( ! class_exists( 'DL_Log_Highlighter' ) ) {
     require_once( DL_PATH . 'src/DL_Log_Highlighter.php' );
 }
 
+if ( ! class_exists( 'DL_Log_Parser_Stats' ) ) {
+    require_once( DL_PATH . 'src/DL_Log_Parser_Stats.php' );
+}
+
 if ( ! class_exists( 'DL_Log_Parser' ) ) :
 
 /**
@@ -75,70 +79,82 @@ if ( ! class_exists( 'DL_Log_Parser' ) ) :
 class DL_Log_Parser {
 
     /**
-     * @var array $options
      * @since 1.0.0
+     * @var string
+     */
+    const FLAG_ERASED = 'ERASED' . PHP_EOL;
+
+    /**
+     * @since 1.0.0
+     * @var array $options
      */
     protected $options;
 
     /**
-     * @var boolean $is_prepared If is TRUE the log data are already prepared.
      * @since 1.0.0
+     * @var bool $is_prepared If is TRUE the log data are already prepared.
      */
     private $is_prepared = false;
 
     /**
-     * @var boolean $is_parsed If is TRUE the log data are already parsed.
      * @since 1.0.0
+     * @var bool $is_parsed If is TRUE the log data are already parsed.
      */
     private $is_parsed = false;
 
     /**
-     * @var array $log_raw Prepared log.
      * @since 1.0.0
+     * @var array $log_raw Prepared log.
      */
     protected $log_raw = [];
 
     /**
-     * @var array $log Parsed log.
      * @since 1.0.0
+     * @var array $log Parsed log.
      */
     protected $log;
 
     /**
-     * @var array $log Parsed log (copy for canceling filters).
      * @since 1.0.0
+     * @var array $log_unfiltered Parsed log (copy for canceling filters).
      */
     private $log_unfiltered;
 
     /**
-     * @var \DL_Log_Record $_record Temporary variable when parsing data.
      * @since 1.0.0
+     * @var \DL_Log_Record $_record Temporary variable when parsing data.
      */
     private $_record = null;
 
     /**
-     * @var string "Order" sorting parameter.
      * @since 1.0.0
+     * @var string $_order "Order" sorting parameter.
      */
     private $_order;
 
     /**
-     * @var string "Order by" sorting parameter.
      * @since 1.0.0
+     * @var string $_orderby "Order by" sorting parameter.
      */
     private $_orderby;
 
     /**
-     * @var string View name.
      * @since 1.0.0
+     * @var string $_view View name.
      */
     private $_view;
 
     /**
-     * @var boolean $saved
      * @since 1.0.0
+     * @var bool $is_saved
      */
-    private $saved = true;
+    private $is_saved = true;
+
+    /**
+     * @since 1.0.0
+     * @var DL_Log_Parser_Stats $stats
+     */
+    private $stats;
 
     /**
      * Constructor.
@@ -148,8 +164,14 @@ class DL_Log_Parser {
      * @since 1.0.0
      */
     public function __construct( $options = [] ) {
+
+        // Set parser options
         $this->set_options( $options );
+
+        // Prepare raw log
         $this->prepare();
+
+        // Parse log
         $this->parse();
     }
 
@@ -225,18 +247,13 @@ class DL_Log_Parser {
 
     /**
      * Return total count of log items.
-     * 
-     * @return integer
+     *
+     * @deprecated Use `$parser->get_log_stats()->get_total_count()` instead!
+     * @return int
      * @since 1.0.0
      */
     public function get_total_count() {
-        if ( $this->is_parsed === true ) {
-            return count( $this->log );
-        } else if ( $this->is_prepared === true ) {
-            return count( $this->log_raw );
-        }
-
-        return 0;
+        return $this->get_stats()->get_total_count();
     }
 
     /**
@@ -260,17 +277,24 @@ class DL_Log_Parser {
     }
 
     /**
-     * Prepare log data from raw data. After this is possible to get total count of items.
+     * Prepare log parser.
      * 
      * @return void
      * @since 1.0.0
      */
     public function prepare() {
+
+        // If log parser is already prepare do nothing
         if ( $this->is_prepared === true ) {
             return;
         }
 
-        $this->log_raw = file( DL_LOG, FILE_SKIP_EMPTY_LINES );
+        // Prepare log parser
+        $this->stats          = new DL_Log_Parser_Stats();
+        $this->log_raw        = file( DL_LOG, FILE_SKIP_EMPTY_LINES );
+        $this->log            = [];
+        $this->log_unfiltered = [];
+        $this->stats->set_total_count( count( $this->log_raw ) );
         $this->is_prepared = true;
     }
 
@@ -282,25 +306,41 @@ class DL_Log_Parser {
      */
     public function parse() {
 
+        // If log is already parsed do nothing
         if ( $this->is_parsed === true ) {
             return;
         }
 
+        // If log parser is unprepared prepare it
         if ( $this->is_prepared !== true ) {
             $this->prepare();
+            $this->log = [];
         }
 
-        $this->log = [];
-
+        // Parse log line by line
         foreach ( $this->log_raw as $index => $log_line ) {
-            $this->parse_line( $log_line, $index );
+
+            // But skip already erased lines
+            if ( $log_line !== self::FLAG_ERASED ) {
+                $this->parse_line( $log_line, $index );
+            }
         }
 
         // Sometimes record is not properly finished after parser is done so fix it
         if ( ( $this->_record instanceof DL_Log_Record ) ) {
+
+            // update parser stats
+            $this->update_stats();
+
+            // and save and null the record
             $this->log[$this->_record->get_id()] = $this->_record;
+            $this->_record = null;
         }
 
+        // Update total count
+        $this->stats->set_total_count( count( $this->log ) );
+
+        // Set up some other parser properties
         $this->log_unfiltered = $this->log;
         $this->is_parsed = true;
     }
@@ -309,7 +349,7 @@ class DL_Log_Parser {
      * Parse single log line.
      *
      * @param string $line
-     * @param integer $line_num
+     * @param int $line_num
      * @return void
      * @since 1.0.0
      */
@@ -321,20 +361,25 @@ class DL_Log_Parser {
             PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
         );
 
-        // TODO User should by able to override this (using user's meta)!
-        $log_parser_errors = DL_DEBUG;
         $parser_error_msg = 'DL_Log_Parser: Parser error (1) ["%s"|"%s"|"%s"]';
 
+        // Line is empty or something is wrong with our regular expression
         if ( ! is_array( $matches ) ) {
-            if ( $log_parser_errors === true ) {
+
+            // TODO Don't forgot to comment this for release!
+            if ( WP_DEBUG === true ) {
                 odwpdl_write_log( sprintf( $parser_error_msg, $line_num, $line, json_encode($matches) ) );
             }
+
             return;
         }
 
         // This is normal log row (date and details)
         if ( count( $matches ) == 2 ) {
+
+            // If there is initialized record update parser statistics and save record
             if ( ( $this->_record instanceof DL_Log_Record ) ) {
+                $this->update_stats();
                 $this->log[$this->_record->get_id()] = $this->_record;
             }
 
@@ -360,15 +405,54 @@ class DL_Log_Parser {
 
         // Something is (maybe) wrong or just empty line
         else {
+
             if ( empty( trim( $matches[0] ) ) ) {
                 return;
             }
 
-            if ( $log_parser_errors === true ) {
+            // TODO Don't forgot to comment this for release!
+            if ( WP_DEBUG === true ) {
                 odwpdl_write_log( sprintf( $parser_error_msg, $line_num, $line, json_encode( $matches ) ) );
             }
+        }
+    }
 
+    /**
+     * Update parser stats.
+     *
+     * @return void
+     * @since 1.0.0
+     */
+    private function update_stats() {
+
+        // If is not any record currently parsed do nothing
+        if ( ! ( $this->_record instanceof DL_Log_Record ) ) {
             return;
+        }
+
+        // Note: We don't update total count here.
+
+        // update count by type
+        switch ( $this->_record->get_type() ) {
+            case DL_Log_Record::TYPE_DLPARSER:
+            case DL_Log_Record::TYPE_ERROR:
+            case DL_Log_Record::TYPE_NOTICE:
+            case DL_Log_Record::TYPE_PARSER:
+            case DL_Log_Record::TYPE_OTHER:
+            case DL_Log_Record::TYPE_WARNING:
+                $this->stats->increment_count_by_type( $this->_record->get_type() );
+                break;
+        }
+
+        // update count by period
+        if ( $this->_record->was_today() ) {
+            $this->stats->increment_count_by_period( DL_Log_Table::VIEW_TODAY );
+        }
+        elseif ( $this->_record->was_yesterday() ) {
+            $this->stats->increment_count_by_period( DL_Log_Table::VIEW_YESTERDAY );
+        }
+        else {
+            $this->stats->increment_count_by_period( DL_Log_Table::VIEW_EARLIER );
         }
     }
 
@@ -410,13 +494,13 @@ class DL_Log_Parser {
 
         foreach ( $this->log as $item ) {
 
-            if ( $view === 'today' && $item->was_today() ) {
+            if ( $view === DL_Log_Table::VIEW_TODAY && $item->was_today() ) {
                 $log_by_view[] = $item;
-            } else if ( $view === 'yesterday' && $item->was_yesterday() ) {
+            } else if ( $view === DL_Log_Table::VIEW_YESTERDAY && $item->was_yesterday() ) {
                 $log_by_view[] = $item;
-            } else if ( $view === 'earlier' && ( ! $item->was_today() && ! $item->was_yesterday() ) ) {
+            } else if ( $view === DL_Log_Table::VIEW_EARLIER && ( ! $item->was_today() && ! $item->was_yesterday() ) ) {
                 $log_by_view[] = $item;
-            } else if ( $view === 'all' ) {
+            } else if ( $view === DL_Log_Table::VIEW_ALL ) {
                 $log_by_view[] = $item;
             }
         }
@@ -505,6 +589,9 @@ class DL_Log_Parser {
         }
         else if ( strpos( $str, DL_Log_Record::TYPE_WARNING ) === 0 ) {
             return DL_Log_Record::TYPE_WARNING;
+        }
+        else if ( strpos( $str, DL_Log_Record::TYPE_DLPARSER ) === 0 ) {
+            return DL_Log_Record::TYPE_DLPARSER;
         }
 
         return DL_Log_Record::TYPE_OTHER;
@@ -607,7 +694,7 @@ class DL_Log_Parser {
      * 
      * @param DL_Log_Record $a The first row.
      * @param DL_Log_Record $b The second row.
-     * @return integer
+     * @return int
      * @since 1.0.0
      */
     protected function usort_reorder( DL_Log_Record $a, DL_Log_Record $b ) {
@@ -651,10 +738,11 @@ class DL_Log_Parser {
      * Delete specified log record (but does not save the file!).
      *
      * @param DL_Log_Record $record
-     * @return boolean
+     * @param bool $save Optional. Default value is TRUE.
+     * @return bool
      * @since 1.0.0
      */
-    public function delete_record( DL_Log_Record $record ) {
+    public function delete_record( DL_Log_Record $record, $save = true ) {
 
         // It should be, but just for case...
         if ( $this->is_parsed === false ) {
@@ -670,11 +758,13 @@ class DL_Log_Parser {
         $start_index = $record->get_start_line();
         $end_index = $record->get_end_line();
 
+        echo '<pre>START/END:'.$start_index.'/'.$end_index.'</pre>';
+
         // Delete item from raw log
         if ( $start_index === $end_index ) {
-            array_splice( $this->log_raw, $start_index, 1 );
+            array_splice( $this->log_raw, $start_index, 1, self::FLAG_ERASED );
         } else {
-            array_splice( $this->log_raw, $start_index, $end_index - $start_index );
+            array_splice( $this->log_raw, $start_index, $end_index - $start_index, self::FLAG_ERASED );
         }
 
         // Parse raw log again
@@ -682,27 +772,44 @@ class DL_Log_Parser {
         $this->is_parsed = false;
         $this->parse();
 
+        // Don't forget to set log unsaved
+        $this->is_saved = false;
+
         // Save log file and return result
-        return $this->save();
+        return ( $save === true ) ? $this->save() : true;
     }
 
     /**
-     * Delete records at given rows (but does not save the file).
+     * Delete records.
      * 
-     * @param integer $lines
-     * @return mixed Return FALSE if something went wrong otherwise count of deleted lines.
+     * @param array $records IDs of records to delete.
+     * @return array Return array with count of done/failed deletes and save result (`['done' => 0, 'failed' => 0, 'saved' => false]`).
      * @since 1.0.0
      */
-    public function delete_records( $lines ) {
-        $ret = true;
-        odwpdl_write_log( $lines ); // XXX Remove this!
-        sort( $lines, SORT_NUMERIC );
-        odwpdl_write_log( $lines ); // XXX Remove this!
-        $lines = array_reverse( $lines );
-        odwpdl_write_log( $lines ); // XXX Remove this!
+    public function delete_records( array $records ) {
+        $ret = ['done' => 0, 'failed' => 0, 'saved' => false];
 
-        foreach ( $lines as $line ) {
-            $ret = $this->delete_record( $line );
+        // Go through all record IDs and delete them one by one
+        foreach ( $records as $record ) {
+            $record_obj = $this->get_data( ['record' => $record] );
+
+            // Check if everything is OK
+            if ( ! ( $record_obj instanceof DL_Log_Record ) ) {
+                continue;
+            }
+
+            // Delete record and update `$ret`
+            if ( $this->delete_record( $record_obj, false ) === true ) {
+                $ret['done']++;
+            } else {
+                $ret['failed']++;
+            }
+        }
+
+        // If at least one delete was done save the log file
+        if ( $ret['done'] > 0 ) {
+            $ret['saved']   = $this->save();
+            $this->is_saved = $ret->saved;
         }
 
         return $ret;
@@ -711,23 +818,33 @@ class DL_Log_Parser {
     /**
      * Save {@see DL_Log_Parser::$log_raw} into the {@see DL_Log_Parser::$file}.
      * 
-     * @return boolean
+     * @return bool
      * @since 1.0.0
      */
     protected function save() {
-        $this->saved = ( file_put_contents( DL_LOG, $this->log_raw ) !== false );
+        $this->is_saved = ( file_put_contents( DL_LOG, $this->log_raw ) !== false );
 
-        return $this->saved;
+        return $this->is_saved;
     }
 
     /**
      * Return true if log file is saved (or if there are unsaved changes).
      * 
-     * @return boolean
+     * @return bool
      * @since 1.0.0
      */
     public function is_saved() {
-       return $this->saved;
+       return $this->is_saved;
+    }
+
+    /**
+     * Return statistics for the last parsing.
+     *
+     * @return DL_Log_Parser_Stats
+     * @since 1.0.0
+     */
+    public function get_stats() {
+        return $this->stats;
     }
 }
 

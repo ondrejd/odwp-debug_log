@@ -26,8 +26,8 @@ if ( ! class_exists( 'DL_Log_Screen' ) ) :
 class DL_Log_Screen extends DL_Screen_Prototype {
 
     /**
-     * @var string
      * @since 1.0.0
+     * @var string
      */
     const SLUG = DL_SLUG . '-log';
 
@@ -46,7 +46,7 @@ class DL_Log_Screen extends DL_Screen_Prototype {
 
         // Specify help tabs
 
-	    // General help tab
+        // General help tab
         $this->help_tabs[] = [
             'id' => self::SLUG . '-info-helptab-01',
             'title' => __( 'General', DL_SLUG ),
@@ -58,55 +58,58 @@ class DL_Log_Screen extends DL_Screen_Prototype {
         ];
 
         // Column types help tab
-	    $this->help_tabs[] = [
-		    'id' => self::SLUG . '-info-helptab-02',
-		    'title' => __( 'Table columns', DL_SLUG ),
-		    'content' => sprintf(
-			    '<h3 class="help-title">%1$s</h3>' .
-			    '<ul class="help-list">' .
-			    '<li><strong>%2$s</strong>&nbsp;&ndash;&nbsp;%3$s</li>' .
-			    '<li><strong>%4$s</strong>&nbsp;&ndash;&nbsp;%5$s</li>' .
-			    '<li><strong>%6$s</strong>&nbsp;&ndash;&nbsp;%7$s</li>' .
-			    '<li><strong>%8$s</strong>&nbsp;&ndash;&nbsp;%9$s</li>' .
-			    '</ul>',
-			    __( 'Table columns', DL_SLUG ),
-			    __( 'Record number', DL_SLUG ),
-			    __( 'Record (line) number of the record', DL_SLUG ),
-			    __( 'Date and time', DL_SLUG ),
-			    __( 'Date and time when was record added', DL_SLUG ),
-			    __( 'Record type', DL_SLUG ),
-			    __( 'Type of record (see table below)', DL_SLUG ),
-			    __( 'Record', DL_SLUG ),
-			    __( 'Text of record (including <em>stack trace</em>)', DL_SLUG )
-		    ),
-	    ];
+        $this->help_tabs[] = [
+            'id' => self::SLUG . '-info-helptab-02',
+            'title' => __( 'Table columns', DL_SLUG ),
+            'content' => sprintf(
+                '<h3 class="help-title">%1$s</h3>' .
+                '<ul class="help-list">' .
+                '<li><strong>%2$s</strong>&nbsp;&ndash;&nbsp;%3$s</li>' .
+                '<li><strong>%4$s</strong>&nbsp;&ndash;&nbsp;%5$s</li>' .
+                '<li><strong>%6$s</strong>&nbsp;&ndash;&nbsp;%7$s</li>' .
+                '<li><strong>%8$s</strong>&nbsp;&ndash;&nbsp;%9$s</li>' .
+                '</ul>',
+                __( 'Table columns', DL_SLUG ),
+                __( 'Record number', DL_SLUG ),
+                __( 'Record (line) number of the record', DL_SLUG ),
+                __( 'Date and time', DL_SLUG ),
+                __( 'Date and time when was record added', DL_SLUG ),
+                __( 'Record type', DL_SLUG ),
+                __( 'Type of record (see table below)', DL_SLUG ),
+                __( 'Record', DL_SLUG ),
+                __( 'Text of record (including <em>stack trace</em>)', DL_SLUG )
+            ),
+        ];
 
         // Error types help tab
-	    $this->help_tabs[] = [
-		    'id' => self::SLUG . '-info-helptab-03',
-		    'title' => __( 'Record types', DL_SLUG ),
-		    'content' => sprintf(
-			    '<h3 class="help-title">%1$s</h3>' .
-			    '<ul class="help-list">' .
-			    '<li><span class="dashicons dashicons-warning"></span><em>%2$s</em>&nbsp;&ndash;&nbsp;%3$s</li>' .
-			    '<li><span class="dashicons dashicons-format-status"></span><em>%4$s</em>&nbsp;&ndash;&nbsp;%5$s</li>' .
-			    '<li><span class="dashicons dashicons-editor-help"></span><em>%6$s</em>&nbsp;&ndash;&nbsp;%7$s</li>' .
-			    '<li><span class="dashicons dashicons-thumbs-down"></span><em>%8$s</em>&nbsp;&ndash;&nbsp;%9$s</li>' .
-			    '<li><span class="dashicons dashicons-flag"></span><em>%10$s</em>&nbsp;&ndash;&nbsp;%11$s</li>' .
-			    '</ul>',
-			    __( 'Types of records', DL_SLUG ),
-			    __( 'Fatal error', DL_SLUG ),
-			    __( 'Error notice', DL_SLUG ),
-			    __( 'Other errors', DL_SLUG ),
-			    __( 'PHP parser error', DL_SLUG ),
-			    __( 'Warning notice', DL_SLUG ),
-			    DL_Log_Record::TYPE_ERROR,
-			    DL_Log_Record::TYPE_NOTICE,
-			    DL_Log_Record::TYPE_OTHER,
-			    DL_Log_Record::TYPE_PARSER,
-			    DL_Log_Record::TYPE_WARNING
-		    ),
-	    ];
+        $this->help_tabs[] = [
+            'id' => self::SLUG . '-info-helptab-03',
+            'title' => __( 'Record types', DL_SLUG ),
+            'content' => sprintf(
+                '<h3 class="help-title">%1$s</h3>' .
+                '<ul class="help-list">' .
+                '<li><span class="dashicons dashicons-warning"></span><em>%2$s</em>&nbsp;&ndash;&nbsp;%3$s</li>' .
+                '<li><span class="dashicons dashicons-format-status"></span><em>%4$s</em>&nbsp;&ndash;&nbsp;%5$s</li>' .
+                '<li><span class="dashicons dashicons-editor-help"></span><em>%6$s</em>&nbsp;&ndash;&nbsp;%7$s</li>' .
+                '<li><span class="dashicons dashicons-thumbs-down"></span><em>%8$s</em>&nbsp;&ndash;&nbsp;%9$s</li>' .
+                '<li><span class="dashicons dashicons-flag"></span><em>%10$s</em>&nbsp;&ndash;&nbsp;%11$s</li>' .
+                '<li><span class="dashicons dashicons-marker"></span><em>%12$s</em>&nbsp;&ndash;&nbsp;%13$s</li>' .
+                '</ul>',
+                __( 'Types of records', DL_SLUG ),
+                DL_Log_Record::TYPE_ERROR,
+                __( 'Fatal error', DL_SLUG ),
+                DL_Log_Record::TYPE_NOTICE,
+                __( 'Error notice', DL_SLUG ),
+                DL_Log_Record::TYPE_OTHER,
+                __( 'Other errors', DL_SLUG ),
+                DL_Log_Record::TYPE_PARSER,
+                __( 'PHP parser error', DL_SLUG ),
+                DL_Log_Record::TYPE_WARNING,
+                __( 'Warning notice', DL_SLUG ),
+                DL_Log_Record::TYPE_DLPARSER,
+                __( 'Debug log parser error', DL_SLUG )
+            ),
+        ];
 
         // Specify help sidebars
         $this->help_sidebars[] = sprintf(

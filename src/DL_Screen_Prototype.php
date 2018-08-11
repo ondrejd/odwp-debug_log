@@ -20,27 +20,28 @@ if ( ! class_exists( 'DL_Screen_Prototype' ) ) :
  * @since 1.0.0
  */
 abstract class DL_Screen_Prototype {
+
     /**
-     * @var string $slug
      * @since 1.0.0
+     * @var string $slug
      */
     protected $slug;
 
     /**
-     * @var string $page_title
      * @since 1.0.0
+     * @var string $page_title
      */
     protected $page_title;
 
     /**
-     * @var string $menu_title
      * @since 1.0.0
+     * @var string $menu_title
      */
     protected $menu_title;
 
     /**
-     * @var \WP_Screen $screen
      * @since 1.0.0
+     * @var \WP_Screen $screen
      */
     protected $screen;
 
@@ -55,8 +56,8 @@ abstract class DL_Screen_Prototype {
      * ];
      * </pre>
      *
-     * @var array $help_tabs
      * @since 1.0.0
+     * @var array $help_tabs
      */
     protected $help_tabs = [];
 
@@ -75,8 +76,8 @@ abstract class DL_Screen_Prototype {
      *     '#'
      * );</pre>
      *
-     * @var array $help_sidebars
      * @since 1.0.0
+     * @var array $help_sidebars
      */
     protected $help_sidebars = [];
 
@@ -95,8 +96,8 @@ abstract class DL_Screen_Prototype {
      * ];
      * </pre>
      *
-     * @var array $options
      * @since 1.0.0
+     * @var array $options
      */
     protected $options = [];
 
@@ -109,14 +110,14 @@ abstract class DL_Screen_Prototype {
      *   <li>{@see DL_Screen_Prototype::screen_options()}</li>
      * </ul>
      *
-     * @var boolean $enable_screen_options
      * @since 1.0.0
+     * @var bool $enable_screen_options
      */
     protected $enable_screen_options = false;
 
     /**
-     * @var string $hookname Name of the admin menu page hook.
      * @since 1.0.0
+     * @var string $hookname Name of the admin menu page hook.
      */
     protected $hookname;
 

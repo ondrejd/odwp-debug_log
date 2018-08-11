@@ -22,22 +22,24 @@ if ( ! class_exists( 'DL_Log_Dashboard_Widget' ) ) :
 class DL_Log_Dashboard_Widget {
 
     /**
-     * @const string ID of the widget.
      * @since 1.0.0
+     * @var string ID of the widget.
      */
     const WID = DL_SLUG . '-log_dashboard_widget';
 
     /**
-     * @const string Options key.
      * @since 1.0.0
+     * @var string Options key.
      */
     const OPTIONS_KEY = self::WID . '-options';
 
     /**
      * Hook to `wp_dashboard_setup` to add the widget.
+     *
      * @return void
      * @see DL_Plugin::admin_init()
      * @since 1.0.0
+     * @uses wp_add_dashboard_widget()
      */
     public static function init() {
         // Register widget settings
@@ -55,6 +57,8 @@ class DL_Log_Dashboard_Widget {
     }
 
     /**
+     * Return default options for the widget.
+     *
      * @return array
      * @since 1.0.0
      */
@@ -68,6 +72,7 @@ class DL_Log_Dashboard_Widget {
 
     /**
      * Load the widget code.
+     *
      * @return void
      * @see DL_Log_Dashboard_Widget::init()
      * @since 1.0.0
@@ -78,6 +83,7 @@ class DL_Log_Dashboard_Widget {
 
     /**
      * Load widget config code.
+     *
      * @return void
      * @see DL_Log_Dashboard_Widget::init()
      * @since 1.0.0
@@ -87,7 +93,8 @@ class DL_Log_Dashboard_Widget {
     }
 
     /**
-     * Gets the options for a widget of the specified name.
+     * Get the options for a widget of the specified name.
+     *
      * @param string $widget_id Optional. If provided, will only get options for the specified widget.
      * @return array An associative array containing the widget's options and values. False if no opts.
      * @since 1.0.0
@@ -110,10 +117,11 @@ class DL_Log_Dashboard_Widget {
     }
 
     /**
-     * Gets one specific option for the specified widget.
-     * @param $widget_id
-     * @param $option
-     * @param null $default
+     * Get one specific option for the specified widget.
+     *
+     * @param string $widget_id
+     * @param string $option
+     * @param mixed $default
      * @return string
      * @since 1.0.0
      */
@@ -134,12 +142,13 @@ class DL_Log_Dashboard_Widget {
     }
 
     /**
-     * Saves an array of options for a single dashboard widget to the database.
+     * Save an array of options for a single dashboard widget to the database.
      * Can also be used to define default values for a widget.
+     *
      * @param string $widget_id The name of the widget being updated
      * @param array $args An associative array of options being saved.
      * @param bool $add_only If true, options will not be added if widget options already exist
-     * @return boolean
+     * @return bool
      * @since 1.0.0
      */
     public static function update_dashboard_widget_options( $widget_id , $args = [], $add_only = false ) {

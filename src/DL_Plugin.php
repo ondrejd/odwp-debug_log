@@ -22,26 +22,26 @@ if ( ! class_exists( 'DL_Plugin' ) ) :
 class DL_Plugin {
 
     /**
-     * @const string
      * @since 1.0.0
+     * @var string
      */
     const SETTINGS_KEY = DL_SLUG . '_settings';
 
     /**
-     * @const string
      * @since 1.0.0
+     * @var string
      */
     const TABLE_NAME = DL_SLUG;
 
     /**
-     * @var array $admin_screens Array with admin screens.
      * @since 1.0.0
+     * @var array $admin_screens Array with admin screens.
      */
     public static $admin_screens = [];
 
     /**
-     * @var string
      * @since 1.0.0
+     * @var string
      */
     public static $options_page_hook;
 
@@ -107,7 +107,7 @@ class DL_Plugin {
     }
 
     /**
-     * Returns value of option with given key.
+     * Return value of option with given key.
      *
      * @param string $key Option's key.
      * @param mixed $default Option's default value.
@@ -125,7 +125,7 @@ class DL_Plugin {
     }
 
     /**
-     * Initializes the plugin.
+     * Initialize the plugin.
      *
      * @return void
      * @since 1.0.0
@@ -185,7 +185,7 @@ class DL_Plugin {
     }
 
     /**
-     * Registers our shortcodes.
+     * Register our shortcodes.
      *
      * @return void
      * @since 1.0.O
@@ -326,7 +326,7 @@ class DL_Plugin {
     /**
      * @private Creates `debug.log` file.
      *
-     * @return boolean
+     * @return bool
      * @since 1.0.0
      */
     private static function create_log_file() {
@@ -387,7 +387,7 @@ class DL_Plugin {
     }
 
     /**
-     * Loads specified template with given arguments.
+     * Load specified template with given arguments.
      *
      * @param string $template
      * @param array  $args (Optional.)
@@ -401,6 +401,11 @@ class DL_Plugin {
 
         // Get template's path
         $path = sprintf( '%spartials/%s.phtml', DL_PATH, $template );
+
+        // Check if path is exist
+        if ( ! file_exists( $path ) ) {
+            return '';
+        }
 
         // Render and return template
         ob_start( function() {} );
@@ -486,7 +491,7 @@ class DL_Plugin {
     }
 
     /**
-     * Prints error message in correct WP admin style.
+     * Print error message in correct WP admin style.
      *
      * @param string $msg Error message.
      * @param string $type (Optional.) One of ['error','info','success','warning'].
@@ -520,7 +525,7 @@ class DL_Plugin {
      * do not provide action for the hook.
      *
      * @access private
-     * @param  string  $method
+     * @param string $method
      * @return void
      * @since 1.0.0
      */

@@ -71,7 +71,7 @@ defined( 'DL_DEBUG' ) || define( 'DL_DEBUG', true );
 
 if ( ! function_exists( 'odwpdl_check_requirements' ) ) :
     /**
-     * Checks requirements of our plugin.
+     * Check requirements of our plugin.
      *
      * @global string $wp_version
      * @param array $requirements
@@ -195,7 +195,7 @@ if ( ! function_exists( 'odwpdl_error_log' ) ) :
      *
      * @deprecated 1.0.0
      * @param string $message
-     * @param integer $message_type (Optional.)
+     * @param int $message_type (Optional.)
      * @param string $destination (Optional.)
      * @param string $extra_headers (Optional.)
      * @return void
@@ -227,7 +227,7 @@ endif;
 
 
 /**
- * @var array Errors from the requirements check.
+ * @var array $odwpdl_errs Errors from the requirements check.
  */
 $odwpdl_errs = odwpdl_check_requirements( [
     'php' => [
@@ -250,6 +250,7 @@ $odwpdl_errs = odwpdl_check_requirements( [
 
 // Check if requirements are met or not
 if ( count( $odwpdl_errs ) > 0 ) {
+
     // Requirements are not met
     odwpdl_deactivate_raw();
 
@@ -264,6 +265,7 @@ if ( count( $odwpdl_errs ) > 0 ) {
         } );
     }
 } else {
+
     // Requirements are met so initialize the plugin.
     include( DL_PATH . 'src/DL_Screen_Prototype.php' );
     include( DL_PATH . 'src/DL_Plugin.php' );

@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     <label for="filter_by_type" class="screen-reader-text"><?php _e( 'Filter by type', DL_SLUG ) ?></label>
     <select name="filter-by-type" id="filter_by_type" title="<?php _e( 'Filter by type', DL_SLUG ) ?>">
         <?php foreach ( $type_filters as $val => $lbl ) :
-            printf( '<option value="%1$s" %2$s>%3$s</option>', $val, selected( $time, $val, false ), $lbl );
+            printf( '<option value="%1$s" %2$s>%3$s</option>', $val, selected( $type, $val, false ), $lbl );
         endforeach ?>
     </select>
     <input name="<?php echo DL_SLUG . '-filter_submit' ?>" id="<?php echo DL_SLUG . '-filter_submit' ?>" class="button" value="<?php _e( 'Filter', DL_SLUG ) ?>" type="submit">

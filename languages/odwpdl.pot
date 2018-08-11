@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: odwp-"
 "debug_log 1.0.0\n"
 "POT-Creation-Date: "
-"2018-04-13 13:38+0200\n"
+"2018-08-11 18:20+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Your "
 "Name <you@example.com>\n"
@@ -46,7 +46,7 @@ msgstr ""
 "X-Poedit-Basepath: ..\n"
 "Language: en_US\n"
 "X-Generator: Poedit "
-"2.0.4\n"
+"1.8.7.1\n"
 "X-Poedit-SearchPath-0: "
 "partials\n"
 "X-Poedit-SearchPath-1: "
@@ -65,7 +65,7 @@ msgstr ""
 "SearchPathExcluded-2: "
 "languages\n"
 
-#: odwp-debug_log.php:75
+#: odwp-debug_log.php:98
 #, php-format
 msgid ""
 "Used PHP interpreter "
@@ -76,7 +76,7 @@ msgid ""
 "least)!"
 msgstr ""
 
-#: odwp-debug_log.php:86
+#: odwp-debug_log.php:108
 #, php-format
 msgid ""
 "PHP extension <b>%1$s</"
@@ -84,7 +84,7 @@ msgid ""
 "installed!"
 msgstr ""
 
-#: odwp-debug_log.php:97
+#: odwp-debug_log.php:117
 #, php-format
 msgid ""
 "This plugin requires "
@@ -94,7 +94,7 @@ msgid ""
 "b>)!"
 msgstr ""
 
-#: odwp-debug_log.php:109
+#: odwp-debug_log.php:129
 #, php-format
 msgid ""
 "The plugin <b>%1$s</b> "
@@ -102,48 +102,48 @@ msgid ""
 "installed!"
 msgstr ""
 
-#: odwp-debug_log.php:181
+#: odwp-debug_log.php:206
 msgid ""
 "Use function "
 "`odwpdl_write_log` "
 "instead!"
 msgstr ""
 
-#: odwp-debug_log.php:236
+#: odwp-debug_log.php:259
 msgid ""
 "<b>Debug Log Viewer</b>: "
 msgstr ""
 
-#: odwpdl-show_url.php:62
+#: odwpdl-show_url.php:32
 #, php-format
 msgid ""
-"Source file [\"%1$s\"] "
-"was not found!"
+"Source file <code>%1$s</"
+"code> was not found!"
 msgstr ""
 
-#: odwpdl-show_url.php:64
+#: odwpdl-show_url.php:35
 #, php-format
 msgid ""
-"Source file [\"%1$s\"] "
-"can not be read!"
+"Source file <code>%1$s</"
+"code> can not be read!"
 msgstr ""
 
-#: src/DL_Log_Dashboard_Widget.php:48
-#: src/DL_Log_Screen.php:40
-#: src/DL_Options_Screen.php:30
+#: src/DL_Log_Dashboard_Widget.php:51
+#: src/DL_Log_Screen.php:44
 msgid "Debug Log"
 msgstr ""
 
-#: src/DL_Log_Screen.php:41
-#: partials/screen-log.phtml:32
+#: src/DL_Log_Screen.php:45
+#: src/DL_Log_Screen.php:55
+#: partials/screen-log.phtml:37
 msgid "Debug Log Viewer"
 msgstr ""
 
-#: src/DL_Log_Screen.php:46
+#: src/DL_Log_Screen.php:52
 msgid "General"
 msgstr ""
 
-#: src/DL_Log_Screen.php:64
+#: src/DL_Log_Screen.php:56
 msgid ""
 "Debug log table contains "
 "all records from "
@@ -151,235 +151,267 @@ msgid ""
 "file."
 msgstr ""
 
-#: src/DL_Log_Screen.php:65
+#: src/DL_Log_Screen.php:63
+#: src/DL_Log_Screen.php:72
 msgid "Table columns"
 msgstr ""
 
-#: src/DL_Log_Screen.php:66
+#: src/DL_Log_Screen.php:73
 msgid "Record number"
 msgstr ""
 
-#: src/DL_Log_Screen.php:67
+#: src/DL_Log_Screen.php:74
 msgid ""
 "Record (line) number of "
 "the record"
 msgstr ""
 
-#: src/DL_Log_Screen.php:68
-#: src/DL_Log_Table.php:400
+#: src/DL_Log_Screen.php:75
+#: src/DL_Log_Table.php:480
 msgid "Date and time"
 msgstr ""
 
-#: src/DL_Log_Screen.php:69
+#: src/DL_Log_Screen.php:76
 msgid ""
 "Date and time when was "
 "record added"
 msgstr ""
 
-#: src/DL_Log_Screen.php:70
+#: src/DL_Log_Screen.php:77
 msgid "Record type"
 msgstr ""
 
-#: src/DL_Log_Screen.php:71
+#: src/DL_Log_Screen.php:78
 msgid ""
 "Type of record (see "
 "table below)"
 msgstr ""
 
-#: src/DL_Log_Screen.php:72
-#: src/DL_Log_Table.php:120
-#: src/DL_Log_Table.php:402
+#: src/DL_Log_Screen.php:79
+#: src/DL_Log_Table.php:155
+#: src/DL_Log_Table.php:482
 msgid "Record"
 msgstr ""
 
-#: src/DL_Log_Screen.php:73
+#: src/DL_Log_Screen.php:80
 msgid ""
 "Text of record "
 "(including <em>stack "
 "trace</em>)"
 msgstr ""
 
-#: src/DL_Log_Screen.php:74
-msgid "Types of records"
-msgstr ""
-
-#: src/DL_Log_Screen.php:75
-msgid "Fatal error"
-msgstr ""
-
-#: src/DL_Log_Screen.php:76
-msgid "Error notice"
-msgstr ""
-
-#: src/DL_Log_Screen.php:77
-msgid "Other errors"
-msgstr ""
-
-#: src/DL_Log_Screen.php:78
-msgid "PHP parser error"
-msgstr ""
-
-#: src/DL_Log_Screen.php:79
-msgid "Warning notice"
-msgstr ""
-
-#: src/DL_Log_Screen.php:94
-msgid "Usefull links"
-msgstr ""
-
-#: src/DL_Log_Screen.php:96
-msgid "Author's homepage"
+#: src/DL_Log_Screen.php:87
+msgid "Record types"
 msgstr ""
 
 #: src/DL_Log_Screen.php:98
+msgid "Types of records"
+msgstr ""
+
+#: src/DL_Log_Screen.php:100
+msgid "Fatal error"
+msgstr ""
+
+#: src/DL_Log_Screen.php:102
+msgid "Error notice"
+msgstr ""
+
+#: src/DL_Log_Screen.php:104
+msgid "Other errors"
+msgstr ""
+
+#: src/DL_Log_Screen.php:106
+msgid "PHP parser error"
+msgstr ""
+
+#: src/DL_Log_Screen.php:108
+msgid "Warning notice"
+msgstr ""
+
+#: src/DL_Log_Screen.php:110
+msgid ""
+"Debug log parser error"
+msgstr ""
+
+#: src/DL_Log_Screen.php:120
+msgid "Useful links"
+msgstr ""
+
+#: src/DL_Log_Screen.php:122
+msgid "Author's homepage"
+msgstr ""
+
+#: src/DL_Log_Screen.php:124
 msgid ""
 "GitHub - source codes"
 msgstr ""
 
-#: src/DL_Log_Screen.php:100
+#: src/DL_Log_Screen.php:126
 msgid "GitHub - issues"
 msgstr ""
 
-#: src/DL_Log_Screen.php:108
+#: src/DL_Log_Screen.php:134
 msgid "Displayed columns"
 msgstr ""
 
-#: src/DL_Log_Screen.php:113
+#: src/DL_Log_Screen.php:139
 msgid ""
 "Count of records per page"
 msgstr ""
 
-#: src/DL_Log_Screen.php:118
+#: src/DL_Log_Screen.php:144
 msgid ""
 "Make links to source "
 "files shorter?"
 msgstr ""
 
-#: src/DL_Log_Screen.php:123
+#: src/DL_Log_Screen.php:149
 #: partials/screen-log_options.phtml:58
 msgid ""
 "Show record type as an "
 "icon?"
 msgstr ""
 
-#: src/DL_Log_Screen.php:128
+#: src/DL_Log_Screen.php:154
 msgid ""
 "Show links to source "
 "files?"
 msgstr ""
 
-#: src/DL_Log_Screen.php:133
+#: src/DL_Log_Screen.php:159
 msgid ""
 "Show <em>stack trace</"
 "em> defaultly unfolded?"
 msgstr ""
 
-#: src/DL_Log_Screen.php:138
+#: src/DL_Log_Screen.php:164
 msgid ""
 "Defaultly sorted column"
 msgstr ""
 
-#: src/DL_Log_Screen.php:143
+#: src/DL_Log_Screen.php:169
 msgid ""
 "Default sort direction"
 msgstr ""
 
-#: src/DL_Log_Screen.php:148
+#: src/DL_Log_Screen.php:174
 msgid ""
 "Width of modal window "
 "with source codes"
 msgstr ""
 
-#: src/DL_Log_Screen.php:153
+#: src/DL_Log_Screen.php:179
 msgid ""
 "Height of modal window "
 "with source codes"
 msgstr ""
 
-#: src/DL_Log_Table.php:121
+#: src/DL_Log_Table.php:156
 msgid "Records"
 msgstr ""
 
-#: src/DL_Log_Table.php:234
-#: src/DL_Log_Table.php:599
+#: src/DL_Log_Table.php:288
 msgid "Error"
 msgstr ""
 
-#: src/DL_Log_Table.php:238
-#: src/DL_Log_Table.php:600
+#: src/DL_Log_Table.php:293
 msgid "Notice"
 msgstr ""
 
-#: src/DL_Log_Table.php:242
-#: src/DL_Log_Table.php:603
+#: src/DL_Log_Table.php:298
 msgid "Other"
 msgstr ""
 
-#: src/DL_Log_Table.php:246
-#: src/DL_Log_Table.php:601
+#: src/DL_Log_Table.php:303
 msgid "Parser error"
 msgstr ""
 
-#: src/DL_Log_Table.php:250
-#: src/DL_Log_Table.php:602
+#: src/DL_Log_Table.php:308
 msgid "Warning"
 msgstr ""
 
-#: src/DL_Log_Table.php:284
+#: src/DL_Log_Table.php:313
+msgid ""
+"Debug Log Parser Error"
+msgstr ""
+
+#: src/DL_Log_Table.php:356
 msgid "Stack trace"
 msgstr ""
 
-#: src/DL_Log_Table.php:326
-#: src/DL_Log_Table.php:343
+#: src/DL_Log_Table.php:400
+#: src/DL_Log_Table.php:419
 msgid "Delete"
 msgstr ""
 
-#: src/DL_Log_Table.php:399
-msgid ""
-"<abbr title=\"Record "
-"Number\">ID</abbr>"
+#: src/DL_Log_Table.php:479
+msgid "ID"
 msgstr ""
 
-#: src/DL_Log_Table.php:401
+#: src/DL_Log_Table.php:481
 msgid "Type"
 msgstr ""
 
-#: src/DL_Log_Table.php:466
-#: src/DL_Log_Table.php:591
+#: src/DL_Log_Table.php:548
 msgid "Today"
 msgstr ""
 
-#: src/DL_Log_Table.php:467
-#: src/DL_Log_Table.php:592
+#: src/DL_Log_Table.php:549
 msgid "Yesterday"
 msgstr ""
 
-#: src/DL_Log_Table.php:468
+#: src/DL_Log_Table.php:550
 msgid "Earlier"
 msgstr ""
 
-#: src/DL_Log_Table.php:469
+#: src/DL_Log_Table.php:551
 msgid "All"
 msgstr ""
 
-#: src/DL_Log_Table.php:589
-#: src/DL_Log_Table.php:598
+#: src/DL_Log_Table.php:634
 msgid "—— All ——"
 msgstr ""
 
-#: src/DL_Log_Table.php:590
-msgid "Last hour"
+#: src/DL_Log_Table.php:639
+#, php-format
+msgid "Error (%d)"
 msgstr ""
 
-#: src/DL_Log_Table.php:593
-msgid "Last week"
+#: src/DL_Log_Table.php:645
+#, php-format
+msgid "Notice (%d)"
 msgstr ""
 
-#: src/DL_Log_Table.php:594
-msgid "Last month"
+#: src/DL_Log_Table.php:651
+#, php-format
+msgid "Parser error (%d)"
 msgstr ""
 
-#: src/DL_Log_Table.php:627
+#: src/DL_Log_Table.php:657
+#, php-format
+msgid "Warning (%d)"
+msgstr ""
+
+#: src/DL_Log_Table.php:663
+#, php-format
+msgid "Other (%d)"
+msgstr ""
+
+#: src/DL_Log_Table.php:669
+#, php-format
+msgid ""
+"Debug Log parser error "
+"(%d)"
+msgstr ""
+
+#: src/DL_Log_Table.php:690
+msgid ""
+"There are no items with "
+"filter or view you have "
+"selected&hellip;"
+msgstr ""
+
+#: src/DL_Log_Table.php:691
 msgid ""
 "Your file <code>debug."
 "log</code> is empty "
@@ -389,112 +421,124 @@ msgid ""
 "strong>&hellip;"
 msgstr ""
 
-#: src/DL_Log_Table.php:780
-#: src/DL_Log_Table.php:853
-#, php-format
-msgid ""
-"Requested action \"<b>"
-"%s</b>\" was not "
-"recognized!"
-msgstr ""
-
-#: src/DL_Log_Table.php:796
+#: src/DL_Log_Table.php:846
 msgid ""
 "Nothing deleted - no "
 "records were selected."
 msgstr ""
 
-#: src/DL_Log_Table.php:809
+#: src/DL_Log_Table.php:855
 msgid ""
-"Error occured during "
+"Error occurs during "
 "deleting records from "
 "<code>debug.log</code> "
 "file."
 msgstr ""
 
-#: src/DL_Log_Table.php:815
+#: src/DL_Log_Table.php:859
+#, php-format
+msgid ""
+"Deleting was successful "
+"(deleted records: "
+"<strong>%1$d</strong>)."
+msgstr ""
+
+#: src/DL_Log_Table.php:862
 msgid ""
 "No records from "
 "<code>debug.log</code> "
-"file were deleted."
+"were deleted."
 msgstr ""
 
-#: src/DL_Log_Table.php:823
+#: src/DL_Log_Table.php:865
 #, php-format
 msgid ""
-"Deleting were "
-"successfull (deleted "
-"%1$d records)."
+"Some records were "
+"deleted but other not "
+"(deleted/not deleted "
+"records: <strong>%1$d/"
+"%2$d</strong>)."
 msgstr ""
 
-#: src/DL_Log_Table.php:866
+#: src/DL_Log_Table.php:894
+msgid ""
+"Nonce is not valid. "
+"Please try your request "
+"again."
+msgstr ""
+
+#: src/DL_Log_Table.php:901
 #, php-format
 msgid ""
-"Record on line <b>%d</b> "
-"was successfully removed "
+"Something went wrong so "
+"log record with ID "
+"<strong>%d</strong> was "
+"not deleted!"
+msgstr ""
+
+#: src/DL_Log_Table.php:907
+#, php-format
+msgid ""
+"Record on line <strong>"
+"%d</strong> was "
+"successfully removed "
 "from <code>debug.log</"
 "code> file."
 msgstr ""
 
-#: src/DL_Log_Table.php:869
+#: src/DL_Log_Table.php:910
 #, php-format
 msgid ""
-"Record on line <b>%d</b> "
-"from <code>debug.log</"
-"code> file was not "
-"deleted!"
+"Record on line <strong>"
+"%d</strong> from "
+"<code>debug.log</code> "
+"file was not deleted!"
 msgstr ""
 
-#: src/DL_Log_Table.php:905
+#: src/DL_Log_Table.php:948
 #, php-format
 msgid "%s item"
 msgid_plural "%s items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/DL_Log_Table.php:948
+#: src/DL_Log_Table.php:987
 msgid "First page"
 msgstr ""
 
-#: src/DL_Log_Table.php:958
+#: src/DL_Log_Table.php:996
 msgid "Previous page"
 msgstr ""
 
-#: src/DL_Log_Table.php:965
-#: src/DL_Log_Table.php:968
+#: src/DL_Log_Table.php:1002
+#: src/DL_Log_Table.php:1005
 msgid "Current Page"
 msgstr ""
 
-#: src/DL_Log_Table.php:974
+#: src/DL_Log_Table.php:1011
 #, php-format
 msgctxt "paging"
 msgid "%1$s of %2$s"
 msgstr ""
 
-#: src/DL_Log_Table.php:981
+#: src/DL_Log_Table.php:1018
 msgid "Next page"
 msgstr ""
 
-#: src/DL_Log_Table.php:991
+#: src/DL_Log_Table.php:1027
 msgid "Last page"
 msgstr ""
 
-#: src/DL_Log_Table.php:1046
+#: src/DL_Log_Table.php:1084
 msgid "Select All"
 msgstr ""
 
-#: src/DL_Options_Screen.php:31
-msgid ""
-"Settings for plugin "
-"<em>Debug Log Viewer</em>"
-msgstr ""
-
-#: src/DL_Plugin.php:250
+#: src/DL_Plugin.php:289
 msgid ""
 "Show Debug Log Viewer"
 msgstr ""
 
-#: src/DL_Plugin.php:303
+#: src/DL_Plugin.php:353
 #, php-format
 msgid ""
 "<strong>Debug Log "
@@ -503,7 +547,7 @@ msgid ""
 "successfully created."
 msgstr ""
 
-#: src/DL_Plugin.php:311
+#: src/DL_Plugin.php:360
 #, php-format
 msgid ""
 "<strong>Debug Log "
@@ -514,7 +558,7 @@ msgid ""
 "your own."
 msgstr ""
 
-#: src/DL_Plugin.php:322
+#: src/DL_Plugin.php:368
 #, php-format
 msgid ""
 "<strong>Debug Log "
@@ -523,7 +567,7 @@ msgid ""
 "but is not writeable."
 msgstr ""
 
-#: src/DL_Plugin.php:337
+#: src/DL_Plugin.php:374
 #, php-format
 msgid ""
 "If you want to write log "
@@ -536,11 +580,15 @@ msgid ""
 "<code>TRUE</code>."
 msgstr ""
 
-#: partials/screen-log.phtml:32
+#: partials/screen-log.phtml:38
 msgid "Delete log"
 msgstr ""
 
-#: partials/screen-log.phtml:33
+#: partials/screen-log.phtml:39
+msgid "Show raw log"
+msgstr ""
+
+#: partials/screen-log.phtml:40
 msgid ""
 "Small plugin aimed for "
 "developers that want "
@@ -548,25 +596,20 @@ msgid ""
 "log file."
 msgstr ""
 
-#: partials/screen-log.phtml:35
+#: partials/screen-log.phtml:42
 msgid "Filter records"
 msgstr ""
 
-#: partials/screen-log.phtml:44
+#: partials/screen-log.phtml:50
 msgid "Log records"
 msgstr ""
 
 #: partials/screen-log_extra_tablenav.phtml:17
 #: partials/screen-log_extra_tablenav.phtml:18
-msgid "Filter by time"
-msgstr ""
-
-#: partials/screen-log_extra_tablenav.phtml:23
-#: partials/screen-log_extra_tablenav.phtml:24
 msgid "Filter by type"
 msgstr ""
 
-#: partials/screen-log_extra_tablenav.phtml:29
+#: partials/screen-log_extra_tablenav.phtml:23
 msgid "Filter"
 msgstr ""
 

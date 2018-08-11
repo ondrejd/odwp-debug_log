@@ -22,56 +22,62 @@ if ( ! class_exists( 'DL_Log_Record' ) ) :
 class DL_Log_Record {
 
     /**
-     * @var string
      * @since 1.0.0
+     * @var string
      */
-    const DATE_FORMAT = 'Y n. j. H:i:s';
+    const DATE_FORMAT = 'Y-m-d H:i:s';
 
     /**
-     * @var string
      * @since 1.0.0
+     * @var string
      */
     const TYPE_ERROR   = 'PHP Fatal error';
 
     /**
-     * @var string
      * @since 1.0.0
+     * @var string
      */
     const TYPE_NOTICE  = 'PHP Notice';
 
     /**
-     * @var string
      * @since 1.0.0
+     * @var string
      */
     const TYPE_OTHER   = 'Other';
 
     /**
-     * @var string
      * @since 1.0.0
+     * @var string
      */
     const TYPE_PARSER  = 'PHP Parse error';
 
     /**
-     * @var string
      * @since 1.0.0
+     * @var string
      */
     const TYPE_WARNING = 'PHP Warning';
 
     /**
-     * @var integer $id
      * @since 1.0.0
+     * @var string
+     */
+    const TYPE_DLPARSER = 'DL_Log_Parser';
+
+    /**
+     * @since 1.0.0
+     * @var int $id
      */
     protected $id;
 
     /**
-     * @var integer $time
      * @since 1.0.0
+     * @var int $time
      */
     protected $time;
 
     /**
-     * @var string $message
      * @since 1.0.0
+     * @var string $message
      */
     protected $message;
 
@@ -82,37 +88,37 @@ class DL_Log_Record {
     protected $trace;
 
     /**
-     * @var string $type Log record type (PHP Fatal Error, PHP Notice, PHP Warning).
      * @since 1.0.0
+     * @var string $type Log record type (PHP Fatal Error, PHP Notice, PHP Warning).
      */
     protected $type;
 
     /**
-     * @var boolean Show log record?
      * @since 1.0.0
+     * @var bool $display Show log record?
      */
     protected $display = true;
 
     /**
-     * @var int $start_line
      * @since 1.0.0
+     * @var int $start_line
      */
     protected $start_line;
 
     /**
-     * @var int $end_line
      * @since 1.0.0
+     * @var int $end_line
      */
     protected $end_line;
 
     /**
-     * @var boolean Was record created today?
      * @since 1.0.0
+     * @var bool $was_today Was record created today?
      */
     protected $was_today = false;
 
     /**
-     * @var boolean Was record created yesterday?
+     * @var bool $was_yesterday Was record created yesterday?
      * @since 1.0.0
      */
     protected $was_yesterday = false;
@@ -120,11 +126,11 @@ class DL_Log_Record {
     /**
      * Construct.
      * 
-     * @param integer $id
-     * @param integer $time
-     * @param string  $message
-     * @param array   $trace (Optional.)
-     * @param string  $type
+     * @param int $id
+     * @param int $time
+     * @param string $message
+     * @param array $trace (Optional.)
+     * @param string $type
      * @since 1.0.0
      */
     public function __construct( $id, $time, $message, $trace = [], $type = self::TYPE_OTHER ) {
@@ -138,7 +144,7 @@ class DL_Log_Record {
     /**
      * Return index of the log record.
      * 
-     * @return integer
+     * @return int
      * @since 1.0.0
      */
     public function get_id() {
@@ -149,7 +155,7 @@ class DL_Log_Record {
      * Return time of the log record.
      *
      * @param boolean $formatted (Optional.)
-     * @return integer
+     * @return int
      * @since 1.0.0
      */
     public function get_time( $formatted = false ) {
@@ -189,7 +195,7 @@ class DL_Log_Record {
     /**
      * Return TRUE if record should be displayed.
      *
-     * @return boolean
+     * @return bool
      * @since 1.0.0
      */
     public function get_display() {
@@ -227,7 +233,7 @@ class DL_Log_Record {
     /**
      * Set index of the log record.
      *
-     * @param integer $id
+     * @param int $id
      * @return void
      * @since 1.0.0
      */
@@ -238,7 +244,7 @@ class DL_Log_Record {
     /**
      * Set time of the log record.
      *
-     * @param integer $time
+     * @param int $time
      * @return void
      * @since 1.0.0
      */
@@ -289,7 +295,7 @@ class DL_Log_Record {
     /**
      * Return TRUE if error record has a stack trace.
      *
-     * @return boolean
+     * @return bool
      * @since 1.0.0
      */
     public function has_trace() {
@@ -345,7 +351,7 @@ class DL_Log_Record {
     /**
      * Was the log record created today?
      *
-     * @return boolean
+     * @return bool
      * @since 1.0.0
      */
     public function was_today() {
@@ -355,7 +361,7 @@ class DL_Log_Record {
     /**
      * Was the log record created yesterday?
      *
-     * @return boolean
+     * @return bool
      * @since 1.0.0
      */
     public function was_yesterday() {
