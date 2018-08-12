@@ -226,6 +226,22 @@ class DL_Log_Parser {
     }
 
     /**
+     * Return raw log (array of its lines).
+     *
+     * @return array
+     * @since 1.0.0
+     */
+    public function get_raw_log() {
+
+        // If log is not prepared yet prepare it
+        if ( $this->is_prepared !== true ) {
+            $this->prepare();
+        }
+
+        return $this->log_raw;
+    }
+
+    /**
      * Return total count of log items.
      *
      * @deprecated Use `$parser->get_log_stats()->get_total_count()` instead!

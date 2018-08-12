@@ -1198,6 +1198,8 @@ class DL_Log_Table extends WP_List_Table {
         $args[] = '_wpnonce';
         $args[] = '_wp_http_referer';
         $args[] = 'odwpdl-filter_submit';
+        $args[] = 'delete_log';
+        $args[] = 'show_raw_log';
 
         return $args;
     }

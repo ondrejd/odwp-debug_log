@@ -16,38 +16,81 @@ if ( ! class_exists( 'DL_Log_Table' ) ) {
     require_once( DL_PATH . 'src/DL_Log_Table.php' );
 }
 
-/**
- * @var \DL_Log_Table $dl_log_table
- */
-$dl_log_table = new DL_Log_Table();
-$dl_log_table->prepare_items();
+// Handle screen actions
 
-/**
- * Add ThickBox support.
- * @link https://developer.wordpress.org/reference/functions/add_thickbox/
- */
-add_thickbox();
+// Delete whole log action
+// TODO DL_Log_Screen::process_deletelog_action();
+$delete_log = filter_input( INPUT_GET, 'delete_log', FILTER_SANITIZE_NUMBER_INT );
 
-// TODO Screen actions URLs
-//$delete_log_action_url = add_query_arg( 'delete_log', '1', DL_Log_Table::get_current_url() );
-//$show_raw_log_action_url = add_query_arg( 'show_raw_log', '1', DL_Log_Table::get_current_url() );
+// Perform `delete_log` action
+if ( $delete_log == '1' ) {
+
+    // Check NONCE
+    if ( ! check_admin_referer( 'delete_log' ) ) {
+        DL_Plugin::print_admin_notice( __( 'NONCE is not valid - <code>debug.log</code> file was not deleted!', DL_SLUG ), 'warning', true );
+    } else {
+
+        // Clear the log file
+        if ( DL_Plugin::create_log_file() === true ) {
+            DL_Plugin::print_admin_notice( __( 'All records from the <code>debug.log</code> file was deleted. ', DL_SLUG ), 'success', true );
+        } else {
+            DL_Plugin::print_admin_notice( __( 'An error occurred during clearing <code>debug.log</code> file. ', DL_SLUG ), 'error', true );
+        }
+    }
+}
+
+// Show raw log action
+$show_raw_log = filter_input( INPUT_GET, 'show_raw_log', FILTER_SANITIZE_NUMBER_INT );
+
+// Set up screen actions URLs
+$delete_log_action_base_url = add_query_arg( 'delete_log', '1', DL_Log_Table::get_current_url() );
+$delete_log_action_url = wp_nonce_url( $delete_log_action_base_url, 'delete_log' );
+$show_raw_log_action_url = add_query_arg( 'show_raw_log', '1', DL_Log_Table::get_current_url() );
+$show_rich_log_action_url = DL_Log_Table::get_current_url();
 
 ?>
 <div class="wrap">
     <h1 class="wp-heading-inline"><?php esc_html_e( 'Debug Log Viewer', DL_SLUG ) ?></h1>
-    <!-- TODO <a class="page-title-action" href="<?php echo esc_url( $delete_log_action_url ) ?>"><?php esc_html_e( 'Delete log', DL_SLUG ) ?></a> -->
-    <!-- TODO <a class="page-title-action" href="<?php echo esc_url( $show_raw_log_action_url ) ?>"><?php esc_html_e( 'Show raw log', DL_SLUG ) ?></a> -->
-    <span style="display: none"><?php esc_html_e( 'Small plugin aimed for developers that want easilly see their debug.log file.', DL_SLUG ) ?></span>
+    <a class="page-title-action" href="<?php echo esc_url( $delete_log_action_url ) ?>"><?php esc_html_e( 'Delete log', DL_SLUG ) ?></a>
+    <?php if ( $show_raw_log == '1' ) : ?>
+    <a class="page-title-action" href="<?php echo esc_url( $show_rich_log_action_url ) ?>"><?php esc_html_e( 'Show nice log', DL_SLUG ) ?></a>
+    <?php else : ?>
+    <a class="page-title-action" href="<?php echo esc_url( $show_raw_log_action_url ) ?>"><?php esc_html_e( 'Show raw log', DL_SLUG ) ?></a>
+    <?php endif ?>
     <hr class="wp-header-end">
-    <h2 class="screen-reader-text"><?php esc_html_e( 'Filter records', DL_SLUG ) ?></h2>
+    <?php if ( $show_raw_log == '1' ) :
+
+        $log_raw = DL_Log_Parser::get_instance( DL_Log_Table::get_options() )->get_raw_log();
+
+        // TODO Number of rows set via user/defuault settings!
+    ?><form><textarea style="width: 99.5%;" rows="27" disabled><?php
+        // We use `DL_Log_Parser` as usual;
+        echo join( '', $log_raw );
+    ?></textarea></form>
+    <?php else :
+
+        /**
+         * @var \DL_Log_Table $dl_log_table
+         */
+        $dl_log_table = new DL_Log_Table();
+        $dl_log_table->prepare_items();
+
+        /**
+         * Add ThickBox support.
+         * @link https://developer.wordpress.org/reference/functions/add_thickbox/
+         */
+        add_thickbox();
+
+    ?><h2 class="screen-reader-text"><?php esc_html_e( 'Filter records', DL_SLUG ) ?></h2>
     <?php $dl_log_table->views() ?>
     <form id="odwpdl-log_table" method="get">
-        <?php $dl_log_table->search_box( 'search', 'search_id' ) ?>
         <input type="hidden" name="page" value="<?php echo DL_Log_Screen::SLUG ?>">
         <?php
         // TODO Add hidden intput "_wpnonce"!
         ?>
+        <?php $dl_log_table->search_box( 'search', 'search_id' ) ?>
         <h2 class="screen-reader-text"><?php esc_html_e( 'Log records', DL_SLUG ) ?></h2>
         <?php $dl_log_table->display() ?>
     </form>
+    <?php endif ?>
 </div>

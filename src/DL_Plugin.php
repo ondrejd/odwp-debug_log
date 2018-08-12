@@ -328,13 +328,15 @@ class DL_Plugin {
     }
 
     /**
-     * Create `debug.log` file.
+     * Create (or erase existing) `debug.log` file.
      *
      * @return bool
      * @since 1.0.0
      */
-    private static function create_log_file() : bool {
-        return ( file_put_contents( DL_LOG, '' ) !== false );
+    public static function create_log_file() : bool {
+        return copy( DL_LOG, DL_LOG . '.bak' ) &&
+               unlink( DL_LOG ) &&
+               ( file_put_contents( DL_LOG, '', OVER ) !== false );
     }
 
     /**

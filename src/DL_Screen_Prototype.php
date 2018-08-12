@@ -224,6 +224,8 @@ abstract class DL_Screen_Prototype {
 
     /**
      * Action for `admin_init` hook.
+     *
+     * Note: When overriding use `parent::admin_init()` call!
      * 
      * @return void
      * @since 1.0.0
@@ -233,7 +235,7 @@ abstract class DL_Screen_Prototype {
     }
 
     /**
-     * Action for `init` hook.
+     * Action for `admin_enqueue_scripts` hook.
      * 
      * @return void
      * @since 1.0.0
