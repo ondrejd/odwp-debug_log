@@ -131,9 +131,10 @@ class DL_Log_Record {
      * @param string $message
      * @param array $trace (Optional.)
      * @param string $type
+     * @return void
      * @since 1.0.0
      */
-    public function __construct( $id, $time, $message, $trace = [], $type = self::TYPE_OTHER ) {
+    public function __construct( int $id, int $time, string $message, array $trace = [], string $type = self::TYPE_OTHER ) {
         $this->set_id( $id );
         $this->set_time( $time );
         $this->set_message( $message );
@@ -147,19 +148,21 @@ class DL_Log_Record {
      * @return int
      * @since 1.0.0
      */
-    public function get_id() {
+    public function get_id() : int {
         return $this->id;
     }
 
     /**
      * Return time of the log record.
      *
-     * @param boolean $formatted (Optional.)
-     * @return int
+     * @param bool $formatted (Optional.)
+     * @return string
      * @since 1.0.0
      */
-    public function get_time( $formatted = false ) {
-        return ( $formatted === true ) ? date( self::DATE_FORMAT, $this->time ) : $this->time;
+    public function get_time( bool $formatted = false ) : string {
+        return ( $formatted === true )
+            ? (string) date( self::DATE_FORMAT, $this->time )
+            : (string) $this->time;
     }
 
     /**
@@ -168,7 +171,7 @@ class DL_Log_Record {
      * @return string
      * @since 1.0.0
      */
-    public function get_message() {
+    public function get_message() : string {
         return $this->message;
     }
 
@@ -178,7 +181,7 @@ class DL_Log_Record {
      * @return array
      * @since 1.0.0
      */
-    public function get_trace() {
+    public function get_trace() : array {
         return $this->trace;
     }
 
@@ -188,7 +191,7 @@ class DL_Log_Record {
      * @return string
      * @since 1.0.0
      */
-    public function get_type() {
+    public function get_type() : string {
         return $this->type;
     }
 
@@ -198,7 +201,7 @@ class DL_Log_Record {
      * @return bool
      * @since 1.0.0
      */
-    public function get_display() {
+    public function get_display() : bool {
         return $this->display;
     }
 
@@ -208,8 +211,7 @@ class DL_Log_Record {
      * @return int
      * @since 1.0.0
      */
-    public function get_start_line()
-    {
+    public function get_start_line() : int {
         return $this->start_line;
     }
 
@@ -219,8 +221,7 @@ class DL_Log_Record {
      * @return int
      * @since 1.0.0
      */
-    public function get_end_line()
-    {
+    public function get_end_line() : int {
 
         // If end line is not set it means that current record takes just one line
         if ( empty( $this->end_line ) ) {
@@ -237,7 +238,7 @@ class DL_Log_Record {
      * @return void
      * @since 1.0.0
      */
-    public function set_id( $id ) {
+    public function set_id( int $id ) {
         $this->id = $id;
     }
 
@@ -248,13 +249,14 @@ class DL_Log_Record {
      * @return void
      * @since 1.0.0
      */
-    public function set_time( $time ) {
+    public function set_time( int $time ) {
         $this->time = $time;
 
         // Re-calculate values of `was_today`/`was_yesterday`
         // Note: We calculate this boolean values here because of performance...
         $today     = strtotime( '00:00:01' );
         $yesterday = strtotime( '-1day', $today );
+
         $this->was_today     = ( $time >= $today );
         $this->was_yesterday = ( ( $time < $today) && ( $time >= $yesterday ) );
     }
@@ -266,7 +268,7 @@ class DL_Log_Record {
      * @return void
      * @since 1.0.0
      */
-    public function set_message( $message ) {
+    public function set_message( string $message ) {
         $this->message = $message;
     }
 
@@ -277,7 +279,7 @@ class DL_Log_Record {
      * @return void
      * @since 1.0.0
      */
-    public function set_trace( $trace = [] ) {
+    public function set_trace( array $trace = [] ) {
         $this->trace = $trace;
     }
 
@@ -288,7 +290,7 @@ class DL_Log_Record {
      * @return void
      * @since 1.0.0
      */
-    public function add_trace( $trace ) {
+    public function add_trace( string $trace ) {
         array_push( $this->trace, $trace );
     }
 
@@ -298,7 +300,7 @@ class DL_Log_Record {
      * @return bool
      * @since 1.0.0
      */
-    public function has_trace() {
+    public function has_trace() : bool {
         return ( count( $this->trace ) > 0 );
     }
 
@@ -309,19 +311,19 @@ class DL_Log_Record {
      * @return void
      * @since 1.0.0
      */
-    public function set_type( $type ) {
+    public function set_type( string $type ) {
         $this->type = $type;
     }
 
     /**
      * Set if record should be displayed.
      *
-     * @param boolean $display
+     * @param bool $display
      * @return void
      * @since 1.0.0
      */
-    public function set_display( $display ) {
-        $this->display = ( bool ) $display;
+    public function set_display( bool $display ) {
+        $this->display = $display;
     }
 
     /**
@@ -331,8 +333,7 @@ class DL_Log_Record {
      * @return void
      * @since 1.0.0
      */
-    public function set_start_line( $line_num )
-    {
+    public function set_start_line( int $line_num ) {
         $this->start_line = $line_num;
     }
 
@@ -343,8 +344,7 @@ class DL_Log_Record {
      * @return void
      * @since 1.0.0
      */
-    public function set_end_line( $line_num )
-    {
+    public function set_end_line( int $line_num ) {
         $this->end_line = $line_num;
     }
 
@@ -354,7 +354,7 @@ class DL_Log_Record {
      * @return bool
      * @since 1.0.0
      */
-    public function was_today() {
+    public function was_today() : bool {
         return $this->was_today;
     }
 
@@ -364,7 +364,7 @@ class DL_Log_Record {
      * @return bool
      * @since 1.0.0
      */
-    public function was_yesterday() {
+    public function was_yesterday() : bool {
         return $this->was_yesterday;
     }
 }

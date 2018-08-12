@@ -71,7 +71,7 @@ class DL_Plugin {
      * @return array
      * @since 1.0.0
      */
-    public static function get_default_options() {
+    public static function get_default_options() : array {
         return [
             'prev_log_count' => 0,
         ];
@@ -85,7 +85,7 @@ class DL_Plugin {
      * @uses get_option()
      * @uses update_option()
      */
-    public static function get_options() {
+    public static function get_options() : array {
         $defaults = self::get_default_options();
         $options = get_option( self::SETTINGS_KEY, [] );
         $update = false;
@@ -114,7 +114,7 @@ class DL_Plugin {
      * @return mixed Option's value.
      * @since 1.0.0
      */
-    public static function get_option( $key, $default = null ) {
+    public static function get_option( string $key, $default = null ) {
         $options = self::get_options();
 
         if ( array_key_exists( $key, $options ) ) {
@@ -130,6 +130,7 @@ class DL_Plugin {
      * @return void
      * @since 1.0.0
      * @uses add_action()
+     * @uses is_admin()
      * @uses register_activation_hook()
      * @uses register_deactivation_hook()
      * @uses register_uninstall_hook()
@@ -140,12 +141,15 @@ class DL_Plugin {
         register_uninstall_hook( DL_FILE, [__CLASS__, 'uninstall'] );
 
         add_action( 'init', [__CLASS__, 'init'] );
-        add_action( 'admin_init', [__CLASS__, 'admin_init'] );
-        add_action( 'admin_menu', [__CLASS__, 'admin_menu'] );
-        add_action( 'admin_bar_menu', [__CLASS__, 'admin_menu_bar'], 100 );
-        add_action( 'plugins_loaded', [__CLASS__, 'plugins_loaded'] );
-        add_action( 'wp_enqueue_scripts', [__CLASS__, 'enqueue_scripts'] );
-        add_action( 'admin_enqueue_scripts', [__CLASS__, 'admin_enqueue_scripts'] );
+
+        if ( is_admin() === true ) {
+            add_action( 'admin_init', [__CLASS__, 'admin_init'] );
+            add_action( 'admin_menu', [__CLASS__, 'admin_menu'] );
+            add_action( 'admin_bar_menu', [__CLASS__, 'admin_menu_bar'], 100 );
+            add_action( 'plugins_loaded', [__CLASS__, 'plugins_loaded'] );
+            add_action( 'wp_enqueue_scripts', [__CLASS__, 'enqueue_scripts'] );
+            add_action( 'admin_enqueue_scripts', [__CLASS__, 'admin_enqueue_scripts'] );
+        }
     }
 
     /**
@@ -302,7 +306,7 @@ class DL_Plugin {
      * @uses wp_enqueue_style()
      * @uses wp_localize_script()
      */
-    public static function admin_enqueue_scripts( $hook ) {
+    public static function admin_enqueue_scripts( string $hook ) {
         $js_file = 'assets/js/admin.js';
         $js_path = DL_PATH . $js_file;
 
@@ -324,17 +328,17 @@ class DL_Plugin {
     }
 
     /**
-     * @private Creates `debug.log` file.
+     * Create `debug.log` file.
      *
      * @return bool
      * @since 1.0.0
      */
-    private static function create_log_file() {
+    private static function create_log_file() : bool {
         return ( file_put_contents( DL_LOG, '' ) !== false );
     }
 
     /**
-     * Checks environment we're running and prints admin messages if needed.
+     * Check environment we're running and prints admin messages if needed.
      *
      * @return void
      * @since 1.0.0
@@ -394,7 +398,7 @@ class DL_Plugin {
      * @return string Output created by rendering template.
      * @since 1.0.0
      */
-    public static function load_template( $template, array $args = [] ) {
+    public static function load_template( string $template, array $args = [] ) : string {
 
     	// Extract all arguments as variables for the template
         extract( $args );
@@ -495,11 +499,11 @@ class DL_Plugin {
      *
      * @param string $msg Error message.
      * @param string $type (Optional.) One of ['error','info','success','warning'].
-     * @param boolean $dismissible (Optional.) Is notice dismissible?
+     * @param bool $dismissible (Optional.) Is notice dismissible?
      * @return void
      * @since 1.0.0
      */
-    public static function print_admin_notice( $msg, $type = 'info', $dismissible = true ) {
+    public static function print_admin_notice( $msg, $type = 'info', bool $dismissible = true ) {
         $class = 'notice';
 
         if ( in_array( $type, ['error','info','success','warning'] ) ) {
@@ -529,7 +533,9 @@ class DL_Plugin {
      * @return void
      * @since 1.0.0
      */
-    private static function screens_call_method( $method ) {
+    private static function screens_call_method( string $method ) {
+
+        // Go through all screens and call specified method if it exists.
         foreach ( self::$admin_screens as $slug => $screen ) {
             if ( method_exists( $screen, $method ) ) {
                 call_user_func( [ $screen, $method ] );

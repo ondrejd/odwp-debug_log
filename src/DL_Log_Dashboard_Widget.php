@@ -62,7 +62,7 @@ class DL_Log_Dashboard_Widget {
      * @return array
      * @since 1.0.0
      */
-    public static function get_default_options() {
+    public static function get_default_options() : array {
         return [
             'visible_lines' => 20,
             'table_style'   => 'default',
@@ -96,10 +96,10 @@ class DL_Log_Dashboard_Widget {
      * Get the options for a widget of the specified name.
      *
      * @param string $widget_id Optional. If provided, will only get options for the specified widget.
-     * @return array An associative array containing the widget's options and values. False if no opts.
+     * @return array An associative array containing the widget's options and values. Empty array if no opts.
      * @since 1.0.0
      */
-    public static function get_dashboard_widget_options( $widget_id = '' ) {
+    public static function get_dashboard_widget_options( string $widget_id = '' ) : array {
         $opts = get_option( self::OPTIONS_KEY );
 
         // If no widget is specified, return everything
@@ -113,7 +113,7 @@ class DL_Log_Dashboard_Widget {
         }
 
         // Something went wrong...
-        return false;
+        return [];
     }
 
     /**
@@ -122,14 +122,14 @@ class DL_Log_Dashboard_Widget {
      * @param string $widget_id
      * @param string $option
      * @param mixed $default
-     * @return string
+     * @return mixed Return value if found, default value if real value is not found and default is set. Return FALSE in all other cases.
      * @since 1.0.0
      */
-    public static function get_dashboard_widget_option( $widget_id, $option, $default = null ) {
+    public static function get_dashboard_widget_option( string $widget_id, string  $option, $default = null ) {
         $opts = self::get_dashboard_widget_options( $widget_id );
 
         // If widget opts dont exist, return false
-        if ( ! $opts ) {
+        if ( count( $opts ) === 0 ) {
             return false;
         }
 
@@ -151,7 +151,7 @@ class DL_Log_Dashboard_Widget {
      * @return bool
      * @since 1.0.0
      */
-    public static function update_dashboard_widget_options( $widget_id , $args = [], $add_only = false ) {
+    public static function update_dashboard_widget_options( string $widget_id , array $args = [], bool $add_only = false ) : bool {
         // Fetch ALL dashboard widget options from the db...
         $opts = get_option( DL_SLUG . '-dashboard_widget_options' );
 

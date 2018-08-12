@@ -26,52 +26,9 @@ if ( ! class_exists( 'DL_Log_Parser_Stats' ) ) {
 if ( ! class_exists( 'DL_Log_Parser' ) ) :
 
 /**
- * Parser for WordPress debug.log files.
+ * Parser for PHP `debug.log` files.
  *
- * Snippet below explains how to initialize the parser:
- *
- * <pre>
- * // Set up options:
- * $options =  [
- *     'per_page'   => 10,
- *     'show_links' => true,
- *     'sort_col'   => 'time',
- *     'sort_dir'   => DL_Log_Table::DEFAULT_SORT_DIR_DESC,
- * ];
- *
- * // Set up log source log file:
- * $source = '/usr/home/test/debug.log'; // When you have full path of log file
- * $source = null;                       // When you want use WP log file
- *
- * // Initialize the parser:
- * $parser = new DL_Log_Parser( $source, $options );
- * </pre>
- *
- * And here is snippet how to use initialized parser:
- *
- * <pre>
- * // If you need to prepare parser (total count of rows will be available):
- * $parser->prepare();
- *
- * // If you need also filtering you should parse whole log:
- * $parser->parse();
- *
- * // Now here are snippets how to get your data:
- *
- * // Get data by page:
- * $items = $parser->get_data( ['page' => 11] );
- *
- * // Get data by range:
- * $items = $parser->get_data( ['from' => 0, 'to' => 35] );
- * <pre>
- *
- * Here is an example how to filter data:
- *
- * <pre>
- * $this->parse();
- * $parser->filter( ['type' => DL_Log_Record::TYPE_ERROR] );
- * $items = $parser->get_data( ['page' => 3] );
- * </pre>
+ * Is implemented as a singleton so initialize it through {@see DL_Log_Parser::get_instance()}.
  *
  * @author Ondřej Doněk, <ondrejd@gmail.com>
  * @since 1.0.0
@@ -157,13 +114,36 @@ class DL_Log_Parser {
     private $stats;
 
     /**
+     * @since 1.0.0
+     * @var DL_Log_Parser $instance
+     */
+    private static $instance;
+
+    /**
+     * Return instance of self.
+     *
+     * @param array $options
+     * @return DL_Log_Parser
+     * @since 1.0.0
+     */
+    public static function get_instance( array $options = [] ) : DL_Log_Parser {
+
+        // Is the parser already initialized?
+        if ( ! ( self::$instance instanceof DL_Log_Parser ) ) {
+            self::$instance = new DL_Log_Parser( $options );
+        }
+
+        return self::$instance;
+    }
+
+    /**
      * Constructor.
      *
      * @param array $options
      * @return void
      * @since 1.0.0
      */
-    public function __construct( $options = [] ) {
+    private function __construct( array $options = [] ) {
 
         // Set parser options
         $this->set_options( $options );
@@ -194,7 +174,7 @@ class DL_Log_Parser {
      * 
      * @param string $option
      * @param mixed $default
-     * @return array
+     * @return array|mixed If `$option` is specified return its value (or default value) otherwise return array with all options.
      * @since 1.0.0
      */
     public function get_options( $option = null, $default = null ) {
@@ -215,7 +195,7 @@ class DL_Log_Parser {
      * @return string
      * @since 1.0.0
      */
-    public function get_sort_order() {
+    public function get_sort_order() : string {
         if ( empty( $this->_order ) ) {
             $this->_order = filter_input( INPUT_GET, 'order' );
 
@@ -233,7 +213,7 @@ class DL_Log_Parser {
      * @return string
      * @since 1.0.0
      */
-    public function get_sort_orderby() {
+    public function get_sort_orderby() : string {
         if ( empty( $this->_orderby ) ) {
             $this->_orderby = filter_input( INPUT_GET, 'orderby' );
 
@@ -252,7 +232,7 @@ class DL_Log_Parser {
      * @return int
      * @since 1.0.0
      */
-    public function get_total_count() {
+    public function get_total_count() : int {
         return $this->get_stats()->get_total_count();
     }
 
@@ -262,7 +242,7 @@ class DL_Log_Parser {
      * @return string
      * @since 1.0.0
      */
-    public function get_view() {
+    public function get_view() : string {
         return $this->view;
     }
 
@@ -270,9 +250,10 @@ class DL_Log_Parser {
      * Set parser options.
      * 
      * @param array $options
+     * @return void
      * @since 1.0.0
      */
-    public function set_options( $options = [] ) {
+    public function set_options( array $options = [] ) {
         $this->options = $options;
     }
 
@@ -353,7 +334,7 @@ class DL_Log_Parser {
      * @return void
      * @since 1.0.0
      */
-    private function parse_line( $line, $line_num ) {
+    private function parse_line( string $line, int $line_num ) {
         $matches = preg_split(
             '/(\[[0-9]{2}-[a-zA-Z]{3}-[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} [a-zA-Z]{0,3}\])/',
             $line,
@@ -387,7 +368,7 @@ class DL_Log_Parser {
             $type = $this->parse_type( $_msg );
             $msg  = str_replace( $type . ': ', '', $_msg );
 
-            $this->_record = new DL_Log_Record( 0, '', '' );
+            $this->_record = new DL_Log_Record( 0, 0, '' );
             $this->_record->set_id( $line_num );
             $this->_record->set_time( strtotime( trim( $matches[0], '[]' ) ) );
             $this->_record->set_type( $type );
@@ -463,7 +444,7 @@ class DL_Log_Parser {
      * @return void
      * @since 1.0.0
      */
-    public function filter( $filter_func ) {
+    public function filter( closure $filter_func ) {
 
         if ( $this->is_parsed !== true ) {
             $this->parse();
@@ -480,7 +461,7 @@ class DL_Log_Parser {
      * @return void
      * @since 1.0.0
      */
-    public function set_view( $view ) {
+    public function set_view( string $view ) {
 
         if ( $this->_view === $view ) {
             return;
@@ -515,7 +496,7 @@ class DL_Log_Parser {
      * @return void
      * @since 1.0.0
      */
-    public function sort( $args = [] ) {
+    public function sort( array $args = [] ) {
         if ( $this->is_parsed !== true ) {
             $this->parse();
         }
@@ -548,7 +529,7 @@ class DL_Log_Parser {
      * @return DL_Log_Record|[DL_Log_Record]
      * @since 1.0.0
      */
-    public function get_data( $options = ['page' => -1] ) {
+    public function get_data( array $options = ['page' => -1] ) {
         
         if ( $this->is_parsed !== true ) {
             $this->parse();
@@ -577,7 +558,8 @@ class DL_Log_Parser {
      * @see DL_Log_Table::get_data()
      * @since 1.0.0
      */
-    public function parse_type( $str ) {
+    public function parse_type( string $str ) : string {
+
         if ( strpos( $str, DL_Log_Record::TYPE_ERROR ) === 0 ) {
             return DL_Log_Record::TYPE_ERROR;
         }
@@ -609,7 +591,7 @@ class DL_Log_Parser {
      * @since 1.0.0
      * @todo Rename to `highlight_text_line`!
      */
-    public function make_source_links( $str ) {
+    public function make_source_links( string $str ) : string {
         
         if ( strpos( $str, ABSPATH ) === false ) {
             return $str;
@@ -692,12 +674,12 @@ class DL_Log_Parser {
     /**
      * Sorting method for the table data.
      * 
-     * @param DL_Log_Record $a The first row.
-     * @param DL_Log_Record $b The second row.
+     * @param DL_Log_Record $a The first record.
+     * @param DL_Log_Record $b The second record.
      * @return int
      * @since 1.0.0
      */
-    protected function usort_reorder( DL_Log_Record $a, DL_Log_Record $b ) {
+    protected function usort_reorder( DL_Log_Record $a, DL_Log_Record $b ) : int {
         $order = $this->get_sort_order();
         $orderby = $this->get_sort_orderby();
         $val1 = null;
@@ -742,7 +724,7 @@ class DL_Log_Parser {
      * @return bool
      * @since 1.0.0
      */
-    public function delete_record( DL_Log_Record $record, $save = true ) {
+    public function delete_record( DL_Log_Record $record, bool $save = true ) : bool {
 
         // It should be, but just for case...
         if ( $this->is_parsed === false ) {
@@ -786,7 +768,7 @@ class DL_Log_Parser {
      * @return array Return array with count of done/failed deletes and save result (`['done' => 0, 'failed' => 0, 'saved' => false]`).
      * @since 1.0.0
      */
-    public function delete_records( array $records ) {
+    public function delete_records( array $records ) : array {
         $ret = ['done' => 0, 'failed' => 0, 'saved' => false];
 
         // Go through all record IDs and delete them one by one
@@ -821,7 +803,7 @@ class DL_Log_Parser {
      * @return bool
      * @since 1.0.0
      */
-    protected function save() {
+    protected function save() : bool {
         $this->is_saved = ( file_put_contents( DL_LOG, $this->log_raw ) !== false );
 
         return $this->is_saved;
@@ -833,7 +815,7 @@ class DL_Log_Parser {
      * @return bool
      * @since 1.0.0
      */
-    public function is_saved() {
+    public function is_saved() : bool {
        return $this->is_saved;
     }
 
@@ -843,7 +825,7 @@ class DL_Log_Parser {
      * @return DL_Log_Parser_Stats
      * @since 1.0.0
      */
-    public function get_stats() {
+    public function get_stats() : DL_Log_Parser_Stats {
         return $this->stats;
     }
 }

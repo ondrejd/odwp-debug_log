@@ -29,7 +29,7 @@ class DL_Log_Highlighter {
      * @return string
      * @since 1.0.0
      */
-    public static function highlight_numbers( $part, $line ) {
+    public static function highlight_numbers( string $part, string $line ) : string {
         $regexp      = '/([0-9]{1,})/';
         $replacement = '<span class="log--numeric">${1}</span>';
         $highlighted = preg_replace( $regexp, $replacement, $part );
@@ -45,7 +45,7 @@ class DL_Log_Highlighter {
      * @return string
      * @since 1.0.0
      */
-    public static function highlight_functions( $part, $line ) {
+    public static function highlight_functions( string $part, string $line ) : string {
         $regexp = '/([a-zA-Z\_:\/\-\>]*\([a-zA-Z\'\,\s…\/\._]*\))/';
         $replacement = '<span class="log--function">${1}</span>';
         $highlighted = preg_replace( $regexp, $replacement, $part );
@@ -61,7 +61,7 @@ class DL_Log_Highlighter {
      * @return string
      * @since 1.0.0
      */
-    public static function highlight_others( $part, $line ) {
+    public static function highlight_others( string $part, string $line ) : string {
         $ret = $line;
         $ret = str_replace( ' \']\'' , ' <span class="log--string">\']\'</span>', $ret );
         $ret = str_replace( ' \'[\'' , ' <span class="log--string">\'[\'</span>', $ret );
@@ -83,7 +83,7 @@ class DL_Log_Highlighter {
      * @return string
      * @since 1.0.0
      */
-    public static function highlight_strings( $part, $line ) {
+    public static function highlight_strings( string $part, string $line ) : string {
         $regexp = '/(\'[a-zA-Z0-9\(\);,\[\]]{1,}\')/';
         $replacement = '<span class="log--string">${1}</span>';
         $highlighted = preg_replace( $regexp, $replacement, $part );
@@ -99,7 +99,7 @@ class DL_Log_Highlighter {
      * @return string
      * @since 1.0.0
      */
-    public static function highlight_undefined_variable( $part, $line ) {
+    public static function highlight_undefined_variable( string $part, string $line ) : string {
         $regexp      = '/(Undefined\svariable:\s)([a-zA-Z_]*)/';
         $replacement = '${1}<span class="log--variable">${2}</span>';
         $highlighted = preg_replace( $regexp, $replacement, $part );

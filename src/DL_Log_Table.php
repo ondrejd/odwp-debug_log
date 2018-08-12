@@ -149,7 +149,7 @@ class DL_Log_Table extends WP_List_Table {
      * @since 1.0.0
      * @todo We use the table in partial so maybe is too late to call `removable_query_args` filter...
      */
-    public function __construct( $args = [] ) {
+    public function __construct( array $args = [] ) {
 
         parent::__construct( [
             'singular' => __( 'Record', DL_SLUG ),
@@ -161,7 +161,7 @@ class DL_Log_Table extends WP_List_Table {
         add_filter( 'removable_query_args', [$this, 'register_removable_query_args'] );
 
         // Initialize parser
-        $this->parser = new DL_Log_Parser( self::get_options() );
+        $this->parser = DL_Log_Parser::get_instance( self::get_options() );
     }
 
     /**
@@ -170,7 +170,7 @@ class DL_Log_Table extends WP_List_Table {
      * @return array
      * @since 1.0.0
      */
-    public static function get_default_options() {
+    public static function get_default_options() : array {
         return [
             'shown_cols'      => self::DEFAULT_SHOWN_COLS,
             'per_page'        => self::DEFAULT_PER_PAGE,
@@ -193,7 +193,7 @@ class DL_Log_Table extends WP_List_Table {
      * @uses get_current_user_id()
      * @uses get_user_meta()
      */
-    public static function get_options() {
+    public static function get_options() : array {
         $user = get_current_user_id();
 
         $shown_cols = get_user_meta( $user, DL_Log_Screen::SLUG . '-shown_cols', true );
@@ -831,9 +831,14 @@ class DL_Log_Table extends WP_List_Table {
             $action = filter_input( INPUT_GET, 'action2', FILTER_SANITIZE_STRING );
         }
 
-        // Validate action, otherwise return
+        // Validate action - if not valid return
         if ( ! in_array( $action, ['delete'] ) ) {
             return;
+        }
+
+        // Validate NONCE - if not valid return
+        if ( ! check_admin_referer( 'log_table_form' ) ) {
+            // TODO ...
         }
 
         /**
@@ -873,7 +878,6 @@ class DL_Log_Table extends WP_List_Table {
      * @return void
      * @see DL_Log_Table::get_row_actions()
      * @since 1.0.0
-     * @todo Check NONCE!
      * @uses check_admin_referer()
      */
     public function process_row_actions() {
@@ -1047,7 +1051,7 @@ class DL_Log_Table extends WP_List_Table {
     /**
      * We override default {@see WP_List_Table::print_column_headers()} method because we need to add filter argument into it.
      *
-     * @param boolean $with_id (Optional.)
+     * @param bool $with_id (Optional.)
      * @return void
      * @since 1.0.0
      * @uses add_query_arg()
@@ -1138,7 +1142,7 @@ class DL_Log_Table extends WP_List_Table {
      * @return bool
      * @since 1.0.0
      */
-    public function is_any_filter_used() {
+    public function is_any_filter_used() : bool {
         return $this->get_filter()['is_filter'];
     }
 
@@ -1148,7 +1152,7 @@ class DL_Log_Table extends WP_List_Table {
      * @return bool
      * @since 1.0.0
      */
-    public function is_any_view_used() {
+    public function is_any_view_used() : bool {
         $view = filter_input( INPUT_GET, 'view', FILTER_SANITIZE_STRING );
 
         if ( empty( $view ) ) {
@@ -1170,8 +1174,9 @@ class DL_Log_Table extends WP_List_Table {
      * @uses remove_query_arg()
      * @uses set_url_scheme()
      * @uses wp_removable_query_args()
+     * @todo Allow to pass array of arguments (as an addition to the query).
      */
-    public static function get_current_url() {
+    public static function get_current_url() : string {
         $r_query_args = wp_removable_query_args();
         $current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
 
@@ -1186,7 +1191,7 @@ class DL_Log_Table extends WP_List_Table {
      * @see wp_removable_query_args()
      * @since 1.0.0
      */
-    public static function register_removable_query_args( $args ) {
+    public static function register_removable_query_args( array $args ) : array {
         $args[] = 'action';
         $args[] = 'action2';
         $args[] = 'record';

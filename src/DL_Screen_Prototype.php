@@ -170,6 +170,7 @@ abstract class DL_Screen_Prototype {
      * @uses get_current_screen()
      */
     public function get_screen() {
+
         if ( ! ( $this->screen instanceof \WP_Screen )) {
             $this->screen = get_current_screen();
         }
@@ -185,7 +186,8 @@ abstract class DL_Screen_Prototype {
      * @uses get_current_user_id()
      * @uses get_user_meta()
      */
-    public function get_screen_options() {
+    public function get_screen_options() : array {
+
         if ( $this->enable_screen_options !== true ) {
             return [];
         }
@@ -300,7 +302,7 @@ abstract class DL_Screen_Prototype {
      * @todo In WordPress Dashboard screen options there is no apply button and all is done by AJAX - it would be nice to have this the same.
      * @uses apply_filters()
      */
-    public function screen_options( $additional_template_args = [] ) {
+    public function screen_options( array $additional_template_args = [] ) {
         if ( $this->enable_screen_options !== true ) {
             return;
         }
@@ -349,6 +351,7 @@ abstract class DL_Screen_Prototype {
      * @uses update_user_meta()
      */
     public function save_screen_options() {
+
         if ( $this->enable_screen_options !== true ) {
             return;
         }
@@ -389,7 +392,7 @@ abstract class DL_Screen_Prototype {
     /**
      * Render page self.
      * 
-     * @param array $args (Optional.) Arguments for rendered template.
+     * @param mixed $args (Optional.) Array with arguments for rendered template.
      * @return void
      * @since 1.0.0
      * @uses apply_filters()

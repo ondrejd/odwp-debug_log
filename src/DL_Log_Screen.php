@@ -213,7 +213,9 @@ class DL_Log_Screen extends DL_Screen_Prototype {
      * @see DL_Log_Table::get_options();
      * @since 1.0.0
      */
-    public function get_screen_options() {
+    public function get_screen_options() : array {
+
+        // Screen options are not enabled
         if ( $this->enable_screen_options !== true ) {
             return [];
         }
