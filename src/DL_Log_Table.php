@@ -353,7 +353,7 @@ class DL_Log_Table extends WP_List_Table {
                     : '<span class="dashicons dashicons-arrow-down-alt2"></span>';
 
             $text .= '<div class="stack-trace ' . ( $show_trace === true ? '' : 'stack-trace--collapsed' ) . '">' . PHP_EOL;
-            $text .= '    <b onclick="StackTraceToggler.toggle(this)">' . $icon . ' ' . __( 'Stack trace', DL_SLUG ) . '</b>' . PHP_EOL;
+            $text .= '    <b class="stack-trace-toggling">' . $icon . ' ' . __( 'Stack trace', DL_SLUG ) . '</b>' . PHP_EOL;
             $text .= '    <ul>' . PHP_EOL;
 
             foreach ( $item->get_trace() as $trace ) {

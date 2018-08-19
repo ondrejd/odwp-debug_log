@@ -307,23 +307,22 @@ class DL_Plugin {
      * @uses wp_localize_script()
      */
     public static function admin_enqueue_scripts( string $hook ) {
-        $js_file = 'assets/js/admin.js';
-        $js_path = DL_PATH . $js_file;
 
-        if ( file_exists( $js_path ) && is_readable( $js_path ) ) {
-	        wp_enqueue_script( DL_SLUG, plugins_url( $js_file, DL_FILE ), ['jquery'] );
-            wp_localize_script( DL_SLUG, 'odwpdl', [
-                // Put variables you want to pass into JS here...
-            ] );
+        // We need js/css resources only on log screen
+        if ( $hook !== 'tools_page_odwpdl-log' ) {
+            return;
         }
 
-        $css_file = 'assets/css/admin.css';
-        $css_path = DL_PATH . $css_file;
+        // Include JavaScript
+        wp_enqueue_script( DL_SLUG, plugins_url( 'assets/js/admin.js', DL_FILE ), ['jquery'] );
+        wp_localize_script( DL_SLUG, 'odwpdl', [
+            // Put variables you want to pass into JS here...
+        ] );
 
-        if ( file_exists( $css_path ) && is_readable( $css_path ) ) {
-            wp_enqueue_style( DL_SLUG, plugins_url( $css_file, DL_FILE ) );
-        }
+        // Include stylesheet
+        wp_enqueue_style( DL_SLUG, plugins_url( 'assets/css/admin.css', DL_FILE ) );
 
+        // Call this hook for all screens of the plugin
         self::screens_call_method( 'admin_enqueue_scripts' );
     }
 
@@ -336,7 +335,7 @@ class DL_Plugin {
     public static function create_log_file() : bool {
         return copy( DL_LOG, DL_LOG . '.bak' ) &&
                unlink( DL_LOG ) &&
-               ( file_put_contents( DL_LOG, '', OVER ) !== false );
+               ( file_put_contents( DL_LOG, '' ) !== false );
     }
 
     /**
