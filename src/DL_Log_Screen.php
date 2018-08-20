@@ -37,6 +37,7 @@ class DL_Log_Screen extends DL_Screen_Prototype {
      * @param WP_Screen $screen Optional.
      * @return void
      * @since 1.0.0
+     * @todo Refactor this!
      */
     public function __construct( \WP_Screen $screen = null ) {
         // Main properties
@@ -181,7 +182,7 @@ class DL_Log_Screen extends DL_Screen_Prototype {
             'option'  => self::SLUG . '-src_win_height',
         ];
 
-        // Finish screen constuction
+        // Finish screen construction
         parent::__construct( $screen );
     }
 
@@ -203,6 +204,30 @@ class DL_Log_Screen extends DL_Screen_Prototype {
         );
 
         add_action( 'load-' . $this->hookname, [$this, 'screen_load'] );
+    }
+
+    /**
+     * Action for `admin_enqueue_scripts` hook.
+     *
+     * @param string $hook
+     * @return void
+     * @since 1.0.0
+     * @uses plugins_url()
+     * @uses wp_enqueue_script()
+     * @uses wp_localize_script()
+     */
+    public function admin_enqueue_scripts( string $hook ) {
+
+        // We need js/css resources only on log screen
+        if ( $hook !== 'tools_page_odwpdl-log' ) {
+            return;
+        }
+
+        // Include JavaScript
+        wp_enqueue_script( self::SLUG, plugins_url( 'assets/js/screen-log.js', DL_FILE ), ['jquery'] );
+        wp_localize_script( self::SLUG, 'odwpdl', [
+            // Put variables you want to pass into JS here...
+        ] );
     }
 
     /**

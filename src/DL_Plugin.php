@@ -308,11 +308,6 @@ class DL_Plugin {
      */
     public static function admin_enqueue_scripts( string $hook ) {
 
-        // We need js/css resources only on log screen
-        if ( $hook !== 'tools_page_odwpdl-log' ) {
-            return;
-        }
-
         // Include JavaScript
         wp_enqueue_script( DL_SLUG, plugins_url( 'assets/js/admin.js', DL_FILE ), ['jquery'] );
         wp_localize_script( DL_SLUG, 'odwpdl', [
@@ -323,7 +318,7 @@ class DL_Plugin {
         wp_enqueue_style( DL_SLUG, plugins_url( 'assets/css/admin.css', DL_FILE ) );
 
         // Call this hook for all screens of the plugin
-        self::screens_call_method( 'admin_enqueue_scripts' );
+        self::screens_call_method( 'admin_enqueue_scripts', $hook );
     }
 
     /**
@@ -529,17 +524,17 @@ class DL_Plugin {
      * If method doesn't exist in the screen object it means that screen
      * do not provide action for the hook.
      *
-     * @access private
      * @param string $method
+     * @param mixed $args
      * @return void
      * @since 1.0.0
      */
-    private static function screens_call_method( string $method ) {
+    private static function screens_call_method( string $method, $args = null ) {
 
         // Go through all screens and call specified method if it exists.
         foreach ( self::$admin_screens as $slug => $screen ) {
             if ( method_exists( $screen, $method ) ) {
-                call_user_func( [ $screen, $method ] );
+                call_user_func( [ $screen, $method ], $args );
             }
         }
     }

@@ -236,11 +236,12 @@ abstract class DL_Screen_Prototype {
 
     /**
      * Action for `admin_enqueue_scripts` hook.
-     * 
+     *
+     * @param string $hook
      * @return void
      * @since 1.0.0
      */
-    public function admin_enqueue_scripts() {
+    public function admin_enqueue_scripts( string $hook ) {
         // ...
     }
 
