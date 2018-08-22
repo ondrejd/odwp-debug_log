@@ -416,7 +416,7 @@ class DL_Log_Table extends WP_List_Table {
         $nonce_url = wp_nonce_url( $action_url, 'delete_log_item_'.$item->get_id() );
 
         $actions = [
-            'delete_single' => sprintf('<a href="%1$s">%2$s</a>', $nonce_url, __( 'Delete', DL_SLUG ) ),
+            'delete_single' => sprintf('<a href="%1$s" class="odwpdl-delete_single">%2$s</a>', $nonce_url, __( 'Delete', DL_SLUG ) ),
         ];
 
         return $actions;

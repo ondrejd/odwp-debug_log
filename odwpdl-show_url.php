@@ -18,9 +18,6 @@ $root = dirname( dirname( dirname( dirname( __FILE__ ) ) ) );
 define( 'WP_USE_THEMES', false );
 require( $root . '/wp-load.php' );
 
-// File with some constants
-include( dirname( __FILE__ ) . '/constants.php' );
-
 // Initialize localization
 load_plugin_textdomain( 'odwpdl', false, 'odwp-debug_log/languages' );
 

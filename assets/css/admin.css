@@ -170,3 +170,12 @@ wp-admin-bar-odwpdl-adminbar_item .ab-icon::before {
     content: "\f534";
     top: 2px;
 }
+
+textarea.odwpdl-log_raw {
+    background-color: #f0f0f0;
+    color: #444444;
+    font-family: monospace;
+    font-size: 1.025em;
+    padding: 0.75em;
+    width: 99.5%;
+}

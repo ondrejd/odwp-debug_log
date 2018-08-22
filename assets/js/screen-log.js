@@ -7,7 +7,7 @@
 
 jQuery( document ).ready( function() {
 
-    console.log( "Hello from `assets/js/screen-log.js`!" );
+    console.log( "Hello from `assets/js/screen-log.js`!", odwpdl );
 
     const ICON_DOWN = "dashicons-arrow-down-alt2";
     const ICON_UP   = "dashicons-arrow-up-alt2";
@@ -29,6 +29,54 @@ jQuery( document ).ready( function() {
         new_cls = ( status == "hidden" ) ? ICON_UP : ICON_DOWN;
 
         $target.find( "span.dashicons" ).removeClass( old_cls ).addClass( new_cls );
+    } );
+
+    // Screen action "Delete log"
+    jQuery( ".odwpdl-screen_action-delete" ).click( function() {
+
+        console.log( "Screen action \"Delete log\"...", odwpdl.ajax_url );
+
+        // TODO Show confirmation dialog!
+        // TODO Use jQueryUI dialog!
+        if ( ! confirm( odwpdl.i18n.confirm_delete_log_msg ) ) {
+            // TODO Show admin notice? (made just by JS...)
+            return false;
+        }
+
+        // Function that handles Ajax call response
+        let handle_delete_log_action = function( response ) {
+            console.log( response );
+        };
+
+        // Perform Ajax call
+        jQuery.post( odwpdl.ajax.url, { action: odwpdl.ajax.actions.delete_log }, handle_delete_log_action, "json" );
+
+        // Target was a link so return FALSE.
+        return false;
+    } );
+
+    // Row action "Delete record"
+    jQuery( ".odwpdl-delete_single" ).click( function() {
+
+        console.log( "Row action \"Delete record\"...", odwpdl.ajax_url );
+
+        // TODO Show confirmation dialog!
+        // TODO Use jQueryUI dialog!
+        if ( ! confirm( odwpdl.i18n.confirm_delete_record_msg ) ) {
+            // TODO Show admin notice? (made just by JS...)
+            return false;
+        }
+
+        // Function that handles Ajax call response
+        let handle_delete_record_action = function( response ) {
+            console.log( response );
+        };
+
+        // Perform Ajax call
+        jQuery.post( odwpdl.ajax.url, { action: odwpdl.ajax.actions.delete_record }, handle_delete_record_action, "json" );
+
+        // Target was a link so return FALSE.
+        return false;
     } );
 
 } );

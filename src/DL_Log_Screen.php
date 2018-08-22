@@ -187,6 +187,18 @@ class DL_Log_Screen extends DL_Screen_Prototype {
     }
 
     /**
+     * Initializes hooks for AJAX requests.
+     *
+     * @return void
+     * @see DL_Plugin::init_ajax()
+     * @since 1.0.0
+     * @uses add_action()
+     */
+    public function init_ajax() {
+        add_action( 'wp_ajax_odwpdl_delete_action', [$this, 'ajax_delete_action'] );
+    }
+
+    /**
      * Action for `admin_menu` hook.
      * 
      * @return void
@@ -212,6 +224,7 @@ class DL_Log_Screen extends DL_Screen_Prototype {
      * @param string $hook
      * @return void
      * @since 1.0.0
+     * @uses admin_url()
      * @uses plugins_url()
      * @uses wp_enqueue_script()
      * @uses wp_localize_script()
@@ -226,7 +239,21 @@ class DL_Log_Screen extends DL_Screen_Prototype {
         // Include JavaScript
         wp_enqueue_script( self::SLUG, plugins_url( 'assets/js/screen-log.js', DL_FILE ), ['jquery'] );
         wp_localize_script( self::SLUG, 'odwpdl', [
-            // Put variables you want to pass into JS here...
+            'ajax'     => [
+                'actions'  => [
+                    'delete_log'    => DL_Plugin::AJAX_DELETE_LOG_ACTION,
+                    'delete_record' => DL_Plugin::AJAX_DELETE_RECORD_ACTION,
+                ],
+                'url'      => admin_url( 'admin-ajax.php' ),
+            ],
+            'options'  => [
+                'current'  => DL_Log_Table::get_options(),
+                'default'  => DL_Log_Table::get_default_options(),
+            ],
+            'i18n'     => [
+                'confirm_delete_log_msg' => __( 'Do you really want to delete whole <code>debug.log</code> file?', DL_SLUG ),
+                'confirm_delete_record_msg' => __( 'Do you really want to delete selected record?', DL_SLUG ),
+            ],
         ] );
     }
 

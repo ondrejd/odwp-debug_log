@@ -844,6 +844,22 @@ class DL_Log_Parser {
     public function get_stats() : DL_Log_Parser_Stats {
         return $this->stats;
     }
+
+    /**
+     * Return size of debug.log file
+     *
+     * @return int
+     * @since 1.0.0
+     */
+    public function get_log_filesize() : int {
+        $size = filesize( DL_LOG );
+
+        if ( $size === false ) {
+            return 0;
+        }
+
+        return intval( $size );
+    }
 }
 
 endif;

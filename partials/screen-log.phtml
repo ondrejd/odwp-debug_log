@@ -16,28 +16,7 @@ if ( ! class_exists( 'DL_Log_Table' ) ) {
     require_once( DL_PATH . 'src/DL_Log_Table.php' );
 }
 
-// Handle screen actions
-
-// Delete whole log action
-// TODO DL_Log_Screen::process_deletelog_action();
-$delete_log = filter_input( INPUT_GET, 'delete_log', FILTER_SANITIZE_NUMBER_INT );
-
-// Perform `delete_log` action
-if ( $delete_log == '1' ) {
-
-    // Check NONCE
-    if ( ! check_admin_referer( 'delete_log' ) ) {
-        DL_Plugin::print_admin_notice( __( 'NONCE is not valid - <code>debug.log</code> file was not deleted!', DL_SLUG ), 'warning', true );
-    } else {
-
-        // Clear the log file
-        if ( DL_Plugin::create_log_file() === true ) {
-            DL_Plugin::print_admin_notice( __( 'All records from the <code>debug.log</code> file was deleted. ', DL_SLUG ), 'success', true );
-        } else {
-            DL_Plugin::print_admin_notice( __( 'An error occurred during clearing <code>debug.log</code> file. ', DL_SLUG ), 'error', true );
-        }
-    }
-}
+// TODO All screen actions should be implemented also via normal GET request not just Ajax!
 
 // Show raw log action
 $show_raw_log = filter_input( INPUT_GET, 'show_raw_log', FILTER_SANITIZE_NUMBER_INT );
@@ -51,22 +30,31 @@ $show_rich_log_action_url = DL_Log_Table::get_current_url();
 ?>
 <div class="wrap">
     <h1 class="wp-heading-inline"><?php esc_html_e( 'Debug Log Viewer', DL_SLUG ) ?></h1>
-    <a class="page-title-action" href="<?php echo esc_url( $delete_log_action_url ) ?>"><?php esc_html_e( 'Delete log', DL_SLUG ) ?></a>
+    <a class="page-title-action odwpdl-screen_action-delete" href="<?php echo esc_url( $delete_log_action_url ) ?>"><?php esc_html_e( 'Delete log', DL_SLUG ) ?></a>
     <?php if ( $show_raw_log == '1' ) : ?>
-    <a class="page-title-action" href="<?php echo esc_url( $show_rich_log_action_url ) ?>"><?php esc_html_e( 'Show nice log', DL_SLUG ) ?></a>
+    <a class="page-title-action odwpdl-screen_action-toggle_view odwpdl-screen_is_raw" href="<?php echo esc_url( $show_rich_log_action_url ) ?>"><?php esc_html_e( 'Show nice log', DL_SLUG ) ?></a>
     <?php else : ?>
-    <a class="page-title-action" href="<?php echo esc_url( $show_raw_log_action_url ) ?>"><?php esc_html_e( 'Show raw log', DL_SLUG ) ?></a>
+    <a class="page-title-action odwpdl-screen_action-toggle_view odwpdl-screen_is_rich" href="<?php echo esc_url( $show_raw_log_action_url ) ?>"><?php esc_html_e( 'Show raw log', DL_SLUG ) ?></a>
     <?php endif ?>
     <hr class="wp-header-end">
     <?php if ( $show_raw_log == '1' ) :
 
         $log_raw = DL_Log_Parser::get_instance( DL_Log_Table::get_options() )->get_raw_log();
 
-        // TODO Number of rows set via user/defuault settings!
-    ?><form><textarea style="width: 99.5%;" rows="27" disabled><?php
-        // We use `DL_Log_Parser` as usual;
-        echo join( '', $log_raw );
-    ?></textarea></form>
+        // TODO Number of rows set via user/default settings!
+        // TODO Move all inline styles to proper CSS file!
+    ?><form>
+        <p class="description"><?php printf(
+                __( 'Here are untouched contents of %1$sdebug.log%2$s file. Its size is %3$s%5$s%4$s, total count of lines is %3$s%6$d%4$s.', DL_SLUG ),
+                '<code>', '</code>', '<strong>', '</strong>',
+                size_format( DL_Log_Parser::get_instance()->get_log_filesize() ),
+                count( $log_raw )
+        ) ?></p>
+        <textarea class="odwpdl-log_raw" rows="27" disabled><?php
+            // We use `DL_Log_Parser` as usual;
+            echo join( '', $log_raw );
+        ?></textarea>
+    </form>
     <?php else :
 
         /**

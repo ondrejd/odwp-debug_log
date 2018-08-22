@@ -25,6 +25,18 @@ class DL_Plugin {
      * @since 1.0.0
      * @var string
      */
+    const AJAX_DELETE_LOG_ACTION = DL_SLUG . '_delete_log_action';
+
+    /**
+     * @since 1.0.0
+     * @var string
+     */
+    const AJAX_DELETE_RECORD_ACTION = DL_SLUG . '_delete_record_action';
+
+    /**
+     * @since 1.0.0
+     * @var string
+     */
     const SETTINGS_KEY = DL_SLUG . '_settings';
 
     /**
@@ -173,9 +185,87 @@ class DL_Plugin {
         // Initialize shortcodes
         self::init_shortcodes();
 
+        // Init AJAX
+        self::init_ajax();
+
         // Initialize admin screens
         self::init_screens();
         self::screens_call_method( 'init' );
+    }
+
+    /**
+     * Initializes hooks for AJAX requests.
+     *
+     * @return void
+     * @since 1.0.0
+     * @uses add_action()
+     */
+    public static function init_ajax() {
+        add_action( 'wp_ajax_' . self::AJAX_DELETE_LOG_ACTION, [__CLASS__, 'ajax_action'] );
+        add_action( 'wp_ajax_' . self::AJAX_DELETE_RECORD_ACTION, [__CLASS__, 'ajax_action'] );
+    }
+
+    /**
+     * Hook for Ajax actions.
+     *
+     * @return void
+     * @see DL_Log_Screen::init_ajax()
+     * @since 1.0.0
+     * @todo What about NONCE?
+     * @uses check_admin_referer()
+     * @uses json_encode()
+     * @uses check_admin_referer()
+     * @uses wp_die()
+     */
+    public static function ajax_action() {
+        $action   = filter_input( INPUT_POST, 'action' );
+        $is_error = false;
+        $message  = '';
+
+        switch ( $action ) {
+
+            // TODO Delete single log record
+            case self::AJAX_DELETE_RECORD_ACTION:
+                $record     = filter_input( INPUT_POST, 'record', FILTER_SANITIZE_NUMBER_INT );
+                $record_obj = DL_Log_Parser::get_instance()->get_data( ['record' => $record] );
+                $is_error   = DL_Log_Parser::get_instance()->delete_record($record_obj);
+                $message    = ( $is_error === true )
+                    ? __( 'An error occurred - no record was deleted.', DL_SLUG )
+                    : sprintf( __( 'Record with ID <strong>%s</strong> was deleted.', DL_SLUG ), $record_obj->get_id() );
+                break;
+
+            // TODO Delete whole log
+            case self::AJAX_DELETE_LOG_ACTION:
+
+                // Check NONCE
+                if ( ! check_admin_referer( self::AJAX_DELETE_LOG_ACTION ) ) {
+                    $is_error = true;
+                    $message  = __( 'NONCE is not valid - <code>debug.log</code> file was not deleted!', DL_SLUG );
+                } else {
+
+                    // Clear the log file
+                    $is_error = ! DL_Plugin::create_log_file();
+                    $message = ( $is_error === true )
+                        ? __( 'All records from the <code>debug.log</code> file was deleted. ', DL_SLUG )
+                        : __( 'An error occurred during clearing <code>debug.log</code> file. ', DL_SLUG );
+                }
+                break;
+
+            // Unknown action
+            default:
+                $is_error = true;
+                $message  = __( 'Wrong log screen action was specified!', DL_SLUG );
+                break;
+        }
+
+        // Print JSON as output
+        echo json_encode( [
+            'is_error' => $is_error,
+            'message'  => $message,
+        ] );
+
+        // And die
+        wp_die();
     }
 
     /**
@@ -301,6 +391,7 @@ class DL_Plugin {
      * @param string $hook
      * @return void
      * @since 1.0.0
+     * @uses admin_url()
      * @uses plugins_url()
      * @uses wp_enqueue_script()
      * @uses wp_enqueue_style()
@@ -311,7 +402,18 @@ class DL_Plugin {
         // Include JavaScript
         wp_enqueue_script( DL_SLUG, plugins_url( 'assets/js/admin.js', DL_FILE ), ['jquery'] );
         wp_localize_script( DL_SLUG, 'odwpdl', [
-            // Put variables you want to pass into JS here...
+            'ajax'     => [
+                'actions'  => [
+                    'delete_log'    => DL_Plugin::AJAX_DELETE_LOG_ACTION,
+                    'delete_record' => DL_Plugin::AJAX_DELETE_RECORD_ACTION,
+                ],
+                'url'      => admin_url( 'admin-ajax.php' ),
+            ],
+            'options'  => [
+                'current'  => DL_Log_Table::get_options(),
+                'default'  => DL_Log_Table::get_default_options(),
+            ],
+            'i18n'     => [],
         ] );
 
         // Include stylesheet

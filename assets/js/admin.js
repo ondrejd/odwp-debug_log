@@ -7,6 +7,6 @@
 
 jQuery( document ).ready( function() {
 
-    console.log( "Hello from `assets/js/admin.js`!" );
+    console.log( "Hello from `assets/js/admin.js`!", odwpdl );
 
 } );
