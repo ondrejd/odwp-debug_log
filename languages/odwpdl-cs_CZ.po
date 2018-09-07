@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: odwp-debug_log 1.0.0\n"
 "Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
-"POT-Creation-Date: 2018-08-11 18:20+0200\n"
+"POT-Creation-Date: 2018-09-07 19:54+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Ondřej Doněk <ondrejd@gmail.com>\n"
@@ -61,162 +61,170 @@ msgstr "Plugin <b>%1$s</b> je vyžadován, ale není aktivován!"
 msgid "Use function `odwpdl_write_log` instead!"
 msgstr "Použijte místo této funkce funkci `odwpdl_write_log`!"
 
-#: odwp-debug_log.php:259
+#: odwp-debug_log.php:260
 msgid "<b>Debug Log Viewer</b>: "
 msgstr "<b>Prohlížeč ladících informací</b>: "
 
-#: odwpdl-show_url.php:32
+#: odwpdl-show_url.php:29
 #, php-format
 msgid "Source file <code>%1$s</code> was not found!"
 msgstr "Zdrojový soubor <code>%1$s</code> nebyl nalezen!"
 
-#: odwpdl-show_url.php:35
+#: odwpdl-show_url.php:32
 #, php-format
 msgid "Source file <code>%1$s</code> can not be read!"
 msgstr "Zdrojový soubor <code>%1$s</code> nejde přečíst!"
 
-#: src/DL_Log_Dashboard_Widget.php:51 src/DL_Log_Screen.php:44
+#: src/DL_Log_Dashboard_Widget.php:53 src/DL_Log_Screen.php:45
 msgid "Debug Log"
 msgstr "Ladící informace"
 
-#: src/DL_Log_Screen.php:45 src/DL_Log_Screen.php:55
-#: partials/screen-log.phtml:37
+#: src/DL_Log_Screen.php:46 src/DL_Log_Screen.php:56
+#: partials/screen-log.phtml:32
 msgid "Debug Log Viewer"
 msgstr "Prohlížeč ladících informací"
 
-#: src/DL_Log_Screen.php:52
+#: src/DL_Log_Screen.php:53
 msgid "General"
 msgstr "Obecné"
 
-#: src/DL_Log_Screen.php:56
+#: src/DL_Log_Screen.php:57
 msgid "Debug log table contains all records from <code>debug.log</code> file."
 msgstr ""
 "Tabulka s ladícími informacemi obsahuje všechny záznamy ze souboru "
 "<code>debug.log</code>."
 
-#: src/DL_Log_Screen.php:63 src/DL_Log_Screen.php:72
+#: src/DL_Log_Screen.php:64 src/DL_Log_Screen.php:73
 msgid "Table columns"
 msgstr "Sloupce tabulky"
 
-#: src/DL_Log_Screen.php:73
+#: src/DL_Log_Screen.php:74
 msgid "Record number"
 msgstr "Číslo záznamu"
 
-#: src/DL_Log_Screen.php:74
+#: src/DL_Log_Screen.php:75
 msgid "Record (line) number of the record"
 msgstr "Číslo záznamu (řádku)"
 
-#: src/DL_Log_Screen.php:75 src/DL_Log_Table.php:480
+#: src/DL_Log_Screen.php:76 src/DL_Log_Table.php:480
 msgid "Date and time"
 msgstr "Datum a čas"
 
-#: src/DL_Log_Screen.php:76
+#: src/DL_Log_Screen.php:77
 msgid "Date and time when was record added"
 msgstr "Datum a čas, kdy byl záznam přidán"
 
-#: src/DL_Log_Screen.php:77
+#: src/DL_Log_Screen.php:78
 msgid "Record type"
 msgstr "Typ záznamu"
 
-#: src/DL_Log_Screen.php:78
+#: src/DL_Log_Screen.php:79
 msgid "Type of record (see table below)"
 msgstr "Typ záznamu (podívejte se na tabulku níže)"
 
-#: src/DL_Log_Screen.php:79 src/DL_Log_Table.php:155 src/DL_Log_Table.php:482
+#: src/DL_Log_Screen.php:80 src/DL_Log_Table.php:155 src/DL_Log_Table.php:482
 msgid "Record"
 msgstr "Záznam"
 
-#: src/DL_Log_Screen.php:80
+#: src/DL_Log_Screen.php:81
 msgid "Text of record (including <em>stack trace</em>)"
 msgstr "Text záznamu (včetně <em>postupu kódu</em>)"
 
-#: src/DL_Log_Screen.php:87
+#: src/DL_Log_Screen.php:88
 msgid "Record types"
 msgstr "Typy záznamů"
 
-#: src/DL_Log_Screen.php:98
+#: src/DL_Log_Screen.php:99
 msgid "Types of records"
 msgstr "Typy záznamu"
 
-#: src/DL_Log_Screen.php:100
+#: src/DL_Log_Screen.php:101
 msgid "Fatal error"
 msgstr "Chyba"
 
-#: src/DL_Log_Screen.php:102
+#: src/DL_Log_Screen.php:103
 msgid "Error notice"
 msgstr "Oznámení"
 
-#: src/DL_Log_Screen.php:104
+#: src/DL_Log_Screen.php:105
 msgid "Other errors"
 msgstr "Jiné chyby"
 
-#: src/DL_Log_Screen.php:106
+#: src/DL_Log_Screen.php:107
 msgid "PHP parser error"
 msgstr "Chyba parseru"
 
-#: src/DL_Log_Screen.php:108
+#: src/DL_Log_Screen.php:109
 msgid "Warning notice"
 msgstr "Varování"
 
-#: src/DL_Log_Screen.php:110
+#: src/DL_Log_Screen.php:111
 msgid "Debug log parser error"
 msgstr "Chyba parseru ladících informací"
 
-#: src/DL_Log_Screen.php:120
+#: src/DL_Log_Screen.php:121
 msgid "Useful links"
 msgstr "Užitečné odkazy"
 
-#: src/DL_Log_Screen.php:122
+#: src/DL_Log_Screen.php:123
 msgid "Author's homepage"
 msgstr "Domovská stránka autora"
 
-#: src/DL_Log_Screen.php:124
+#: src/DL_Log_Screen.php:125
 msgid "GitHub - source codes"
 msgstr "GitHub - zdrojové kódy"
 
-#: src/DL_Log_Screen.php:126
+#: src/DL_Log_Screen.php:127
 msgid "GitHub - issues"
 msgstr "GitHub - chyby"
 
-#: src/DL_Log_Screen.php:134
+#: src/DL_Log_Screen.php:135
 msgid "Displayed columns"
 msgstr "Zobrazené sloupce"
 
-#: src/DL_Log_Screen.php:139
+#: src/DL_Log_Screen.php:140
 msgid "Count of records per page"
 msgstr "Počet záznamů na stránku"
 
-#: src/DL_Log_Screen.php:144
+#: src/DL_Log_Screen.php:145
 msgid "Make links to source files shorter?"
 msgstr "Zkracovat názvy souborů se zdrojovými kódy?"
 
-#: src/DL_Log_Screen.php:149 partials/screen-log_options.phtml:58
+#: src/DL_Log_Screen.php:150 partials/screen-log_options.phtml:58
 msgid "Show record type as an icon?"
 msgstr "Zobrazit typy záznamů jako ikonu?"
 
-#: src/DL_Log_Screen.php:154
+#: src/DL_Log_Screen.php:155
 msgid "Show links to source files?"
 msgstr "Zobrazit odkazy na soubory se zdrojovými kódy?"
 
-#: src/DL_Log_Screen.php:159
+#: src/DL_Log_Screen.php:160
 msgid "Show <em>stack trace</em> defaultly unfolded?"
 msgstr "Zobrazit <em>postup kódu</em> rovnou rozbalený?"
 
-#: src/DL_Log_Screen.php:164
+#: src/DL_Log_Screen.php:165
 msgid "Defaultly sorted column"
 msgstr "Defaultně seřazený sloupec"
 
-#: src/DL_Log_Screen.php:169
+#: src/DL_Log_Screen.php:170
 msgid "Default sort direction"
 msgstr "Defaultní směr řazení"
 
-#: src/DL_Log_Screen.php:174
+#: src/DL_Log_Screen.php:175
 msgid "Width of modal window with source codes"
 msgstr "Šířka okna se zdrojovými kódy"
 
-#: src/DL_Log_Screen.php:179
+#: src/DL_Log_Screen.php:180
 msgid "Height of modal window with source codes"
 msgstr "Výška okna se zdrojovými kódy"
+
+#: src/DL_Log_Screen.php:254
+msgid "Do you really want to delete whole <code>debug.log</code> file?"
+msgstr "Skutečně chcete smazat celý soubor <code>debug.log</code>?"
+
+#: src/DL_Log_Screen.php:255
+msgid "Do you really want to delete selected record?"
+msgstr "Skutečně chcete smazat vybraný záznam?"
 
 #: src/DL_Log_Table.php:156
 msgid "Records"
@@ -324,25 +332,25 @@ msgstr ""
 "Váš soubor <code>debug.log</code> je prázdný &ndash; to znamená žádné chyby "
 "<strong class=\"noitems-smiley\">:-)</strong>&hellip;"
 
-#: src/DL_Log_Table.php:846
+#: src/DL_Log_Table.php:851
 msgid "Nothing deleted - no records were selected."
 msgstr "Protože žádné záznamy nebyly vybrány, nebylo nic smazáno."
 
-#: src/DL_Log_Table.php:855
+#: src/DL_Log_Table.php:860
 msgid "Error occurs during deleting records from <code>debug.log</code> file."
 msgstr "Při mazání záznamů ze souboru <code>debug.log</code> nastala chyba."
 
-#: src/DL_Log_Table.php:859
+#: src/DL_Log_Table.php:864
 #, php-format
 msgid "Deleting was successful (deleted records: <strong>%1$d</strong>)."
 msgstr ""
 "Mazání záznamů bylo úspěšné (smazaných záznamů: <strong>%1$d</strong>)."
 
-#: src/DL_Log_Table.php:862
+#: src/DL_Log_Table.php:867
 msgid "No records from <code>debug.log</code> were deleted."
 msgstr "Žádné záznamy ze souboru <code>debug.log</code> nebyly smazány."
 
-#: src/DL_Log_Table.php:865
+#: src/DL_Log_Table.php:870
 #, php-format
 msgid ""
 "Some records were deleted but other not (deleted/not deleted records: "
@@ -351,11 +359,11 @@ msgstr ""
 "Některé záznamy byly smazány, některé ne (počty smazaných/nesmazaných "
 "záznamů: <strong>%1$d/%2$d</strong>)."
 
-#: src/DL_Log_Table.php:894
+#: src/DL_Log_Table.php:898
 msgid "Nonce is not valid. Please try your request again."
 msgstr "Bezpečnostní kód není platný. Zkuste opakovat váš požadavek."
 
-#: src/DL_Log_Table.php:901
+#: src/DL_Log_Table.php:905
 #, php-format
 msgid ""
 "Something went wrong so log record with ID <strong>%d</strong> was not "
@@ -364,7 +372,7 @@ msgstr ""
 "Při mazání záznamu s ID <strong>%d</strong> se něco pokazilo a záznam tak "
 "nebyl smazán!"
 
-#: src/DL_Log_Table.php:907
+#: src/DL_Log_Table.php:911
 #, php-format
 msgid ""
 "Record on line <strong>%d</strong> was successfully removed from <code>debug."
@@ -373,7 +381,7 @@ msgstr ""
 "Záznam na řádku <strong>%d</strong> souboru <code>debug.log</code> byl "
 "úspěšně smazán."
 
-#: src/DL_Log_Table.php:910
+#: src/DL_Log_Table.php:914
 #, php-format
 msgid ""
 "Record on line <strong>%d</strong> from <code>debug.log</code> file was not "
@@ -382,7 +390,7 @@ msgstr ""
 "Záznam na řádku <strong>%d</strong> souboru <code>debug.log</code> nebyl "
 "úspěšně smazán!"
 
-#: src/DL_Log_Table.php:948
+#: src/DL_Log_Table.php:952
 #, php-format
 msgid "%s item"
 msgid_plural "%s items"
@@ -390,41 +398,66 @@ msgstr[0] "%s položka"
 msgstr[1] "%s položky"
 msgstr[2] "%s položek"
 
-#: src/DL_Log_Table.php:987
+#: src/DL_Log_Table.php:991
 msgid "First page"
 msgstr "První stránka"
 
-#: src/DL_Log_Table.php:996
+#: src/DL_Log_Table.php:1000
 msgid "Previous page"
 msgstr "Předchozí stránka"
 
-#: src/DL_Log_Table.php:1002 src/DL_Log_Table.php:1005
+#: src/DL_Log_Table.php:1006 src/DL_Log_Table.php:1009
 msgid "Current Page"
 msgstr "Aktuální stránka"
 
-#: src/DL_Log_Table.php:1011
+#: src/DL_Log_Table.php:1015
 #, php-format
 msgctxt "paging"
 msgid "%1$s of %2$s"
 msgstr "%1$s z %2$s"
 
-#: src/DL_Log_Table.php:1018
+#: src/DL_Log_Table.php:1022
 msgid "Next page"
 msgstr "Další stránka"
 
-#: src/DL_Log_Table.php:1027
+#: src/DL_Log_Table.php:1031
 msgid "Last page"
 msgstr "Poslední stránka"
 
-#: src/DL_Log_Table.php:1084
+#: src/DL_Log_Table.php:1088
 msgid "Select All"
 msgstr "Vybrat vše"
 
-#: src/DL_Plugin.php:289
+#: src/DL_Plugin.php:233
+msgid "An error occurred - no record was deleted."
+msgstr "Při mazání nastala chyba - žádný záznam nebyl smazán."
+
+#: src/DL_Plugin.php:234
+#, php-format
+msgid "Record with ID <strong>%s</strong> was deleted."
+msgstr "Záznam s ID <strong>%s</strong> byl smazán."
+
+#: src/DL_Plugin.php:243
+msgid "NONCE is not valid - <code>debug.log</code> file was not deleted!"
+msgstr "NONCE není platné - obsah souboru <code>debug.log</code> nebyl smazán!"
+
+#: src/DL_Plugin.php:249
+msgid "All records from the <code>debug.log</code> file was deleted. "
+msgstr "Všechny záznamy ze souboru <code>debug.log</code> byly vymazány. "
+
+#: src/DL_Plugin.php:250
+msgid "An error occurred during clearing <code>debug.log</code> file. "
+msgstr "Při mazání obsahu souboru <code>debug.log</code> nastala chyba. "
+
+#: src/DL_Plugin.php:257
+msgid "Wrong log screen action was specified!"
+msgstr "Byla specifikována chybná akce pro tuto obrazovku!"
+
+#: src/DL_Plugin.php:383
 msgid "Show Debug Log Viewer"
 msgstr "Zobrazit Prohlížeč ladících informací"
 
-#: src/DL_Plugin.php:353
+#: src/DL_Plugin.php:455
 #, php-format
 msgid ""
 "<strong>Debug Log Viewer</strong>: File (<code>%s</code>) was successfully "
@@ -433,7 +466,7 @@ msgstr ""
 "<strong>Prohlížeč ladících informací</strong>: Soubor (<code>%s</code>) byl "
 "úspěšně vytvořen."
 
-#: src/DL_Plugin.php:360
+#: src/DL_Plugin.php:462
 #, php-format
 msgid ""
 "<strong>Debug Log Viewer</strong>: File (<code>%s</code>) doesn't exist and "
@@ -442,7 +475,7 @@ msgstr ""
 "<strong>Prohlížeč ladících informací</strong>: Soubor (<code>%s</code>) "
 "neexistuje a ani nemůže být vytvořen. Musíte jej vytvořit sami."
 
-#: src/DL_Plugin.php:368
+#: src/DL_Plugin.php:470
 #, php-format
 msgid ""
 "<strong>Debug Log Viewer</strong>: File (<code>%s</code>) exists but is not "
@@ -451,7 +484,7 @@ msgstr ""
 "<strong>Prohlížeč ladících informací</strong>: Soubor (<code>%s</code>) "
 "existuje, ale není zapisovatelný."
 
-#: src/DL_Plugin.php:374
+#: src/DL_Plugin.php:476
 #, php-format
 msgid ""
 "If you want to write log records into (<code>%s</code>) file you need to set "
@@ -462,26 +495,32 @@ msgstr ""
 "code>) musíte nastavit PHP konstanty <code>WP_DEBUG</code> a "
 "<code>WP_DEBUG_LOG</code> na hodnotu <code>TRUE</code>."
 
-#: partials/screen-log.phtml:38
+#: partials/screen-log.phtml:33
 msgid "Delete log"
 msgstr "Smazat záznamy"
 
-#: partials/screen-log.phtml:39
+#: partials/screen-log.phtml:35
+msgid "Show nice log"
+msgstr "Zobrazit pěkný výpis"
+
+#: partials/screen-log.phtml:37
 msgid "Show raw log"
 msgstr "Zobrazit čistý záznam"
 
-#: partials/screen-log.phtml:40
+#: partials/screen-log.phtml:48
+#, php-format
 msgid ""
-"Small plugin aimed for developers that want easilly see their debug.log file."
+"Here are untouched contents of %1$sdebug.log%2$s file. Its size is %3$s%5$s"
+"%4$s, total count of lines is %3$s%6$d%4$s."
 msgstr ""
-"Malý plugin pro vývojáře, kteří chtějí pohodlnější přístup k jejich souboru  "
-"debug.log."
+"Níže si můžete prohlédnout neupravený obsah souboru %1$sdebug.log%2$s. Jeho "
+"velikost je %3$s%5$s%4$s, počet řádků je %3$s%6$d%4$s."
 
-#: partials/screen-log.phtml:42
+#: partials/screen-log.phtml:72
 msgid "Filter records"
 msgstr "Filtrovat záznamy"
 
-#: partials/screen-log.phtml:50
+#: partials/screen-log.phtml:80
 msgid "Log records"
 msgstr "Ladící informace"
 
@@ -587,6 +626,13 @@ msgstr "Sestupně"
 #: partials/screen-log_options.phtml:110
 msgid "Save settings"
 msgstr "Uložit nastavení"
+
+#~ msgid ""
+#~ "Small plugin aimed for developers that want easilly see their debug.log "
+#~ "file."
+#~ msgstr ""
+#~ "Malý plugin pro vývojáře, kteří chtějí pohodlnější přístup k jejich "
+#~ "souboru  debug.log."
 
 #~ msgid "Source file [\"%1$s\"] was not found!"
 #~ msgstr "Nemůžu nalézt soubor se zdrojovými kódy (\"%1$s\")!"

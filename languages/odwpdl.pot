@@ -592,8 +592,8 @@ msgstr ""
 msgid ""
 "Small plugin aimed for "
 "developers that want "
-"easilly see their debug."
-"log file."
+"easilly see their <code>debug."
+"log</code> file."
 msgstr ""
 
 #: partials/screen-log.phtml:42
